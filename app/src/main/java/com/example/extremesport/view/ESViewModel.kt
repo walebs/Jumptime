@@ -19,7 +19,7 @@ class ESViewModel: ViewModel() {
         update()
     }
 
-    fun update() {
+    fun update(latitude: Double, longitude: Double, date: String, offset: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 // For the appropriate apis, add floats for location.
