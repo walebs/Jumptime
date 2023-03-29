@@ -22,6 +22,12 @@ class ESViewModel: ViewModel() {
     fun update() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                // For the appropriate apis, add floats for location.
+                val sunrise = ds.getSunrise()
+                val nowcast = ds.getNowcast()
+                val locationforecast = ds.getLocationforecast()
+                val fellesDatakatalog = ds.getFellesDatakatalog()
+                _esState.value = ESUiState(sunrise, nowcast, locationforecast, fellesDatakatalog)
             } catch (e: IOException) {
 
             }
