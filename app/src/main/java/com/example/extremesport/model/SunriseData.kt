@@ -22,8 +22,8 @@ data class Properties(
     val body: String,
     val sunrise : Sunrise,
     val sunset: Sunset,
-    val solarnoon: Solarnoon,
-    val solarmidnight: Solarmidnight
+    val solarnoon: SolarNoon,
+    val solarmidnight: SolarMidnight
 )
 
 data class Sunrise(
@@ -36,13 +36,13 @@ data class Sunset(
     val azimuth: Double
 )
 
-data class Solarnoon(
+data class SolarNoon(
     val time: String,
     val disc_centre_elevation: Double,
     val visible: Boolean
 )
 
-data class Solarmidnight(
+data class SolarMidnight(
     val time: String,
     val disc_centre_elevation: Double,
     val visible: Boolean
