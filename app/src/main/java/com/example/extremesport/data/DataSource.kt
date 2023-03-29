@@ -14,8 +14,8 @@ class DataSource {
         }
     }
 
-    suspend fun getSunrise(): SunriseData {
-        val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/sunrise/3.0/sun?lat=59.933333&lon=10.716667&date=2022-12-18&offset=+01:00"
+    suspend fun getSunrise(latitude: Double, longitude: Double, date: String, offset: String): SunriseData {
+        val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/sunrise/3.0/sun?lat=${latitude}&lon=${longitude}&date=${date}&offset=${offset}"
         val sunrise: SunriseData = client.get(apiLink) {
             headers {
                 append("X-Gravitee-API-Key","b0285355-9b7b-44ea-a2f0-2fadb945792d")

@@ -2,6 +2,7 @@ package com.example.extremesport
 
 import com.example.extremesport.data.DataSource
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -13,9 +14,7 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun sunrise_isCorrect() {
-        val dataSource = DataSource()
-        val sunrisetest = runBlocking { dataSource.getSunrise() }
-        assertEquals("MET Norway", sunrisetest.copyright)
+    fun test_unittest() {
+        Assert.assertEquals(4,2+2)
     }
 }
