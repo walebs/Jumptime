@@ -36,5 +36,7 @@ class DataSource {
                 append("X-Gravitee-API-Key","b0285355-9b7b-44ea-a2f0-2fadb945792d")
             }
         }.body()
+        println(locationForecast)
+        println("\n\n\n\n")
     }
 }
