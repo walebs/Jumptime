@@ -4,10 +4,16 @@ data class SunriseData(
     val copyright: String,
     val licenseURL: String,
     val type: String,
-    val coordinates: Array<Double>,
+    val geometry: Geometry,
     val `when`: When,
     val properties: Properties
     ) {
+}
+
+data class Geometry(
+    val type: String,
+    val coordinates: Array<Double>
+){
 }
 
 data class When(

@@ -11,5 +11,7 @@ class APIUnitTest {
         val dataSource = DataSource()
         val sunrisetest = runBlocking { dataSource.getSunrise() }
         Assert.assertEquals("MET Norway", sunrisetest.copyright)
+        Assert.assertEquals("Feature", sunrisetest.type)
+        Assert.assertEquals("Point", sunrisetest.geometry.type)
     }
 }
