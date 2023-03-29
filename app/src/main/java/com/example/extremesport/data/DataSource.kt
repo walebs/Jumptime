@@ -14,6 +14,10 @@ class DataSource {
         }
     }
 
+    /*
+    Date skrives på format YYYY-MM-DD, f.eks 2023-03-29.
+    Offset representerer tidssonen du henter informasjon fra. I Norge er f.eks. dette +01:00.
+     */
     suspend fun getSunrise(latitude: Double, longitude: Double, date: String, offset: String): SunriseData {
         val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/sunrise/3.0/sun?lat=${latitude}&lon=${longitude}&date=${date}&offset=${offset}"
         val sunrise: SunriseData = client.get(apiLink) {
