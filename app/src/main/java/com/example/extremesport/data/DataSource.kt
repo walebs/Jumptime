@@ -29,9 +29,11 @@ class DataSource {
         return sunrise
     }
 
-    suspend fun getLocationForecast(): LocationForecastData {
-        //locationforecast/2.0/compact.json?altitude=1&lat=59.911491&lon=10.757933
-        val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/compact.json?altitude=1&lat=59.911491&lon=10.757933"
+    /*
+    Er usikker på om altitude er over havet eller over bakken.
+     */
+    suspend fun getLocationForecast(altitude: Int, latitude: Double, longitude: Double): LocationForecastData {
+        val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/compact.json?altitude=${altitude}&lat=${latitude}&lon=${longitude}"
         val locationForecast: LocationForecastData = client.get(apiLink) {
             headers {
                 append("X-Gravitee-API-Key","b0285355-9b7b-44ea-a2f0-2fadb945792d")

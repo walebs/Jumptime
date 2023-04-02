@@ -17,7 +17,7 @@ class APIUnitTest {
     @Test
     fun locationForecast_isCorrect() {
         val dataSource = DataSource()
-        val locationForecast = runBlocking { dataSource.getLocationForecast() }
+        val locationForecast = runBlocking { dataSource.getLocationForecast(1,59.911491,10.757933) }
         Assert.assertEquals("Feature", locationForecast.type)
         Assert.assertEquals("Point", locationForecast.geometry.type)
     }
