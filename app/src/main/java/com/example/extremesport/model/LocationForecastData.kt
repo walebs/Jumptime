@@ -49,9 +49,82 @@ data class LocationForecastData(
     )
 
     data class Data(
-        val instant: String,
-        val next_12_hours: String,
-        val next_1_hours: String,
-        val next_6_hours: String,
+        val instant: Instant,
+        val next_12_hours: Next_12_hours,
+        val next_1_hours: Next_1_hours,
+        val next_6_hours: Next_6_hours
     )
+
+    data class Instant(
+        val details: Details
+    ) {
+        data class Details(
+            val air_pressure_at_sea_level: Double,
+            val air_temperature: Double,
+            val cloud_area_fraction: Double,
+            val cloud_area_fraction_high: Double,
+            val cloud_area_fraction_low: Double,
+            val cloud_area_fraction_medium: Double,
+            val dew_point_temperature: Double,
+            val fog_area_fraction: Double,
+            val relative_humidity: Double,
+            val wind_from_direction: Double,
+            val wind_speed: Double,
+            val wind_speed_of_gust: Double
+        )
+    }
+
+    data class Next_12_hours(
+        val details: Details,
+        val summary: Summary
+    ) {
+        data class Details(
+            val air_temperature_max: Double,
+            val air_temperature_min: Double,
+            val precipitation_amount: Double,
+            val precipitation_amount_max: Double,
+            val precipitation_amount_min: Double,
+            val probability_of_precipitation: Double,
+            val probability_of_thunder: Double,
+            val ultraviolet_index_clear_sky_max: Double
+        )
+    }
+
+    data class Next_1_hours(
+        val details: Details,
+        val summary: Summary
+    ) {
+        data class Details(
+            val air_temperature_max: Double,
+            val air_temperature_min: Double,
+            val precipitation_amount: Double,
+            val precipitation_amount_max: Double,
+            val precipitation_amount_min: Double,
+            val probability_of_precipitation: Double,
+            val probability_of_thunder: Double,
+            val ultraviolet_index_clear_sky_max: Double
+        )
+    }
+
+    data class Next_6_hours(
+        val details: Details,
+        val summary: Summary
+    ) {
+        data class Details(
+            val air_temperature_max: Double,
+            val air_temperature_min: Double,
+            val precipitation_amount: Double,
+            val precipitation_amount_max: Double,
+            val precipitation_amount_min: Double,
+            val probability_of_precipitation: Double,
+            val probability_of_thunder: Double,
+            val ultraviolet_index_clear_sky_max: Double
+        )
+    }
+
+    data class Summary(
+        val symbol_code: String
+    ) {
+
+    }
 }

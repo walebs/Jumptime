@@ -1,5 +1,6 @@
 package com.example.extremesport.data
 
+import com.example.extremesport.model.LocationForecastData
 import com.example.extremesport.model.SunriseData
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -28,15 +29,14 @@ class DataSource {
         return sunrise
     }
 
-    suspend fun getLocationForecast() {
+    suspend fun getLocationForecast(): LocationForecastData {
         //locationforecast/2.0/compact.json?altitude=1&lat=59.911491&lon=10.757933
         val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/compact.json?altitude=1&lat=59.911491&lon=10.757933"
-        val locationForecast: String = client.get(apiLink) {
+        val locationForecast: LocationForecastData = client.get(apiLink) {
             headers {
                 append("X-Gravitee-API-Key","b0285355-9b7b-44ea-a2f0-2fadb945792d")
             }
         }.body()
-        println(locationForecast)
-        println("\n\n\n\n")
+        return locationForecast
     }
 }
