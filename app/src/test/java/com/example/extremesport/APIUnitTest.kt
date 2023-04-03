@@ -14,4 +14,12 @@ class APIUnitTest {
         Assert.assertEquals("Feature", sunrisetest.type)
         Assert.assertEquals("Point", sunrisetest.geometry.type)
     }
+
+    @Test
+    fun nowcast_isCorrect() {
+        val dataSource = DataSource()
+        val nowcastTest = runBlocking { dataSource.getNowcast(59.933333,10.716667) }
+        Assert.assertEquals("Feature", nowcastTest.type)
+        Assert.assertEquals("Point", nowcastTest.geometry.type)
+    }
 }
