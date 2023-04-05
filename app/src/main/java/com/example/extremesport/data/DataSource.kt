@@ -2,6 +2,7 @@ package com.example.extremesport.data
 
 import com.example.extremesport.model.NowcastData
 import com.example.extremesport.model.LocationForecastData
+import com.example.extremesport.model.OpenAddressData
 import com.example.extremesport.model.SunriseData
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -54,8 +55,9 @@ class DataSource {
         return locationForecast
     }
 
-    suspend fun getOpenAddress() {
+    suspend fun getOpenAddress(): OpenAddressData {
         val apiLink = "https://ws.geonorge.no/adresser/v1/punktsok?lat=60&lon=11&radius=1000"
-        val openAddress: String = client.get(apiLink).body()
+        val openAddress: OpenAddressData = client.get(apiLink).body()
+        return openAddress
     }
 }

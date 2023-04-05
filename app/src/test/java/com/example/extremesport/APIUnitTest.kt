@@ -30,4 +30,11 @@ class APIUnitTest {
         Assert.assertEquals("Feature", locationForecast.type)
         Assert.assertEquals("Point", locationForecast.geometry.type)
     }
+
+    @Test
+    fun openAddress_isCorrect() {
+        val dataSource = DataSource()
+        val openAddress = runBlocking { dataSource.getOpenAddress() }
+        Assert.assertEquals(0, openAddress.metadata.side)
+    }
 }
