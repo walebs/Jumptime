@@ -34,7 +34,8 @@ class APIUnitTest {
     @Test
     fun openAddress_isCorrect() {
         val dataSource = DataSource()
-        val openAddress = runBlocking { dataSource.getOpenAddress() }
+        val openAddress = runBlocking { dataSource.getOpenAddress(59.911491, 10.757933, 1000) }
         Assert.assertEquals(0, openAddress.metadata.side)
+        Assert.assertEquals(true, openAddress.metadata.asciiKompatibel)
     }
 }
