@@ -53,4 +53,9 @@ class DataSource {
         }.body()
         return locationForecast
     }
+
+    suspend fun getOpenAddress() {
+        val apiLink = "https://ws.geonorge.no/adresser/v1/punktsok?lat=60&lon=11&radius=1000"
+        val openAddress: String = client.get(apiLink).body()
+    }
 }
