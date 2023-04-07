@@ -6,13 +6,13 @@ data class LocationForecastData(
     val type: String
 ) {
     data class Geometry(
-        val coordinates: Array<Double>,
+        val coordinates: List<Double>,
         val type: String
     )
 
     data class Properties(
         val meta: Meta,
-        val timeseries: Array<Dataholder>
+        val timeseries: List<Dataholder>
     )
 
     data class Meta(
@@ -124,7 +124,5 @@ data class LocationForecastData(
 
     data class Summary(
         val symbol_code: String
-    ) {
-
-    }
+    )
 }

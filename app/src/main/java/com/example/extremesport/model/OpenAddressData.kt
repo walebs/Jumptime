@@ -2,7 +2,7 @@ package com.example.extremesport.model
 
 data class OpenAddressData(
     val metadata: Metadata,
-    val adresser: Array<Adresse>
+    val adresser: List<Adresse>
 ) {
     data class Metadata(
         val side: Int,
@@ -26,7 +26,7 @@ data class OpenAddressData(
         val bruksnummer: Int,
         val festenummer: Int,
         val undernummer: Int,
-        val bruksenhetsnummer: Array<String>,
+        val bruksenhetsnummer: List<String>,
         val objtype: String,
         val poststed: String,
         val postnummer: String,
