@@ -2,6 +2,7 @@ package com.example.extremesport.data
 
 import com.example.extremesport.model.NowcastData
 import com.example.extremesport.model.LocationForecastData
+import com.example.extremesport.model.OpenAddressData
 import com.example.extremesport.model.SunriseData
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -52,5 +53,12 @@ class DataSource {
             }
         }.body()
         return locationForecast
+    }
+
+    suspend fun getOpenAddress(latitude: Double, longitude: Double, radius: Int): OpenAddressData {
+        //Radius er vel egentlig unødvendig å ha som parameter, men kan kanskje være nyttig uansett, idk.
+        val apiLink = "https://ws.geonorge.no/adresser/v1/punktsok?lat=${latitude}&lon=${longitude}&radius=${radius}"
+        val openAddress: OpenAddressData = client.get(apiLink).body()
+        return openAddress
     }
 }
