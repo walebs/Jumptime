@@ -1,7 +1,7 @@
 package com.example.extremesport.model
 
 //Dette burde antakeligvis leses fra en eller annen JSON fil vi lager selv.
-data class Location(
+data class LocationData(
     val name: String,
     val latitude: Double,
     val longitude: Double,
