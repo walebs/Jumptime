@@ -10,11 +10,11 @@ data class SunriseData(
     ) {
     data class Geometry(
         val type: String,
-        val coordinates: Array<Double>
+        val coordinates: List<Double>
     )
 
     data class When(
-        val interval: Array<String>
+        val interval: List<String>
     )
 
     data class Properties(
