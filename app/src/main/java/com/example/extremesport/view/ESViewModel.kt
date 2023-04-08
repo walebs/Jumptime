@@ -3,6 +3,7 @@ package com.example.extremesport.view
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.extremesport.data.DataSource
+import com.example.extremesport.model.SportRequirements
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +16,7 @@ class ESViewModel: ViewModel() {
     private val ds = DataSource()
     private var _esState = MutableStateFlow(ESUiState())
     val esState: StateFlow<ESUiState> = _esState.asStateFlow()
+    private var sports: HashMap<String, SportRequirements> = HashMap()
 
     init {
         val latitude = 59.933333
@@ -25,6 +27,9 @@ class ESViewModel: ViewModel() {
         val offset = "+01:00"
 
         update(latitude, longitude, altitude, radius, date, offset)
+
+        //Midlertidig, dette burde gjøres gjennom datasource og en JSON-fil.
+        sports["Fallskjermhopping"] = SportRequirements(6.26,0.0,0.0,0.0,0.0)
     }
 
     fun update(latitude: Double, longitude: Double, altitude: Int, radius: Int, date: String, offset: String) {
@@ -40,5 +45,21 @@ class ESViewModel: ViewModel() {
 
             }
         }
+    }
+
+    //Returner akkurat nå bare en boolean for om det anbefales å hoppe akkurat nå.
+    fun checkRequirements(sport: String): Boolean {
+        val chosenSport = sports[sport]
+
+        val nowcastData = esState.value.nowcast?.properties?.timeseries?.get(0)?.data
+        val locationForecastData = esState.value.locationForecast?.properties?.timeseries?.get(0)?.data
+
+        val windspeed = nowcastData?.instant?.details?.wind_speed!! < chosenSport?.windspeed!!
+        val precipitation = nowcastData.next_1_hours.details.precipitation_amount < chosenSport.precipitation
+        val cloud_area_fraction = locationForecastData?.instant?.details?.cloud_area_fraction!! < chosenSport.cloud_area_fraction
+        val fog_area_fraction = locationForecastData.instant.details.fog_area_fraction < chosenSport.fog_area_fraction
+        val temperature = nowcastData.instant.details.air_temperature > chosenSport.temperature
+
+        return windspeed && precipitation && cloud_area_fraction && fog_area_fraction && temperature
     }
 }
