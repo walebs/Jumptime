@@ -16,6 +16,7 @@ class ESViewModel: ViewModel() {
     private val ds = DataSource()
     private var _esState = MutableStateFlow(ESUiState())
     val esState: StateFlow<ESUiState> = _esState.asStateFlow()
+    //Kan hende dette burde være i esuistate.
     private var sports: HashMap<String, SportRequirements> = HashMap()
 
     init {
@@ -51,15 +52,31 @@ class ESViewModel: ViewModel() {
     fun checkRequirements(sport: String): Boolean {
         val chosenSport = sports[sport]
 
-        val nowcastData = esState.value.nowcast?.properties?.timeseries?.get(0)?.data
-        val locationForecastData = esState.value.locationForecast?.properties?.timeseries?.get(0)?.data
+        val windspeed: Boolean
+        val precipitation: Boolean
+        val cloud_area_fraction: Boolean
+        val fog_area_fraction: Boolean
+        val temperature: Boolean
+        val sunrise: Boolean
+        val sunset: Boolean
 
-        val windspeed = nowcastData?.instant?.details?.wind_speed!! < chosenSport?.windspeed!!
-        val precipitation = nowcastData.next_1_hours.details.precipitation_amount < chosenSport.precipitation
-        val cloud_area_fraction = locationForecastData?.instant?.details?.cloud_area_fraction!! < chosenSport.cloud_area_fraction
-        val fog_area_fraction = locationForecastData.instant.details.fog_area_fraction < chosenSport.fog_area_fraction
-        val temperature = nowcastData.instant.details.air_temperature > chosenSport.temperature
+        try {
+            val nowcastData = esState.value.nowcast?.properties?.timeseries?.get(0)?.data
+            val locationForecastData = esState.value.locationForecast?.properties?.timeseries?.get(0)?.data
+            val sunriseData = esState.value.sunrise?.properties
 
-        return windspeed && precipitation && cloud_area_fraction && fog_area_fraction && temperature
+            windspeed = nowcastData?.instant?.details?.wind_speed!! < chosenSport?.windspeed!!
+            precipitation = nowcastData.next_1_hours.details.precipitation_amount < chosenSport.precipitation
+            cloud_area_fraction = locationForecastData?.instant?.details?.cloud_area_fraction!! < chosenSport.cloud_area_fraction
+            fog_area_fraction = locationForecastData.instant.details.fog_area_fraction < chosenSport.fog_area_fraction
+            temperature = nowcastData.instant.details.air_temperature > chosenSport.temperature
+            //Jeg trenger faktisk tid for å sjekke dette.
+            sunrise = true
+            sunset = true
+        } catch (e: Exception) {
+            return false
+        }
+
+        return windspeed && precipitation && cloud_area_fraction && fog_area_fraction && temperature && sunrise && sunset
     }
 }
