@@ -61,13 +61,13 @@ class ESViewModel: ViewModel() {
         val sunset: Boolean
 
         try {
-            val nowcastData = esState.value.nowcast?.properties?.timeseries?.get(0)?.data
-            val locationForecastData = esState.value.locationForecast?.properties?.timeseries?.get(0)?.data
-            val sunriseData = esState.value.sunrise?.properties
+            val nowcastData = esState.value.nowcast?.properties?.timeseries?.get(0)?.data!!
+            val locationForecastData = esState.value.locationForecast?.properties?.timeseries?.get(0)?.data!!
+            val sunriseData = esState.value.sunrise?.properties!!
 
-            windspeed = nowcastData?.instant?.details?.wind_speed!! < chosenSport?.windspeed!!
+            windspeed = nowcastData.instant.details.wind_speed < chosenSport?.windspeed!!
             precipitation = nowcastData.next_1_hours.details.precipitation_amount < chosenSport.precipitation
-            cloud_area_fraction = locationForecastData?.instant?.details?.cloud_area_fraction!! < chosenSport.cloud_area_fraction
+            cloud_area_fraction = locationForecastData.instant.details.cloud_area_fraction < chosenSport.cloud_area_fraction
             fog_area_fraction = locationForecastData.instant.details.fog_area_fraction < chosenSport.fog_area_fraction
             temperature = nowcastData.instant.details.air_temperature > chosenSport.temperature
             //Jeg trenger faktisk tid for å sjekke dette.
