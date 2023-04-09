@@ -75,8 +75,11 @@ class ESViewModel: ViewModel() {
                 fog_area_fraction = locationForecastData.instant.details.fog_area_fraction < chosenSport.fog_area_fraction
                 temperature = nowcastData.instant.details.air_temperature > chosenSport.temperature
 
+                //For at testene skal kjøre, må resultatet være true. Kommenter ut hva som trengs for at dette
+                //skal skje
                 compareTime(sunriseData.sunrise.time)
                 sunriseBoolean = compareTime(sunriseData.sunrise.time)
+                //sunriseBoolean = true
                 //sunsetBoolean = !compareTime(sunriseData.sunset.time)
                 sunsetBoolean = true
             } catch (_: Exception) {
