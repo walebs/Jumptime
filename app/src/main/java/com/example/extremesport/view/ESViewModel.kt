@@ -1,19 +1,18 @@
 package com.example.extremesport.view
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.extremesport.data.DataSource
+import com.example.extremesport.model.LocationForecastData
+import com.example.extremesport.model.NowcastData
 import com.example.extremesport.model.SportRequirements
+import com.example.extremesport.model.SunriseData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
-import kotlin.collections.HashMap
 
 class ESViewModel: ViewModel() {
     // es: ExtremeSport
@@ -53,28 +52,20 @@ class ESViewModel: ViewModel() {
     }
 
     //Returner akkurat nå bare en boolean for om det anbefales å hoppe akkurat nå.
-    //@Composable
-    fun checkRequirements(sport: String): Boolean {
+    fun checkRequirements(sport: String, nowcast: NowcastData, locationForecast: LocationForecastData, sunrise: SunriseData): Boolean {
         val windspeed: Boolean
         val precipitation: Boolean
         val cloud_area_fraction: Boolean
         val fog_area_fraction: Boolean
         val temperature: Boolean
-        val sunrise: Boolean
-        val sunset: Boolean
+        val sunriseBoolean: Boolean
+        val sunsetBoolean: Boolean
 
         try {
-            //val uiStateValue by _esState.collectAsState()
             val chosenSport = sports[sport]!!
-            val nowcastData = _esState.value.nowcast?.properties?.timeseries?.get(0)?.data!!
-            //TODO fjern
-            println("fant nowcast")
-            val locationForecastData = _esState.value.locationForecast?.properties?.timeseries?.get(0)?.data!!
-            //TODO fjern
-            println("fant lf")
-            val sunriseData = _esState.value.sunrise?.properties!!
-            //TODO fjern
-            println("fant sr")
+            val nowcastData = nowcast.properties.timeseries[0].data
+            val locationForecastData = locationForecast.properties.timeseries[0].data
+            val sunriseData = sunrise.properties
 
             windspeed = nowcastData.instant.details.wind_speed < chosenSport.windspeed
             precipitation = nowcastData.next_1_hours.details.precipitation_amount < chosenSport.precipitation
@@ -82,17 +73,17 @@ class ESViewModel: ViewModel() {
             fog_area_fraction = locationForecastData.instant.details.fog_area_fraction < chosenSport.fog_area_fraction
             temperature = nowcastData.instant.details.air_temperature > chosenSport.temperature
             //TODO fjern
-            val currentTime = System.currentTimeMillis()
+            val currentTime = "Todo"
             println(currentTime)
             println("\n\n\n\n\n\n\n")
-            sunrise = true
-            sunset = true
+            sunriseBoolean = true
+            sunsetBoolean = true
         } catch (e: Exception) {
             //TODO fjern
             println("Feilet \n\n\n\n")
             return false
         }
 
-        return windspeed && precipitation && cloud_area_fraction && fog_area_fraction && temperature && sunrise && sunset
+        return windspeed && precipitation && cloud_area_fraction && fog_area_fraction && temperature && sunriseBoolean && sunsetBoolean
     }
 }
