@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -26,7 +27,7 @@ class ESViewModel: ViewModel() {
         val latitude = 59.933333
         val longitude = 10.716667
         val altitude = 1
-        val radius = 0
+        val radius = 1000
         val date = "2022-12-18"
         val offset = "+01:00"
 
@@ -45,6 +46,8 @@ class ESViewModel: ViewModel() {
                 val locationForecast = ds.getLocationForecast(altitude, latitude, longitude)
                 val openAdress = ds.getOpenAddress(latitude, longitude, radius)
                 _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress)
+                //TODO fjern
+                println("Ferdig med å hente api-er")
             } catch (e: IOException) {
 
             }
@@ -61,6 +64,11 @@ class ESViewModel: ViewModel() {
         val sunriseBoolean: Boolean
         val sunsetBoolean: Boolean
 
+        _esState.update { currentState ->
+            println((currentState.nowcast?.type ?: "Feil"))
+            currentState.copy()
+        }
+
         try {
             val chosenSport = sports[sport]!!
             val nowcastData = nowcast.properties.timeseries[0].data
@@ -75,15 +83,12 @@ class ESViewModel: ViewModel() {
             //TODO fjern
             val currentTime = "Todo"
             println(currentTime)
-            println("\n\n\n\n\n\n\n")
+            println("\n\n")
             sunriseBoolean = true
             sunsetBoolean = true
         } catch (e: Exception) {
-            //TODO fjern
-            println("Feilet \n\n\n\n")
             return false
         }
-
         return windspeed && precipitation && cloud_area_fraction && fog_area_fraction && temperature && sunriseBoolean && sunsetBoolean
     }
 }

@@ -12,6 +12,8 @@ class CheckRequirementsTest {
         val viewmodel = ESViewModel()
         val dataSource = DataSource()
 
+        Thread.sleep(2000)
+
         val nowcastTest = runBlocking { dataSource.getNowcast(59.933333, 10.716667) }
         val locationForecastTest = runBlocking { dataSource.getLocationForecast(1,59.911491,10.757933) }
         val sunriseTest = runBlocking { dataSource.getSunrise(59.933333,10.716667,"2022-12-18","+01:00") }
