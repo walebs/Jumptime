@@ -1,5 +1,8 @@
 package com.example.extremesport.view
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.extremesport.data.DataSource
@@ -10,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
+import kotlin.collections.HashMap
 
 class ESViewModel: ViewModel() {
     // es: ExtremeSport
@@ -29,7 +33,7 @@ class ESViewModel: ViewModel() {
 
         update(latitude, longitude, altitude, radius, date, offset)
 
-        //Midlertidig, dette burde gjøres gjennom datasource og en JSON-fil.
+        //TODO Midlertidig, dette burde gjøres gjennom datasource og en JSON-fil.
         sports["Fallskjermhopping"] = SportRequirements(6.26,0.0,0.0,0.0,0.0)
     }
 
@@ -49,6 +53,7 @@ class ESViewModel: ViewModel() {
     }
 
     //Returner akkurat nå bare en boolean for om det anbefales å hoppe akkurat nå.
+    //@Composable
     fun checkRequirements(sport: String): Boolean {
         val windspeed: Boolean
         val precipitation: Boolean
@@ -59,20 +64,32 @@ class ESViewModel: ViewModel() {
         val sunset: Boolean
 
         try {
+            //val uiStateValue by _esState.collectAsState()
             val chosenSport = sports[sport]!!
-            val nowcastData = esState.value.nowcast?.properties?.timeseries?.get(0)?.data!!
-            val locationForecastData = esState.value.locationForecast?.properties?.timeseries?.get(0)?.data!!
-            val sunriseData = esState.value.sunrise?.properties!!
+            val nowcastData = _esState.value.nowcast?.properties?.timeseries?.get(0)?.data!!
+            //TODO fjern
+            println("fant nowcast")
+            val locationForecastData = _esState.value.locationForecast?.properties?.timeseries?.get(0)?.data!!
+            //TODO fjern
+            println("fant lf")
+            val sunriseData = _esState.value.sunrise?.properties!!
+            //TODO fjern
+            println("fant sr")
 
             windspeed = nowcastData.instant.details.wind_speed < chosenSport.windspeed
             precipitation = nowcastData.next_1_hours.details.precipitation_amount < chosenSport.precipitation
             cloud_area_fraction = locationForecastData.instant.details.cloud_area_fraction < chosenSport.cloud_area_fraction
             fog_area_fraction = locationForecastData.instant.details.fog_area_fraction < chosenSport.fog_area_fraction
             temperature = nowcastData.instant.details.air_temperature > chosenSport.temperature
-            //Jeg trenger faktisk tid for å sjekke dette.
+            //TODO fjern
+            val currentTime = System.currentTimeMillis()
+            println(currentTime)
+            println("\n\n\n\n\n\n\n")
             sunrise = true
             sunset = true
         } catch (e: Exception) {
+            //TODO fjern
+            println("Feilet \n\n\n\n")
             return false
         }
 
