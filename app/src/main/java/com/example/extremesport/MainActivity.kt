@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.extremesport.screen.MainScreen
 import com.example.extremesport.screen.ProfileScreen
+import com.example.extremesport.screen.ScoreBoardScreen
 import com.example.extremesport.screen.SettingsScreen
 import com.example.extremesport.ui.theme.ExtremeSportTheme
 
@@ -44,9 +45,8 @@ fun App() {
         composable("main") { MainScreen( onNavigateToNext = { navController.navigate("settings")}) }
         composable("settings") { SettingsScreen () }
         composable("profile") { ProfileScreen () }
-
+        composable("score") { ScoreBoardScreen () }
     }
-
 }
 
 @Preview(showBackground = true)

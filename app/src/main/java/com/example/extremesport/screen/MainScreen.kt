@@ -18,7 +18,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.extremesport.R
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 import kotlinx.coroutines.launch
+import java.security.KeyStore.TrustedCertificateEntry
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +50,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
 
         bottomBar = {
             BottomAppBar(
-                cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
+                //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
                 backgroundColor = "#296BA9".color
             )
             {
@@ -74,8 +78,31 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
             }
         }
     ) {
+        Box(modifier = Modifier.size(395.dp, 725.dp)) {
+           map()
+        }
     }
 }
+@Composable
+fun map(){
+    val osloKlatresenter = LatLng(59.86771, 10.84170)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(osloKlatresenter, 10f)
+    }
+
+    GoogleMap(
+        modifier = Modifier.fillMaxSize(),
+        cameraPositionState = cameraPositionState
+    ) {
+        Marker(
+            state = MarkerState(position = osloKlatresenter),
+            title = "osloKlatresenter",
+            snippet = "Marker in osloKlatresenter"
+        )
+    }
+}
+
+
 @Composable
 fun DrawerMenu(onNavigateToNext: () -> Unit ){
             Box(

@@ -21,10 +21,12 @@
             android:theme="@style/Theme.ExtremeSport">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA0TGwQO5jN8v8tCmWY8Pv496F10rkXFfM"/>
     </application>
 
 </manifest>
