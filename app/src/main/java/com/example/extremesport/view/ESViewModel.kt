@@ -34,7 +34,8 @@ class ESViewModel: ViewModel() {
 
         //TODO Midlertidig, dette burde gjøres gjennom datasource og en JSON-fil.
         //TODO dette er uansett obviously feil. Jeg hadde ikke hoppet i fallskjerm i 9999m/s vind
-        sports["Fallskjermhopping"] = SportRequirements(10000.0,10000.0,10000.0,10000.0,-20.0)
+        sports["Testing"] = SportRequirements(10000.0,10000.0,10000.0,10000.0,-20.0)
+        sports["Fallskjermhopping"] = SportRequirements(6.26,10.0,10.0,10.0,5.0)
     }
 
     fun update(latitude: Double, longitude: Double, altitude: Int, radius: Int, date: String, offset: String) {
@@ -46,7 +47,7 @@ class ESViewModel: ViewModel() {
                 val locationForecast = ds.getLocationForecast(altitude, latitude, longitude)
                 val openAdress = ds.getOpenAddress(latitude, longitude, radius)
                 _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress)
-            } catch (e: IOException) {
+            } catch (_: IOException) {
 
             }
         }
@@ -80,8 +81,8 @@ class ESViewModel: ViewModel() {
                 compareTime(sunriseData.sunrise.time)
                 sunriseBoolean = compareTime(sunriseData.sunrise.time)
                 //sunriseBoolean = true
-                //sunsetBoolean = !compareTime(sunriseData.sunset.time)
-                sunsetBoolean = true
+                sunsetBoolean = !compareTime(sunriseData.sunset.time)
+                //sunsetBoolean = true
             } catch (_: Exception) {
 
             }
