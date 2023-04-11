@@ -9,10 +9,10 @@ class APIUnitTest {
     @Test
     fun sunrise_isCorrect() {
         val dataSource = DataSource()
-        val sunrisetest = runBlocking { dataSource.getSunrise(59.933333,10.716667,"2022-12-18","+01:00") }
-        Assert.assertEquals("MET Norway", sunrisetest.copyright)
-        Assert.assertEquals("Feature", sunrisetest.type)
-        Assert.assertEquals("Point", sunrisetest.geometry.type)
+        val sunriseTest = runBlocking { dataSource.getSunrise(59.933333,10.716667,"2022-12-18","+01:00") }
+        Assert.assertEquals("MET Norway", sunriseTest.copyright)
+        Assert.assertEquals("Feature", sunriseTest.type)
+        Assert.assertEquals("Point", sunriseTest.geometry.type)
     }
 
     @Test
@@ -26,9 +26,9 @@ class APIUnitTest {
     @Test
     fun locationForecast_isCorrect() {
         val dataSource = DataSource()
-        val locationForecast = runBlocking { dataSource.getLocationForecast(1,59.911491,10.757933) }
-        Assert.assertEquals("Feature", locationForecast.type)
-        Assert.assertEquals("Point", locationForecast.geometry.type)
+        val locationForecastTest = runBlocking { dataSource.getLocationForecast(1,59.911491,10.757933) }
+        Assert.assertEquals("Feature", locationForecastTest.type)
+        Assert.assertEquals("Point", locationForecastTest.geometry.type)
     }
 
     @Test
