@@ -1,5 +1,8 @@
 package com.example.extremesport.data
 
+import com.example.extremesport.model.NowcastData
+import com.example.extremesport.model.LocationForecastData
+import com.example.extremesport.model.OpenAddressData
 import com.example.extremesport.model.SunriseData
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -26,5 +29,36 @@ class DataSource {
             }
         }.body()
         return sunrise
+    }
+
+    suspend fun getNowcast(latitude: Double, longitude: Double): NowcastData {
+        val apiLink =
+            "https://gw-uio.intark.uh-it.no/in2000/weatherapi/nowcast/2.0/complete?lat=${latitude}&lon=${longitude}"
+        val nowcast: NowcastData = client.get(apiLink) {
+            headers {
+                append("X-Gravitee-API-Key", "b0285355-9b7b-44ea-a2f0-2fadb945792d")
+            }
+        }.body()
+        return nowcast
+    }
+
+    /*
+    Er usikker på om altitude er over havet eller over bakken.
+     */
+    suspend fun getLocationForecast(altitude: Int, latitude: Double, longitude: Double): LocationForecastData {
+        val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/compact.json?altitude=${altitude}&lat=${latitude}&lon=${longitude}"
+        val locationForecast: LocationForecastData = client.get(apiLink) {
+            headers {
+                append("X-Gravitee-API-Key","b0285355-9b7b-44ea-a2f0-2fadb945792d")
+            }
+        }.body()
+        return locationForecast
+    }
+
+    suspend fun getOpenAddress(latitude: Double, longitude: Double, radius: Int): OpenAddressData {
+        //Radius er vel egentlig unødvendig å ha som parameter, men kan kanskje være nyttig uansett, idk.
+        val apiLink = "https://ws.geonorge.no/adresser/v1/punktsok?lat=${latitude}&lon=${longitude}&radius=${radius}"
+        val openAddress: OpenAddressData = client.get(apiLink).body()
+        return openAddress
     }
 }
