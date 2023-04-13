@@ -1,22 +1,23 @@
 package com.example.extremesport.helpFunctions
 
 import com.example.extremesport.view.ESUiState
+import com.example.extremesport.view.ESViewModel
 
-fun loadAPIs(state: ESUiState) {
+fun loadAPIs(vm: ESViewModel) {
 
-    while(state.nowcast == null) {
+    while(vm.esState.value.nowcast == null) {
         Thread.sleep(1)
     }
 
-    while(state.sunrise == null) {
+    while(vm.esState.value.sunrise == null) {
         Thread.sleep(1)
     }
 
-    while(state.locationForecast == null) {
+    while(vm.esState.value.locationForecast == null) {
         Thread.sleep(1)
     }
 
-    while(state.openAdress == null) {
+    while(vm.esState.value.openAdress == null) {
         Thread.sleep(1)
     }
 }
