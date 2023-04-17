@@ -1,14 +1,12 @@
 package com.example.extremesport.data
 
-import com.example.extremesport.model.NowcastData
-import com.example.extremesport.model.LocationForecastData
-import com.example.extremesport.model.OpenAddressData
-import com.example.extremesport.model.SunriseData
+import com.example.extremesport.model.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.gson.*
+import java.io.File
 
 class DataSource {
     private val client = HttpClient {
@@ -60,5 +58,10 @@ class DataSource {
         val apiLink = "https://ws.geonorge.no/adresser/v1/punktsok?lat=${latitude}&lon=${longitude}&radius=${radius}"
         val openAddress: OpenAddressData = client.get(apiLink).body()
         return openAddress
+    }
+
+    suspend fun getLocationData() {
+        val locationData: String = File("C:\\Users\\Marius Warlo\\AndroidStudioProjects\\IN2000-Prosjekt\\app\\src\\main\\java\\com\\example\\extremesport\\data\\Locations.json").readText(Charsets.UTF_8)
+        println(locationData + "\n\n\n\n")
     }
 }
