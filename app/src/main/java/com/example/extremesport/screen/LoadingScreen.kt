@@ -11,13 +11,16 @@ import com.example.extremesport.view.ESViewModel
 
 
 @Composable
-fun LoadingScreen(vm: ESViewModel, loadFunction: (ESViewModel) -> Unit, onNavigateToNext: () -> Unit){
+fun LoadingScreen(loadingFunction: () -> Unit, onNavigateToNext: () -> Unit){
+    /* TODO
+        Currently is only a red screen, maybe this should be the logo or something?
+     */
     Column {
         Spacer(
             modifier = Modifier.fillMaxSize()
                 .background(Color(android.graphics.Color.parseColor("#ff0000")))
         )
-        loadFunction(vm)
+        loadingFunction()
         onNavigateToNext()
     }
 }

@@ -42,9 +42,12 @@ fun App() {
     val navController = rememberNavController()
     val viewModel = ESViewModel()
     NavHost(navController = navController, startDestination = "loading" ){
-        composable("loading") { LoadingScreen(viewModel,
-            loadFunction = { loadAPIs(it) },
-            onNavigateToNext = { navController.navigate("main")}) }
+        composable("loading") {
+            LoadingScreen(
+                loadingFunction = { loadAPIs(viewModel) },
+                onNavigateToNext = { navController.navigate("main")}
+            )
+        }
         composable("main") { MainScreen( onNavigateToNext = { navController.navigate("settings")}) }
         composable("settings") { SettingsScreen () }
         composable("profile") { ProfileScreen () }
