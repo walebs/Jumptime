@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.extremesport.helpFunctions.loadAPIs
 import com.example.extremesport.screen.*
 import com.example.extremesport.ui.theme.ExtremeSportTheme
 import com.example.extremesport.view.ESViewModel
@@ -41,7 +42,9 @@ fun App() {
     val navController = rememberNavController()
     val viewModel = ESViewModel()
     NavHost(navController = navController, startDestination = "loading" ){
-        composable("loading") { LoadingScreen(viewModel, onNavigateToNext = { navController.navigate("main")}) }
+        composable("loading") { LoadingScreen(viewModel,
+            loadFunction = { loadAPIs(it) },
+            onNavigateToNext = { navController.navigate("main")}) }
         composable("main") { MainScreen( onNavigateToNext = { navController.navigate("settings")}) }
         composable("settings") { SettingsScreen () }
         composable("profile") { ProfileScreen () }
