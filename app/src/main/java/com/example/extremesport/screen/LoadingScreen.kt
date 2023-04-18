@@ -20,7 +20,7 @@ fun LoadingScreen(loadingFunction: () -> Unit, onNavigateToNext: () -> Unit){
             modifier = Modifier.fillMaxSize()
                 .background(Color(android.graphics.Color.parseColor("#ff0000")))
         )
-        loadingFunction()
-        onNavigateToNext()
     }
+    loadingFunction()
+    onNavigateToNext()
 }
