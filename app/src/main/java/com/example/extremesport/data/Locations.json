@@ -5,112 +5,112 @@
       "latitude" : 69.67575403122241,
       "longitude" : 18.91752229668134,
       "website" : "https://www.tromsofallskjermklubb.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Troms Fallskjermklubb",
       "latitude" : 69.05894016083985,
       "longitude" : 18.545495378529257,
       "website" : "https://www.trofsk.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Bodø Fallskjermklubb",
       "latitude" : 67.27268575628638,
       "longitude" : 14.417943617795958,
       "website" : "https://www.bofsk.com/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "NTNU Fallskjermklubb",
       "latitude" : 63.899939144702124,
       "longitude" : 10.36208972335377,
       "website" : "https://skydiveoppdal.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Skydive Oppdal",
       "latitude" : 62.65002657029233,
       "longitude" : 9.854083336909417,
       "website" : "https://skydiveoppdal.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Føniks Fallskjermklubb",
       "latitude" : 62.74936743191671,
       "longitude" : 7.2634547414035895,
       "website" : "https://www.skydivemolde.com/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Lesja FSK",
       "latitude" : 62.232888162015996,
       "longitude" : 8.250070541045401,
       "website" : "https://www.lesjafsk.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Skydive Oslo - Oslo Fallskjermklubb",
       "latitude" : 61.2566719313788,
       "longitude" : 11.670630668763275,
       "website" : "https://www.fallskjerm.no/nb/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Hagl Fallskjermklubb",
       "latitude" : 60.817576003749814,
       "longitude" : 11.069973412526746,
       "website" : "https://www.skydivehamar.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Voss Fallskjermklubb",
       "latitude" : 60.6398979623663,
       "longitude" : 6.501898947808088,
       "website" : "http://www.skydivevoss.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Bergen Fallskjermklubb",
       "latitude" : 60.29383660444574,
       "longitude" : 5.2280328006769805,
       "website" : "https://www.bfsk.no/v3/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Stavanger Fallskjermklubb",
       "latitude" : 59.02908181246269,
       "longitude" : 7.555397368334116,
       "website" : "https://www.sfsk.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Stavanger Fallskjermklubb",
       "latitude" : 58.893145717374864,
       "longitude" : 5.632000093340003,
       "website" : "https://www.sfsk.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Kjevik Fallskjermklubb",
       "latitude" : 58.20514911843801,
       "longitude" : 8.071871186639857,
       "website" : "https://www.facebook.com/KjevikFSK/?locale=nb_NO",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Tønsberg Fallskjermklubb",
       "latitude" : 59.298895685302774,
       "longitude" : 10.366898224415465,
       "website" : "https://www.skydivetonsberg.no/",
-      "type" : "club"
+      "type" : "parachute"
     },
     {
       "name" : "Skydive Viken",
       "latitude" : 59.39895089927007,
       "longitude" : 11.343319641095478,
       "website" : "https://www.skydiveviken.no/",
-      "type" : "club"
+      "type" : "parachute"
     }
   ]
 }
