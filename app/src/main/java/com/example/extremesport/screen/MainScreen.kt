@@ -2,26 +2,33 @@ package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
 import android.graphics.Color.parseColor
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.extremesport.R
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -89,8 +96,11 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
             }
         },
         content = { innerPadding ->
-            Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)) {
                 Map()
+                //ShowWeatherBox()
             }
         }
     )
@@ -125,6 +135,7 @@ fun Markers(){
 
     Marker(
         state = MarkerState(position = tromsoo)
+        //, onClick = {  }
     )
     Marker(
         state = MarkerState(position = troms)
@@ -146,47 +157,82 @@ fun Markers(){
     )
 }
 
+@Composable
+fun ShowWeatherBox() {
+    var height by remember { mutableStateOf(200.dp) }
+    var picture by remember { mutableStateOf(R.drawable.arrowdown)}
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height)
+            .background(Color.Blue, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .alpha(1f)
+            .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(5.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(
+                onClick = {
+                    if (height == 200.dp) {
+                        height = 500.dp
+                        picture = R.drawable.arrowup
+                    } else {
+                        height = 200.dp
+                        picture = R.drawable.arrowdown
+                    }
+                }
+            ) {
+                Image(painter = painterResource(id = picture), contentDescription = null, Modifier.size(30.dp))
+            }
+        }
+    }
+}
 
 @Composable
 fun DrawerMenu(onNavigateToNext: () -> Unit ){
-            Box(
+    Box(
+        modifier = Modifier
+            .background(color = "#ff6200EE".color)
+            .size(400.dp, 300.dp)
+    ) {
+        Column {
+            Spacer(modifier = Modifier.padding(30.dp))
+            Row(
                 modifier = Modifier
-                    .background(color = "#ff6200EE".color)
-                    .size(400.dp, 300.dp)
+                    .padding(start = 30.dp),
             ) {
-                Column {
-                    Spacer(modifier = Modifier.padding(30.dp))
-                    Row(
-                        modifier = Modifier
-                            .padding(start = 30.dp),
-                    ) {
-                        Icon(painterResource(id = R.drawable.profile2), null )
-                    }
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    Text(fontWeight = FontWeight.Bold, text = "  Navn")
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Text(fontWeight = FontWeight.Bold, text = "  Poeng")
-                }
+                Icon(painterResource(id = R.drawable.profile2), null )
             }
+            Spacer(modifier = Modifier.padding(10.dp))
+            Text(fontWeight = FontWeight.Bold, text = "  Navn")
+            Spacer(modifier = Modifier.padding(5.dp))
+            Text(fontWeight = FontWeight.Bold, text = "  Poeng")
+        }
+    }
 
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(text = "Profil", fontWeight = FontWeight.Bold)
-            }
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(text = "Scoreboard", fontWeight = FontWeight.Bold)
-            }
-            TextButton(onClick = onNavigateToNext ) {
-                Text(text = "Innstillinger", fontWeight = FontWeight.Bold)
-            }
+    TextButton(onClick = { /*TODO*/ }) {
+        Text(text = "Profil", fontWeight = FontWeight.Bold)
+    }
+    TextButton(onClick = { /*TODO*/ }) {
+        Text(text = "Scoreboard", fontWeight = FontWeight.Bold)
+    }
+    TextButton(onClick = onNavigateToNext ) {
+        Text(text = "Innstillinger", fontWeight = FontWeight.Bold)
+    }
 
-            Spacer(modifier = Modifier.padding(100.dp))
+    Spacer(modifier = Modifier.padding(100.dp))
 
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(text = "Om oss", fontWeight = FontWeight.Bold)
-            }
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(text = "Rapporter", fontWeight = FontWeight.Bold)
-            }
+    TextButton(onClick = { /*TODO*/ }) {
+        Text(text = "Om oss", fontWeight = FontWeight.Bold)
+    }
+    TextButton(onClick = { /*TODO*/ }) {
+        Text(text = "Rapporter", fontWeight = FontWeight.Bold)
+    }
 }
 
 val String.color get() = Color(parseColor(this))
