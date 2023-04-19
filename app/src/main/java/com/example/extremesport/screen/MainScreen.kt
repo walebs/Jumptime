@@ -8,36 +8,46 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.extremesport.R
+import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.launch
-import java.security.KeyStore.TrustedCertificateEntry
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen (onNavigateToNext: () -> Unit ) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
+    //val viewModel = ESViewModel()
+    //Thread.sleep(5000)
+    println("vente 5sek\n\n")
+    //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
+    //val testBoolean2  = viewModel.checkRequirements("Testing")
+
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
-                backgroundColor = "#DEDBE4".color
+                modifier = Modifier.size(60.dp),
+                //contentColor = Color.White,
+                onClick = {
+                    coroutineScope.launch {
+                        scaffoldState.snackbarHostState
+                            .showSnackbar("hei")
+                        }
+                     },
+                //backgroundColor = Color.Black
             )
             {
                 Icon(imageVector = Icons.Default.Add, null)
@@ -47,16 +57,17 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
         floatingActionButtonPosition = FabPosition.Center,
 
         drawerContent = { DrawerMenu(onNavigateToNext) },
+        drawerGesturesEnabled = false,
 
         bottomBar = {
             BottomAppBar(
-                //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
-                backgroundColor = "#296BA9".color
+                cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
+                //backgroundColor = "#59FF48".color
             )
             {
                 BottomNavigationItem(
                     selected = false,
-                    onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } },
+                    onClick = { coroutineScope.launch { scaffoldState.drawerState.open()} },
                     selectedContentColor = Color.Red,
                     unselectedContentColor = Color.White,
                     icon = {
@@ -64,7 +75,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                     }
                 )
 
-                Spacer(modifier = Modifier.padding(70.dp))
+                Spacer(modifier = Modifier.padding(130.dp))
 
                 BottomNavigationItem(
                     selected = false,
@@ -72,34 +83,66 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                     selectedContentColor = Color.Red,
                     unselectedContentColor = Color.White,
                     icon = {
-                        Icon(painterResource(id = R.drawable.settings2), null)
+                        Icon(painterResource(id = R.drawable.settings), null)
                     }
                 )
             }
         }
     ) {
-        Box(modifier = Modifier.size(395.dp, 725.dp)) {
-           map()
+        Box(modifier = Modifier.size(395.dp, 770.dp)) {
+           Map()
         }
     }
 }
 @Composable
-fun map(){
-    val osloKlatresenter = LatLng(59.86771, 10.84170)
+fun Map(){
+    val tromsoo = LatLng(69.67575, 18.91752)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(osloKlatresenter, 10f)
+        position = CameraPosition.fromLatLngZoom(tromsoo, 10f)
     }
 
-    GoogleMap(
+    var uiSettings by remember { mutableStateOf(MapUiSettings()) }
+
+    val googleMap = GoogleMap(
         modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPositionState
+        cameraPositionState = cameraPositionState,
+        uiSettings =  MapUiSettings()
     ) {
-        Marker(
-            state = MarkerState(position = osloKlatresenter),
-            title = "osloKlatresenter",
-            snippet = "Marker in osloKlatresenter"
-        )
+        Markers()
     }
+}
+
+@Composable
+fun Markers(){
+    val tromsoo = LatLng(69.67575, 18.91752)
+    val troms = LatLng(69.05894, 18.54549)
+    val bodoo = LatLng(67.27268, 14.41794)
+    val ntnu = LatLng(63.89993, 10.36208)
+    val oppdal = LatLng(62.65002, 9.85408)
+    val fooniks = LatLng(62.74936, 7.26345)
+    val lesja = LatLng(62.23288, 8.25007)
+
+    Marker(
+        state = MarkerState(position = tromsoo)
+    )
+    Marker(
+        state = MarkerState(position = troms)
+    )
+    Marker(
+        state = MarkerState(position = bodoo)
+    )
+    Marker(
+        state = MarkerState(position = ntnu)
+    )
+    Marker(
+        state = MarkerState(position = oppdal)
+    )
+    Marker(
+        state = MarkerState(position = fooniks)
+    )
+    Marker(
+        state = MarkerState(position = lesja)
+    )
 }
 
 
@@ -107,7 +150,7 @@ fun map(){
 fun DrawerMenu(onNavigateToNext: () -> Unit ){
             Box(
                 modifier = Modifier
-                    .background(color = "#296BA9".color)
+                    .background(color = "#ff6200EE".color)
                     .size(400.dp, 300.dp)
             ) {
                 Column {
