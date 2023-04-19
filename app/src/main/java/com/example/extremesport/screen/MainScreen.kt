@@ -39,7 +39,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
-                modifier = Modifier.size(60.dp),
+                modifier = Modifier.size(80.dp),
                 //contentColor = Color.White,
                 onClick = {
                     coroutineScope.launch {
@@ -61,7 +61,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
 
         bottomBar = {
             BottomAppBar(
-                cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
+                //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
                 //backgroundColor = "#59FF48".color
             )
             {
@@ -87,18 +87,19 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                     }
                 )
             }
+        },
+        content = { innerPadding ->
+            Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+                Map()
+            }
         }
-    ) {
-        Box(modifier = Modifier.size(395.dp, 770.dp)) {
-           Map()
-        }
-    }
+    )
 }
 @Composable
 fun Map(){
     val tromsoo = LatLng(69.67575, 18.91752)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(tromsoo, 10f)
+        position = CameraPosition.fromLatLngZoom(tromsoo, 6f)
     }
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
