@@ -10,6 +10,6 @@ class SerializerTest {
     fun locationData_isCorrect() {
         val dataSource = DataSource()
         val locationDataTest = runBlocking{ dataSource.getLocationData() }
-        Assert.assertEquals(1,1)
+        Assert.assertEquals(true, locationDataTest.locations.isNotEmpty())
     }
 }

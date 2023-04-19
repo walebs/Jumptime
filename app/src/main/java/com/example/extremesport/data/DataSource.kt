@@ -1,6 +1,7 @@
 package com.example.extremesport.data
 
 import com.example.extremesport.model.*
+import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -60,8 +61,10 @@ class DataSource {
         return openAddress
     }
 
-    suspend fun getLocationData() {
-        val locationData: String = File("C:\\Users\\Marius Warlo\\AndroidStudioProjects\\IN2000-Prosjekt\\app\\src\\main\\java\\com\\example\\extremesport\\data\\Locations.json").readText(Charsets.UTF_8)
-        println(locationData + "\n\n\n\n")
+    suspend fun getLocationData(): LocationData {
+        val locationDataString: String = File("C:\\Users\\Marius Warlo\\AndroidStudioProjects\\IN2000-Prosjekt\\app\\src\\main\\java\\com\\example\\extremesport\\data\\Locations.json").readText(Charsets.UTF_8)
+        val gson = Gson()
+        val locationData: LocationData = gson.fromJson(locationDataString, LocationData::class.java)
+        return locationData
     }
 }
