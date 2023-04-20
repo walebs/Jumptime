@@ -2,19 +2,26 @@ package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
 import android.graphics.Color.parseColor
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.example.extremesport.R
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
@@ -34,20 +41,25 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
     println("vente 5sek\n\n")
     //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
     //val testBoolean2  = viewModel.checkRequirements("Testing")
-
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
-                modifier = Modifier.size(80.dp),
-                //contentColor = Color.White,
+                modifier = Modifier
+                    .size(80.dp)
+                    .border(
+                        BorderStroke(1.dp, Color.Black),
+                        shape = CircleShape
+                    )
+                    .clip(CircleShape),
+                contentColor = Color.Black,
                 onClick = {
                     coroutineScope.launch {
                         scaffoldState.snackbarHostState
                             .showSnackbar("hei")
                         }
                      },
-                //backgroundColor = Color.Black
+                backgroundColor = Color.White
             )
             {
                 Icon(imageVector = Icons.Default.Add, null)
@@ -62,7 +74,9 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
         bottomBar = {
             BottomAppBar(
                 //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
-                //backgroundColor = "#59FF48".color
+                modifier = Modifier
+                    .height(65.dp),
+                backgroundColor = "#1C6EAE".color
             )
             {
                 BottomNavigationItem(
@@ -71,7 +85,12 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                     selectedContentColor = Color.Red,
                     unselectedContentColor = Color.White,
                     icon = {
-                        Icon(painterResource(id = R.drawable.hamburger), null)
+                        Icon(
+                            painterResource(id = R.drawable.baseline_menu_24_white),
+                            contentDescription = "Menyknapp",
+                            modifier = Modifier
+                                .size(40.dp)
+                        )
                     }
                 )
 
@@ -83,13 +102,20 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                     selectedContentColor = Color.Red,
                     unselectedContentColor = Color.White,
                     icon = {
-                        Icon(painterResource(id = R.drawable.settings), null)
+                        Icon(
+                            painterResource(id = R.drawable.baseline_settings_24_white),
+                            contentDescription = "Settingsknapp",
+                            modifier = Modifier
+                                .size(40.dp)
+                        )
                     }
                 )
             }
         },
         content = { innerPadding ->
-            Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)) {
                 Map()
             }
         }
@@ -146,47 +172,151 @@ fun Markers(){
     )
 }
 
-
 @Composable
 fun DrawerMenu(onNavigateToNext: () -> Unit ){
+    Column() {
+        Column(
+            modifier = Modifier
+                .background("#1C6EAE".color)
+                .fillMaxWidth()
+                .height(250.dp)
+        ) {
             Box(
                 modifier = Modifier
-                    .background(color = "#ff6200EE".color)
-                    .size(400.dp, 300.dp)
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
             ) {
-                Column {
-                    Spacer(modifier = Modifier.padding(30.dp))
-                    Row(
+                Box(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .size(250.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        //idk hvorfor den ikke blir hvit
+                        painterResource(id = R.drawable.baseline_account_circle_24_white),
+                        contentDescription = "Profilbilde",
                         modifier = Modifier
-                            .padding(start = 30.dp),
-                    ) {
-                        Icon(painterResource(id = R.drawable.profile2), null )
-                    }
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    Text(fontWeight = FontWeight.Bold, text = "  Navn")
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Text(fontWeight = FontWeight.Bold, text = "  Poeng")
+                            .size(150.dp)
+                    )
                 }
             }
-
-            TextButton(onClick = { /*TODO*/ }) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "<NAVN>",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 30.sp,
+                    color = Color.White,
+                    modifier = Modifier.width(IntrinsicSize.Min)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Poeng:  ",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.width(IntrinsicSize.Min)
+                    )
+                    Text(
+                        text = "<x>",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 30.sp,
+                        color = Color.White,
+                        modifier = Modifier.width(IntrinsicSize.Min)
+                    )
+                }
+            }
+        }
+        //Profil, scoreboards osv
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TextButton(
+                onClick = { /*TODO*/ },
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_account_circle_24),
+                    contentDescription = "Profilbilde ikon",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Profil", fontWeight = FontWeight.Bold)
             }
-            TextButton(onClick = { /*TODO*/ }) {
+            TextButton(
+                onClick = { /*TODO*/ },
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_scoreboard_24),
+                    contentDescription = "Scoreboard ikon",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Scoreboard", fontWeight = FontWeight.Bold)
             }
-            TextButton(onClick = onNavigateToNext ) {
+            TextButton(
+                onClick = { /*TODO*/ },
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_save_24),
+                    contentDescription = "Favoritt ikon",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+                Text(text = "Favoritter", fontWeight = FontWeight.Bold)
+            }
+            TextButton(
+                onClick = { /*TODO*/ },
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_settings_24),
+                    contentDescription = "Innstillinger ikon",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Innstillinger", fontWeight = FontWeight.Bold)
             }
 
-            Spacer(modifier = Modifier.padding(100.dp))
-
-            TextButton(onClick = { /*TODO*/ }) {
+            Spacer(modifier = Modifier.padding(120.dp))
+            TextButton(
+                onClick = { /*TODO*/ },
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_groups_24),
+                    contentDescription = "Om oss ikon",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Om oss", fontWeight = FontWeight.Bold)
             }
-            TextButton(onClick = { /*TODO*/ }) {
+            TextButton(
+                onClick = { /*TODO*/ },
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_report_problem_24),
+                    contentDescription = "Rapporter ikon",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Rapporter", fontWeight = FontWeight.Bold)
             }
+        }
+    }
 }
+
 
 val String.color get() = Color(parseColor(this))
