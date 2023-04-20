@@ -176,10 +176,83 @@ fun Markers(){
         state = MarkerState(position = lesja)
     )
 }
+@Composable
+fun ShowWeatherBox(viewModel: ESViewModel) {
+    val sizeOfDevice = LocalConfiguration.current
+    val screenHeight = sizeOfDevice.screenHeightDp
+
+    var height by remember { mutableStateOf((screenHeight/4).dp) }
+    var picture by remember { mutableStateOf(R.drawable.arrowdown) }
+    var buttonText by remember { mutableStateOf("Show more") }
+    var keyword by remember { mutableStateOf("short") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height)
+            .background(Color.Blue, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .alpha(1f)
+            .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .padding(5.dp)
+    ) {
+        InformationBox(keyword)
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(
+                onClick = {
+                    if (height == (screenHeight/4).dp) {
+                        height = (screenHeight-(screenHeight/4)).dp
+                        picture = R.drawable.arrowup
+                        keyword = "long"
+                        buttonText = "Show less"
+                    } else {
+                        height = (screenHeight/4).dp
+                        picture = R.drawable.arrowdown
+                        keyword = "short"
+                        buttonText = "Show more"
+                    }
+                },
+                Modifier
+                    .height(40.dp)
+                    .width(150.dp)
+            ) {
+                Text(buttonText)
+                Image(painter = painterResource(id = picture), contentDescription = null, Modifier.fillMaxSize())
+            }
+        }
+    }
+}
 
 @Composable
-fun DrawerMenu(onNavigateToNext: () -> Unit ){
-    Column() {
+fun InformationBox(keyword:String) {
+    when (keyword) {
+        "short" -> {
+            Column(
+                Modifier.background(Color.Green).fillMaxWidth()
+            ) {
+                Text("short")
+            }
+        }
+        "long" -> {
+            Column(
+                Modifier.background(Color.Red).fillMaxWidth()
+            ) {
+                Text("long")
+            }
+        }
+        else -> {
+
+        }
+    }
+}
+
+@Composable
+fun DrawerMenu(onNavigateToNext: () -> Unit ) {
+    Column {
         Column(
             modifier = Modifier
                 .background("#1C6EAE".color)
@@ -292,103 +365,35 @@ fun DrawerMenu(onNavigateToNext: () -> Unit ){
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Innstillinger", fontWeight = FontWeight.Bold)
-fun ShowWeatherBox(viewModel: ESViewModel) {
-    val sizeOfDevice = LocalConfiguration.current
-    val screenHeight = sizeOfDevice.screenHeightDp
 
-    var height by remember { mutableStateOf((screenHeight/4).dp) }
-    var picture by remember { mutableStateOf(R.drawable.arrowdown) }
-    var buttonText by remember { mutableStateOf("Show more") }
-    var keyword by remember { mutableStateOf("short") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height)
-            .background(Color.Blue, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .alpha(1f)
-            .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .padding(5.dp)
-    ) {
-        InformationBox(keyword)
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(
-                onClick = {
-                    if (height == (screenHeight/4).dp) {
-                        height = (screenHeight-(screenHeight/4)).dp
-                        picture = R.drawable.arrowup
-                        keyword = "long"
-                        buttonText = "Show less"
-                    } else {
-                        height = (screenHeight/4).dp
-                        picture = R.drawable.arrowdown
-                        keyword = "short"
-                        buttonText = "Show more"
-                    }
-                },
-                Modifier
-                    .height(40.dp)
-                    .width(150.dp)
-            ) {
-                Text(buttonText)
-                Image(painter = painterResource(id = picture), contentDescription = null, Modifier.fillMaxSize())
+                Spacer(modifier = Modifier.padding(120.dp))
+                TextButton(
+                    onClick = { /*TODO*/ },
+                ) {
+                    Image(
+                        painterResource(id = R.drawable.baseline_groups_24),
+                        contentDescription = "Om oss ikon",
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    Text(text = "Om oss", fontWeight = FontWeight.Bold)
+                }
+                TextButton(
+                    onClick = { /*TODO*/ },
+                ) {
+                    Image(
+                        painterResource(id = R.drawable.baseline_report_problem_24),
+                        contentDescription = "Rapporter ikon",
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    Text(text = "Rapporter", fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
 }
-
-@Composable
-fun InformationBox(keyword:String) {
-    when (keyword) {
-        "short" -> {
-            Column(
-                Modifier.background(Color.Green).fillMaxWidth()
-            ) {
-                Text("short")
-            }
-        }
-        "long" -> {
-            Column(
-                Modifier.background(Color.Red).fillMaxWidth()
-            ) {
-                Text("long")
-            }
-        }
-        else -> {
-
-            Spacer(modifier = Modifier.padding(120.dp))
-            TextButton(
-                onClick = { /*TODO*/ },
-            ) {
-                Image(
-                    painterResource(id = R.drawable.baseline_groups_24),
-                    contentDescription = "Om oss ikon",
-                    modifier = Modifier
-                        .size(30.dp)
-                )
-                Spacer(modifier = Modifier.padding(5.dp))
-                Text(text = "Om oss", fontWeight = FontWeight.Bold)
-            }
-            TextButton(
-                onClick = { /*TODO*/ },
-            ) {
-                Image(
-                    painterResource(id = R.drawable.baseline_report_problem_24),
-                    contentDescription = "Rapporter ikon",
-                    modifier = Modifier
-                        .size(30.dp)
-                )
-                Spacer(modifier = Modifier.padding(5.dp))
-                Text(text = "Rapporter", fontWeight = FontWeight.Bold)
-            }
-        }
-    }
-}
-
 
 val String.color get() = Color(parseColor(this))
