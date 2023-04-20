@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -15,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,16 +32,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.launch
 
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen (onNavigateToNext: () -> Unit ) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-
-    //val viewModel = ESViewModel()
+    val viewModel = ESViewModel()
     //Thread.sleep(5000)
-    println("vente 5sek\n\n")
+    //println("vente 5sek\n\n")
     //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
     //val testBoolean2  = viewModel.checkRequirements("Testing")
     Scaffold(
@@ -113,10 +114,13 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
             }
         },
         content = { innerPadding ->
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
                 Map()
+                ShowWeatherBox(viewModel)
             }
         }
     )
@@ -151,6 +155,7 @@ fun Markers(){
 
     Marker(
         state = MarkerState(position = tromsoo)
+        //, onClick = {  }
     )
     Marker(
         state = MarkerState(position = troms)
@@ -287,7 +292,74 @@ fun DrawerMenu(onNavigateToNext: () -> Unit ){
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Innstillinger", fontWeight = FontWeight.Bold)
+fun ShowWeatherBox(viewModel: ESViewModel) {
+    val sizeOfDevice = LocalConfiguration.current
+    val screenHeight = sizeOfDevice.screenHeightDp
+
+    var height by remember { mutableStateOf((screenHeight/4).dp) }
+    var picture by remember { mutableStateOf(R.drawable.arrowdown) }
+    var buttonText by remember { mutableStateOf("Show more") }
+    var keyword by remember { mutableStateOf("short") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height)
+            .background(Color.Blue, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .alpha(1f)
+            .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .padding(5.dp)
+    ) {
+        InformationBox(keyword)
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(
+                onClick = {
+                    if (height == (screenHeight/4).dp) {
+                        height = (screenHeight-(screenHeight/4)).dp
+                        picture = R.drawable.arrowup
+                        keyword = "long"
+                        buttonText = "Show less"
+                    } else {
+                        height = (screenHeight/4).dp
+                        picture = R.drawable.arrowdown
+                        keyword = "short"
+                        buttonText = "Show more"
+                    }
+                },
+                Modifier
+                    .height(40.dp)
+                    .width(150.dp)
+            ) {
+                Text(buttonText)
+                Image(painter = painterResource(id = picture), contentDescription = null, Modifier.fillMaxSize())
             }
+        }
+    }
+}
+
+@Composable
+fun InformationBox(keyword:String) {
+    when (keyword) {
+        "short" -> {
+            Column(
+                Modifier.background(Color.Green).fillMaxWidth()
+            ) {
+                Text("short")
+            }
+        }
+        "long" -> {
+            Column(
+                Modifier.background(Color.Red).fillMaxWidth()
+            ) {
+                Text("long")
+            }
+        }
+        else -> {
 
             Spacer(modifier = Modifier.padding(120.dp))
             TextButton(
