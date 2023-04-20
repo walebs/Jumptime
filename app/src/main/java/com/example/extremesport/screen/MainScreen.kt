@@ -5,7 +5,6 @@ import android.graphics.Color.parseColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,17 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.example.extremesport.R
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
@@ -35,10 +32,9 @@ import kotlinx.coroutines.launch
 fun MainScreen (onNavigateToNext: () -> Unit ) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-
-    //val viewModel = ESViewModel()
+    val viewModel = ESViewModel()
     //Thread.sleep(5000)
-    println("vente 5sek\n\n")
+    //println("vente 5sek\n\n")
     //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
     //val testBoolean2  = viewModel.checkRequirements("Testing")
 
@@ -96,11 +92,13 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
             }
         },
         content = { innerPadding ->
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
                 Map()
-                //ShowWeatherBox()
+                ShowWeatherBox(viewModel)
             }
         }
     )
@@ -158,9 +156,15 @@ fun Markers(){
 }
 
 @Composable
-fun ShowWeatherBox() {
-    var height by remember { mutableStateOf(200.dp) }
-    var picture by remember { mutableStateOf(R.drawable.arrowdown)}
+fun ShowWeatherBox(viewModel: ESViewModel) {
+    val sizeOfDevice = LocalConfiguration.current
+    val screenHeight = sizeOfDevice.screenHeightDp
+
+    var height by remember { mutableStateOf((screenHeight/4).dp) }
+    var picture by remember { mutableStateOf(R.drawable.arrowdown) }
+    var buttonText by remember { mutableStateOf("Show more") }
+    var keyword by remember { mutableStateOf("short") }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -168,27 +172,59 @@ fun ShowWeatherBox() {
             .background(Color.Blue, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .alpha(1f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .padding(5.dp)
     ) {
+        InformationBox(keyword)
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(5.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
                 onClick = {
-                    if (height == 200.dp) {
-                        height = 500.dp
+                    if (height == (screenHeight/4).dp) {
+                        height = (screenHeight-(screenHeight/4)).dp
                         picture = R.drawable.arrowup
+                        keyword = "long"
+                        buttonText = "Show less"
                     } else {
-                        height = 200.dp
+                        height = (screenHeight/4).dp
                         picture = R.drawable.arrowdown
+                        keyword = "short"
+                        buttonText = "Show more"
                     }
-                }
+                },
+                Modifier
+                    .height(40.dp)
+                    .width(150.dp)
             ) {
-                Image(painter = painterResource(id = picture), contentDescription = null, Modifier.size(30.dp))
+                Text(buttonText)
+                Image(painter = painterResource(id = picture), contentDescription = null, Modifier.fillMaxSize())
             }
+        }
+    }
+}
+
+@Composable
+fun InformationBox(keyword:String) {
+    when (keyword) {
+        "short" -> {
+            Column(
+                Modifier.background(Color.Green).fillMaxWidth()
+            ) {
+                Text("short")
+            }
+        }
+        "long" -> {
+            Column(
+                Modifier.background(Color.Red).fillMaxWidth()
+            ) {
+                Text("long")
+            }
+        }
+        else -> {
+
         }
     }
 }
