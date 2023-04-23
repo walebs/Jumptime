@@ -62,9 +62,18 @@ class DataSource {
     }
 
     suspend fun getLocationData(): LocationData {
-        val locationDataString: String = File("C:\\Users\\Marius Warlo\\AndroidStudioProjects\\IN2000-Prosjekt\\app\\src\\main\\java\\com\\example\\extremesport\\data\\Locations.json").readText(Charsets.UTF_8)
+        //DIRTY fix for å sørge for at testingen kan kjøres uansett hvilken maskin du er på.
+        val locationDataString: String =
+            if (System.getProperty("os.name") == "Windows 10" || System.getProperty("os.name") == "Windows 11") {
+                File("src\\main\\java\\com\\example\\extremesport\\data\\Locations.json").readText(
+                    Charsets.UTF_8
+                )
+            } else {
+                File("./src/main/java/com/example/extremesport/data/Locations.json").readText(
+                    Charsets.UTF_8
+                )
+            }
         val gson = Gson()
-        val locationData: LocationData = gson.fromJson(locationDataString, LocationData::class.java)
-        return locationData
+        return gson.fromJson(locationDataString, LocationData::class.java)
     }
 }
