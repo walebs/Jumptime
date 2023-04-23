@@ -19,12 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import com.example.extremesport.R
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
@@ -42,6 +42,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
     //println("vente 5sek\n\n")
     //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
     //val testBoolean2  = viewModel.checkRequirements("Testing")
+
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
@@ -120,8 +121,10 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                     .padding(innerPadding)
             ) {
                 Map()
-                ShowWeatherBox(viewModel)
             }
+            /*Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
+                ShowWeatherBox(viewModel)
+            }*/
         }
     )
 }
@@ -181,36 +184,39 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
-    var height by remember { mutableStateOf((screenHeight/4).dp) }
+    var height by remember { mutableStateOf((screenHeight-(screenHeight/4)).dp) }
     var picture by remember { mutableStateOf(R.drawable.arrowdown) }
+    var keyword by remember { mutableStateOf("long") }
+    //TODO fjerne?
     var buttonText by remember { mutableStateOf("Show more") }
-    var keyword by remember { mutableStateOf("short") }
+
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
-            .background(Color.Blue, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .alpha(1f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .padding(5.dp)
     ) {
-        InformationBox(keyword)
+        InformationBox(keyword, viewModel)
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(Color.LightGray),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
                 onClick = {
-                    if (height == (screenHeight/4).dp) {
+                    if (height == (screenHeight/4.5).dp) {
                         height = (screenHeight-(screenHeight/4)).dp
                         picture = R.drawable.arrowup
                         keyword = "long"
                         buttonText = "Show less"
                     } else {
-                        height = (screenHeight/4).dp
+                        height = (screenHeight/4.5).dp
                         picture = R.drawable.arrowdown
                         keyword = "short"
                         buttonText = "Show more"
@@ -218,34 +224,156 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
                 },
                 Modifier
                     .height(40.dp)
-                    .width(150.dp)
+                    .width(80.dp)
+                    .background(Color.LightGray)
             ) {
-                Text(buttonText)
-                Image(painter = painterResource(id = picture), contentDescription = null, Modifier.fillMaxSize())
+                //Text(buttonText)
+                Image(painter = painterResource(id = picture), contentDescription = null,
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.LightGray))
+            }
+        }
+    }
+}
+
+@SuppressLint("StateFlowValueCalledInComposition")
+@Composable
+fun InformationBox(keyword: String, viewModel: ESViewModel) {
+    when (keyword) {
+        "short" -> {
+            ShortInformationBox(viewModel = viewModel)
+        }
+        "long" -> {
+            LongInformationBox(viewModel = viewModel)
+        }
+        else -> {
+
+        }
+    }
+}
+
+@Composable
+fun ShortInformationBox(viewModel: ESViewModel) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(start = 20.dp, top = 10.dp)
+            ) {
+                Text("Sted")
+                Text("Værforhold")
+                Text("Temp: ")
+                Text("H: & L: 3")
+                Text("Vindinfo: 5 m/s")
+            }
+            Spacer(Modifier.padding(50.dp))
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, end = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Sikkerhetsnivå")
+                Image(
+                    //TODO: dette må være en variabel og ikke et fast icon
+                    //TODO: kommer ann på hva checkrequerments sier
+                    painter = painterResource(id = R.drawable.red_icon),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .size(50.dp)
+                )
             }
         }
     }
 }
 
 @Composable
-fun InformationBox(keyword:String) {
-    when (keyword) {
-        "short" -> {
+fun LongInformationBox(viewModel: ESViewModel) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+        ) {
             Column(
-                Modifier.background(Color.Green).fillMaxWidth()
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(start = 20.dp, top = 10.dp)
             ) {
-                Text("short")
+                Text("Sted")
+                Text("Værforhold")
+                Text("Temp: ")
+                Text("H: & L: 3")
+                Text("Vindinfo: 5 m/s")
+            }
+            Spacer(Modifier.padding(50.dp))
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, end = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Sikkerhetsnivå")
+                Image(
+                    //TODO: dette må være en variabel og ikke et fast icon
+                    //TODO: kommer ann på hva checkrequerments sier
+                    painter = painterResource(id = R.drawable.green_icon),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .size(50.dp)
+                )
             }
         }
-        "long" -> {
-            Column(
-                Modifier.background(Color.Red).fillMaxWidth()
-            ) {
-                Text("long")
+        Spacer(modifier = Modifier.height(30.dp))
+        //Info om stedet
+        Column(
+            Modifier.padding(start = 20.dp)
+        ) {
+            Text("Oslo fallskjermklubb", fontSize = 20.sp)
+            Column() {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.marker),
+                        contentDescription = null,
+                        Modifier.size(40.dp)
+                    )
+                    Text("Oslo gate 5, 0882, Oslo")
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.clock_icon),
+                        contentDescription = null,
+                        Modifier.size(30.dp)
+                    )
+                    Text("9-17")
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.internett_icon),
+                        contentDescription = null,
+                        Modifier.size(30.dp)
+                    )
+                    Text("fallskjerm.no")
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.phone_icon),
+                        contentDescription = null,
+                        Modifier.size(30.dp)
+                    )
+                    Text("876 54 321")
+                }
             }
-        }
-        else -> {
-
         }
     }
 }
@@ -272,11 +400,11 @@ fun DrawerMenu(onNavigateToNext: () -> Unit ) {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        //idk hvorfor den ikke blir hvit
                         painterResource(id = R.drawable.baseline_account_circle_24_white),
                         contentDescription = "Profilbilde",
                         modifier = Modifier
-                            .size(150.dp)
+                            .size(150.dp),
+                        tint = Color.White
                     )
                 }
             }
