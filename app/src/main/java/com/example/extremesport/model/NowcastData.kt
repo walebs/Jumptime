@@ -60,6 +60,6 @@ data class NowcastData (
 
     data class Summary(val symbol_code: String)
 
-    data class Next1HourDataDetails(val precipitation_amount: Double)
+    data class Next1HourDataDetails(val precipitation_amount: Int)
 
 }
