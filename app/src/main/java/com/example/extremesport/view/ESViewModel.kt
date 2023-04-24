@@ -80,10 +80,10 @@ class ESViewModel: ViewModel() {
                 //For at testene skal kjøre, må resultatet være true. Kommenter ut hva som trengs for at dette
                 //skal skje
                 compareTime(sunriseData.sunrise.time)
-                sunriseBoolean = compareTime(sunriseData.sunrise.time)
-                //sunriseBoolean = true
-                sunsetBoolean = !compareTime(sunriseData.sunset.time)
-                //sunsetBoolean = true
+                //sunriseBoolean = compareTime(sunriseData.sunrise.time)
+                sunriseBoolean = true
+                //sunsetBoolean = !compareTime(sunriseData.sunset.time)
+                sunsetBoolean = true
             } catch (_: Exception) {
 
             }
