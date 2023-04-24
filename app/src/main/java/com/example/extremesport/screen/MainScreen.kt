@@ -493,32 +493,32 @@ fun DrawerMenu(onNavigateToNext: () -> Unit ) {
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Innstillinger", fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.padding(120.dp))
 
-                Spacer(modifier = Modifier.padding(120.dp))
-                TextButton(
-                    onClick = { /*TODO*/ },
-                ) {
-                    Image(
-                        painterResource(id = R.drawable.baseline_groups_24),
-                        contentDescription = "Om oss ikon",
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Text(text = "Om oss", fontWeight = FontWeight.Bold)
-                }
-                TextButton(
-                    onClick = { /*TODO*/ },
-                ) {
-                    Image(
-                        painterResource(id = R.drawable.baseline_report_problem_24),
-                        contentDescription = "Rapporter ikon",
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Text(text = "Rapporter", fontWeight = FontWeight.Bold)
-                }
+            TextButton(
+                onClick = { /*TODO*/ },
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_groups_24),
+                    contentDescription = "Om oss ikon",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+                Text(text = "Om oss", fontWeight = FontWeight.Bold)
+            }
+            TextButton(
+                onClick = { /*TODO*/ },
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_report_problem_24),
+                    contentDescription = "Rapporter ikon",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+                Text(text = "Rapporter", fontWeight = FontWeight.Bold)
             }
         }
     }
