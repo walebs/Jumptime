@@ -30,6 +30,7 @@ import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
@@ -70,7 +71,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
         isFloatingActionButtonDocked = true,
         floatingActionButtonPosition = FabPosition.Center,
 
-        drawerContent = { DrawerMenu(onNavigateToNext) },
+        drawerContent = { DrawerMenu(onNavigateToNext, scaffoldState, coroutineScope) },
         drawerGesturesEnabled = false,
 
         bottomBar = {
@@ -379,7 +380,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
 }
 
 @Composable
-fun DrawerMenu(onNavigateToNext: () -> Unit ) {
+fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope) {
     Column {
         Column(
             modifier = Modifier
@@ -416,9 +417,9 @@ fun DrawerMenu(onNavigateToNext: () -> Unit ) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "<NAVN>",
+                    text = "JumpTime",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 30.sp,
+                    fontSize = 25.sp,
                     color = Color.White,
                     modifier = Modifier.width(IntrinsicSize.Min)
                 )
@@ -450,37 +451,25 @@ fun DrawerMenu(onNavigateToNext: () -> Unit ) {
                 onClick = { /*TODO*/ },
             ) {
                 Image(
-                    painterResource(id = R.drawable.baseline_account_circle_24),
-                    contentDescription = "Profilbilde ikon",
-                    modifier = Modifier
-                        .size(30.dp)
-                )
-                Spacer(modifier = Modifier.padding(5.dp))
-                Text(text = "Profil", fontWeight = FontWeight.Bold)
-            }
-            TextButton(
-                onClick = { /*TODO*/ },
-            ) {
-                Image(
-                    painterResource(id = R.drawable.baseline_scoreboard_24),
-                    contentDescription = "Scoreboard ikon",
-                    modifier = Modifier
-                        .size(30.dp)
-                )
-                Spacer(modifier = Modifier.padding(5.dp))
-                Text(text = "Scoreboard", fontWeight = FontWeight.Bold)
-            }
-            TextButton(
-                onClick = { /*TODO*/ },
-            ) {
-                Image(
                     painterResource(id = R.drawable.baseline_save_24),
-                    contentDescription = "Favoritt ikon",
+                    contentDescription = "Favoritter ikon",
                     modifier = Modifier
                         .size(30.dp)
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Favoritter", fontWeight = FontWeight.Bold)
+            }
+            TextButton(
+                onClick = { /*TODO*/ },
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_archive_24),
+                    contentDescription = "Arkiv",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+                Text(text = "Arkiv", fontWeight = FontWeight.Bold)
             }
             TextButton(
                 onClick = { /*TODO*/ },
@@ -494,43 +483,46 @@ fun DrawerMenu(onNavigateToNext: () -> Unit ) {
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Innstillinger", fontWeight = FontWeight.Bold)
             }
-
-            Spacer(modifier = Modifier.padding(120.dp))
-            TextButton(
-                onClick = { /*TODO*/ },
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Bottom,
             ) {
-                Image(
-                    painterResource(id = R.drawable.baseline_groups_24),
-                    contentDescription = "Om oss ikon",
-                    modifier = Modifier
-                        .size(30.dp)
-                )
-                Spacer(modifier = Modifier.padding(5.dp))
-                Text(text = "Om oss", fontWeight = FontWeight.Bold)
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-                ) {
                 TextButton(
                     onClick = { /*TODO*/ },
                 ) {
                     Image(
-                        painterResource(id = R.drawable.baseline_report_problem_24),
-                        contentDescription = "Rapporter ikon",
+                        painterResource(id = R.drawable.baseline_groups_24),
+                        contentDescription = "Om oss ikon",
                         modifier = Modifier
                             .size(30.dp)
                     )
                     Spacer(modifier = Modifier.padding(5.dp))
-                    Text(text = "Rapporter", fontWeight = FontWeight.Bold)
+                    Text(text = "Om oss", fontWeight = FontWeight.Bold)
                 }
-                TextButton(
-                    onClick = { /*TODO skal lukke navigation drawer*/ },
-
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Tilbake -->", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    TextButton(
+                        onClick = { /*TODO*/ },
+                    ) {
+                        Image(
+                            painterResource(id = R.drawable.baseline_report_problem_24),
+                            contentDescription = "Rapporter ikon",
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        Text(text = "Rapporter", fontWeight = FontWeight.Bold)
+                    }
+                    TextButton(
+                        onClick = { coroutineScope.launch { scaffoldState.drawerState.close()} }
+                        ) {
+                        Text(text = "Tilbake -->", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    }
                 }
             }
+            //Spacer(modifier = Modifier.padding(120.dp))
         }
     }
 }
