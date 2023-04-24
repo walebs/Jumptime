@@ -122,9 +122,9 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
             ) {
                 Map()
             }
-            Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
+            /*Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
                 ShowWeatherBox(viewModel)
-            }
+            }*/
         }
     )
 }
