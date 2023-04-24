@@ -56,5 +56,3 @@ fun DefaultPreview() {
        App()
     }
 }
-
-// Revrt commit
