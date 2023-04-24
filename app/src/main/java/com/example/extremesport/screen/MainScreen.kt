@@ -95,11 +95,11 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                 ShowWeatherBox(viewModel)
             }*/
         }
-    ) {
+    ) /*{
         Box(modifier = Modifier.size(395.dp, 725.dp)) {
            Map()
         }
-    }
+    }*/
 }
 @Composable
 fun Map(){
