@@ -494,8 +494,8 @@ fun DrawerMenu(onNavigateToNext: () -> Unit ) {
                 Spacer(modifier = Modifier.padding(5.dp))
                 Text(text = "Innstillinger", fontWeight = FontWeight.Bold)
             }
-            Spacer(modifier = Modifier.padding(120.dp))
 
+            Spacer(modifier = Modifier.padding(120.dp))
             TextButton(
                 onClick = { /*TODO*/ },
             ) {
