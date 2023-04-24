@@ -76,6 +76,18 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                     }
                 )
             }
+        },
+        content = { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                Map()
+            }
+            /*Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
+                ShowWeatherBox(viewModel)
+            }*/
         }
     ) {
         Box(modifier = Modifier.size(395.dp, 725.dp)) {
