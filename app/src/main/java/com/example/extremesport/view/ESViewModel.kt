@@ -46,8 +46,7 @@ class ESViewModel: ViewModel() {
                 val nowcast = ds.getNowcast(latitude, longitude)
                 val locationForecast = ds.getLocationForecast(altitude, latitude, longitude)
                 val openAdress = ds.getOpenAddress(latitude, longitude, radius)
-                val locationData = ds.getLocationData()
-                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress, locationData)
+                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress)
             } catch (_: IOException) {
 
             }
