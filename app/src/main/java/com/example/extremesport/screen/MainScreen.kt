@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.extremesport.R
+import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -139,7 +140,7 @@ fun ShortInformationBox(viewModel: ESViewModel) {
                 Image(
                     //TODO: dette må være en variabel og ikke et fast icon
                     //TODO: kommer ann på hva checkrequerments sier
-                    painter = painterResource(id = R.drawable.red_icon),
+                    painter = painterResource(id = R.drawable.baseline_circle_24),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(15.dp)
@@ -181,7 +182,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
                 Image(
                     //TODO: dette må være en variabel og ikke et fast icon
                     //TODO: kommer ann på hva checkrequerments sier
-                    painter = painterResource(id = R.drawable.green_icon),
+                    painter = painterResource(id = R.drawable.baseline_circle_24_green),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(15.dp)
@@ -198,7 +199,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
             Column() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(id = R.drawable.marker),
+                        painter = painterResource(id = R.drawable.marker_png),
                         contentDescription = null,
                         Modifier.size(40.dp)
                     )
@@ -206,7 +207,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(id = R.drawable.clock_icon),
+                        painter = painterResource(id = R.drawable.clock),
                         contentDescription = null,
                         Modifier.size(30.dp)
                     )
@@ -214,7 +215,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(id = R.drawable.internett_icon),
+                        painter = painterResource(id = R.drawable.internett),
                         contentDescription = null,
                         Modifier.size(30.dp)
                     )
@@ -222,7 +223,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(id = R.drawable.phone_icon),
+                        painter = painterResource(id = R.drawable.baseline_phone_24_black),
                         contentDescription = null,
                         Modifier.size(30.dp)
                     )
