@@ -2,26 +2,20 @@ package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
 import android.graphics.Color.parseColor
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,32 +30,19 @@ import kotlinx.coroutines.launch
 import java.security.KeyStore.TrustedCertificateEntry
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen (onNavigateToNext: () -> Unit ) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    val viewModel = ESViewModel()
 
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
-                modifier = Modifier
-                    .size(80.dp)
-                    .border(
-                        BorderStroke(1.dp, Color.Black),
-                        shape = CircleShape
-                    )
-                    .clip(CircleShape),
-                contentColor = Color.Black,
-                onClick = {
-                    coroutineScope.launch {
-                        scaffoldState.snackbarHostState
-                            .showSnackbar("hei")
-                    }
-                },
-                backgroundColor = Color.White
+                onClick = { /*TODO*/ },
+                backgroundColor = "#DEDBE4".color
             )
             {
                 Icon(imageVector = Icons.Default.Add, null)
@@ -71,12 +52,12 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
         floatingActionButtonPosition = FabPosition.Center,
 
         drawerContent = { DrawerMenu(onNavigateToNext, scaffoldState, coroutineScope) },
+        drawerGesturesEnabled = false,
 
         bottomBar = {
             BottomAppBar(
-                modifier = Modifier
-                    .height(65.dp),
-                backgroundColor = "#1C6EAE".color
+                //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
+                backgroundColor = "#296BA9".color
             )
             {
                 BottomNavigationItem(
@@ -85,12 +66,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                     selectedContentColor = Color.Red,
                     unselectedContentColor = Color.White,
                     icon = {
-                        Icon(
-                            painterResource(id = R.drawable.baseline_menu_24_white),
-                            contentDescription = "Menyknapp",
-                            modifier = Modifier
-                                .size(40.dp)
-                        )
+                        Icon(painterResource(id = R.drawable.hamburger), null)
                     }
                 )
 
@@ -102,12 +78,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
                     selectedContentColor = Color.Red,
                     unselectedContentColor = Color.White,
                     icon = {
-                        Icon(
-                            painterResource(id = R.drawable.baseline_settings_24_white),
-                            contentDescription = "Settingsknapp",
-                            modifier = Modifier
-                                .size(40.dp)
-                        )
+                        Icon(painterResource(id = R.drawable.settings2), null)
                     }
                 )
             }
@@ -120,141 +91,36 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
             ) {
                 Map()
             }
-            Box(
-                Modifier.border(width = 1.dp,
-                Color.Black,
-                RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            ) {
+            /*Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
                 ShowWeatherBox(viewModel)
-            }
+            }*/
         }
-    )
+    ) {
+        Box(modifier = Modifier.size(395.dp, 725.dp)) {
+           Map()
+        }
+    }
 }
-
 @Composable
 fun Map(){
-    val tromsoo = LatLng(69.67575, 18.91752)
+    val osloKlatresenter = LatLng(59.86771, 10.84170)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(tromsoo, 10f)
+        position = CameraPosition.fromLatLngZoom(osloKlatresenter, 10f)
     }
 
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState
     ) {
-        Markers()
+        Marker(
+            state = MarkerState(position = osloKlatresenter),
+            title = "osloKlatresenter",
+            snippet = "Marker in osloKlatresenter"
+        )
     }
 }
 
-@Composable
-fun Markers(){
-    val tromsoo = LatLng(69.67575, 18.91752)
-    val troms = LatLng(69.05894, 18.54549)
-    val bodoo = LatLng(67.27268, 14.41794)
-    val ntnu = LatLng(63.89993, 10.36208)
-    val oppdal = LatLng(62.65002, 9.85408)
-    val fooniks = LatLng(62.74936, 7.26345)
-    val lesja = LatLng(62.23288, 8.25007)
 
-    Marker(
-        state = MarkerState(position = tromsoo)
-        //, onClick = {  }
-    )
-    Marker(
-        state = MarkerState(position = troms)
-    )
-    Marker(
-        state = MarkerState(position = bodoo)
-    )
-    Marker(
-        state = MarkerState(position = ntnu)
-    )
-    Marker(
-        state = MarkerState(position = oppdal)
-    )
-    Marker(
-        state = MarkerState(position = fooniks)
-    )
-    Marker(
-        state = MarkerState(position = lesja)
-    )
-}
-
-@Composable
-fun ShowWeatherBox(viewModel: ESViewModel) {
-    val sizeOfDevice = LocalConfiguration.current
-    val screenHeight = sizeOfDevice.screenHeightDp
-
-    var height by remember { mutableStateOf((screenHeight-(screenHeight/4)).dp) }
-    var picture by remember { mutableStateOf(R.drawable.baseline_keyboard_arrow_down_24) }
-    var keyword by remember { mutableStateOf("long") }
-    //TODO fjerne?
-    var buttonText by remember { mutableStateOf("Show more") }
-
-    //TODO fikse farge
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height)
-            .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .alpha(1f)
-            .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .padding(5.dp)
-    ) {
-        InformationBox(keyword, viewModel)
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(
-                onClick = {
-                    if (height == (screenHeight/4.5).dp) {
-                        height = (screenHeight-(screenHeight/4)).dp
-                        picture = R.drawable.baseline_keyboard_arrow_up_24
-                        keyword = "long"
-                        buttonText = "Show less"
-                    } else {
-                        height = (screenHeight/4.5).dp
-                        picture = R.drawable.baseline_keyboard_arrow_down_24
-                        keyword = "short"
-                        buttonText = "Show more"
-                    }
-                },
-                Modifier
-                    .height(40.dp)
-                    .width(80.dp)
-                    .background(Color.LightGray)
-            ) {
-                //Text(buttonText)
-                Image(painter = painterResource(id = picture), contentDescription = null,
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.LightGray))
-            }
-        }
-    }
-}
-
-@SuppressLint("StateFlowValueCalledInComposition")
-@Composable
-fun InformationBox(keyword: String, viewModel: ESViewModel) {
-    when (keyword) {
-        "short" -> {
-            ShortInformationBox(viewModel = viewModel)
-        }
-        "long" -> {
-            LongInformationBox(viewModel = viewModel)
-        }
-        else -> {
-
-        }
-    }
-}
-
-@SuppressLint("SuspiciousIndentation")
 @Composable
 fun ShortInformationBox(viewModel: ESViewModel) {
     Column(
@@ -391,23 +257,21 @@ fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, corou
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
+                    .background(color = "#296BA9".color)
+                    .size(400.dp, 300.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .size(250.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.baseline_account_circle_24_white),
-                        contentDescription = "Profilbilde",
+                Column {
+                    Spacer(modifier = Modifier.padding(30.dp))
+                    Row(
                         modifier = Modifier
-                            .size(150.dp),
-                        tint = Color.White
-                    )
+                            .padding(start = 30.dp),
+                    ) {
+                        Icon(painterResource(id = R.drawable.profile2), null )
+                    }
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Text(fontWeight = FontWeight.Bold, text = "  Navn")
+                    Spacer(modifier = Modifier.padding(5.dp))
+                    Text(fontWeight = FontWeight.Bold, text = "  Poeng")
                 }
             }
             Row(
