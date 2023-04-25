@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun SettingsScreen(navController: NavController){
+fun OmOssScreen(navController: NavController){
     Column() {
-        Text(text = "Settings")
+        Text(text = "Om oss")
     }
 }
