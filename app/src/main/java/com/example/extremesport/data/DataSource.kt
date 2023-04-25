@@ -1,14 +1,13 @@
 package com.example.extremesport.data
 
-import com.example.extremesport.model.NowcastData
-import com.example.extremesport.model.LocationForecastData
-import com.example.extremesport.model.OpenAddressData
-import com.example.extremesport.model.SunriseData
+import com.example.extremesport.model.*
+import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.gson.*
+import java.io.File
 
 class DataSource {
     private val client = HttpClient {
@@ -60,5 +59,21 @@ class DataSource {
         val apiLink = "https://ws.geonorge.no/adresser/v1/punktsok?lat=${latitude}&lon=${longitude}&radius=${radius}"
         val openAddress: OpenAddressData = client.get(apiLink).body()
         return openAddress
+    }
+
+    suspend fun getLocationData(): LocationData {
+        //DIRTY fix for å sørge for at testingen kan kjøres uansett hvilken maskin du er på.
+        val locationDataString: String =
+            if (System.getProperty("os.name") == "Windows 10" || System.getProperty("os.name") == "Windows 11") {
+                File("src\\main\\java\\com\\example\\extremesport\\data\\Locations.json").readText(
+                    Charsets.UTF_8
+                )
+            } else {
+                File("./src/main/java/com/example/extremesport/data/Locations.json").readText(
+                    Charsets.UTF_8
+                )
+            }
+        val gson = Gson()
+        return gson.fromJson(locationDataString, LocationData::class.java)
     }
 }
