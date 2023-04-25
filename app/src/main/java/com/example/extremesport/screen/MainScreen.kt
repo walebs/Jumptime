@@ -25,7 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.extremesport.R
+import com.example.extremesport.Screens
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -35,7 +37,7 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen (onNavigateToNext: () -> Unit ) {
+fun MainScreen (navController: NavController) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val viewModel = ESViewModel()
@@ -71,7 +73,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
         isFloatingActionButtonDocked = true,
         floatingActionButtonPosition = FabPosition.Center,
 
-        drawerContent = { DrawerMenu(onNavigateToNext, scaffoldState, coroutineScope) },
+        drawerContent = { DrawerMenu(navController, scaffoldState, coroutineScope) },
         drawerGesturesEnabled = false,
 
         bottomBar = {
@@ -101,7 +103,7 @@ fun MainScreen (onNavigateToNext: () -> Unit ) {
 
                 BottomNavigationItem(
                     selected = false,
-                    onClick = onNavigateToNext,
+                    onClick =  { navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)} },
                     selectedContentColor = Color.Red,
                     unselectedContentColor = Color.White,
                     icon = {
@@ -380,7 +382,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
 }
 
 @Composable
-fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope) {
+fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope) {
     Column {
         Column(
             modifier = Modifier
@@ -421,10 +423,13 @@ fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, corou
                     fontWeight = FontWeight.Bold,
                     fontSize = 25.sp,
                     color = Color.White,
-                    modifier = Modifier.width(IntrinsicSize.Min)
+                    modifier = Modifier.width(IntrinsicSize.Min).padding(end = 6.dp, start = 6.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(10.dp)
+                ) {
                     Text(
                         text = "Poeng:  ",
                         fontWeight = FontWeight.Bold,
@@ -448,7 +453,7 @@ fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, corou
                 .fillMaxWidth()
         ) {
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(Screens.FavorittScreen.name) {popUpTo(Screens.MainScreen.name)} },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_save_24),
@@ -460,7 +465,7 @@ fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, corou
                 Text(text = "Favoritter", fontWeight = FontWeight.Bold)
             }
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(Screens.ArkivScreen.name) {popUpTo(Screens.MainScreen.name)} },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_archive_24),
@@ -472,7 +477,7 @@ fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, corou
                 Text(text = "Arkiv", fontWeight = FontWeight.Bold)
             }
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)} },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_settings_24),
@@ -488,7 +493,7 @@ fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, corou
                 verticalArrangement = Arrangement.Bottom,
             ) {
                 TextButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate(Screens.OmOssScreen.name) {popUpTo(Screens.MainScreen.name)} },
                 ) {
                     Image(
                         painterResource(id = R.drawable.baseline_groups_24),
@@ -504,7 +509,7 @@ fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, corou
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     TextButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { navController.navigate(Screens.ReportScreen.name) {popUpTo(Screens.MainScreen.name)} },
                     ) {
                         Image(
                             painterResource(id = R.drawable.baseline_report_problem_24),
@@ -522,7 +527,6 @@ fun DrawerMenu(onNavigateToNext: () -> Unit, scaffoldState: ScaffoldState, corou
                     }
                 }
             }
-            //Spacer(modifier = Modifier.padding(120.dp))
         }
     }
 }
