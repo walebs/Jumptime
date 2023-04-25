@@ -2,6 +2,7 @@ package com.example.extremesport.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -22,9 +23,26 @@ import com.example.extremesport.R
 
 @Composable
 fun ArkivScreen(navController: NavController){
-    Column {
-        Text(text = "Arkiv")
-        Cards()
+    Column(
+
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Arkiv",
+                fontWeight = FontWeight.Bold,
+                fontSize = 40.sp,
+            )
+        }
+        LazyColumn {
+            //Dette må være antall stasjoner brukeren har hoppet
+            items(1) {
+                Cards()
+            }
+        }
     }
 }
 
@@ -38,25 +56,26 @@ fun Cards() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(30.dp),
+                .padding(10.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "StasjonNavn",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp)
+                    fontSize = 25.sp)
+                //Rating må saves på en eller annen måte på hver stasjon
                 Rating(rating = 3)
             }
-
+            Text(text = "Mer informasjon")
         }
-
     }
 }
 
@@ -70,12 +89,14 @@ fun Rating(rating: Int) {
     ) {
         for (i in 1..5) {
             Icon(
-                painterResource(id = R.drawable.baseline_star_border_24_white),
+                painterResource(id = R.drawable.baseline_star_24_grey),
                 contentDescription = "Tom stjerne",
-                modifier = Modifier.clickable {
-                    ratingState = i
-                },
-                tint = if (i <= ratingState) Color.Yellow else Color.LightGray
+                modifier = Modifier
+                    .size(30.dp)
+                    .clickable {
+                        ratingState = i
+                    },
+                tint = if (i <= ratingState) Color(0xFFFFD700) else Color(0xFFA2ADB1)
             )
         }
     }
