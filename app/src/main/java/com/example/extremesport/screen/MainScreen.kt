@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -98,9 +97,7 @@ fun MainScreen (navController: NavController) {
                         )
                     }
                 )
-
                 Spacer(modifier = Modifier.padding(130.dp))
-
                 BottomNavigationItem(
                     selected = false,
                     onClick =  { navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)} },
@@ -225,10 +222,10 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
                         buttonText = "Show more"
                     }
                 },
-                Modifier
+                colors = androidx.compose.material.ButtonDefaults.buttonColors(Color.LightGray),
+                modifier = Modifier
                     .height(40.dp)
                     .width(80.dp)
-                    .background(Color.LightGray)
             ) {
                 //Text(buttonText)
                 Image(painter = painterResource(id = picture), contentDescription = null,
