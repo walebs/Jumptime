@@ -12,8 +12,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.extremesport.helpFunctions.loadAPIs
 import com.example.extremesport.screen.*
 import com.example.extremesport.ui.theme.ExtremeSportTheme
+import com.example.extremesport.view.ESViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,12 +37,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App() {
     val navController = rememberNavController()
+    val viewModel = ESViewModel()
+
     NavHost(
         navController = navController,
-        startDestination = Screens.MainScreen.name
+        startDestination = Screens.LoadingScreen.name
     ) {
+        composable(Screens.LoadingScreen.name) {
+            LoadingScreen(
+                navController = navController,
+                loadingFunction = {loadAPIs(viewModel)}
+            )
+        }
         composable(Screens.MainScreen.name) {
-            MainScreen(navController = navController)
+            MainScreen(navController = navController, viewModel)
         }
         composable(Screens.SettingsScreen.name) {
             SettingsScreen(navController = navController)
@@ -61,6 +71,7 @@ fun App() {
 }
 
 enum class Screens() {
+    LoadingScreen,
     MainScreen,
     ArkivScreen,
     FavorittScreen,
