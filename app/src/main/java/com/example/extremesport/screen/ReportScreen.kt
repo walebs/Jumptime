@@ -2,6 +2,8 @@ package com.example.extremesport.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -9,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,6 +100,7 @@ fun DropDownMenu() {
                 )
             }
         }
+
     }
 }
 
@@ -104,21 +109,28 @@ fun DropDownMenu() {
 fun ReportBox() {
     var text by remember { mutableStateOf(TextFieldValue("")) }
     val focusManager = LocalFocusManager.current
+    var buttonClicked by remember { mutableStateOf(false) }
     OutlinedTextField(
         value = text,
         label = { Text(text = "Beskriv problem") },
         modifier = Modifier.height(200.dp),
-        onValueChange = {
-            text = it
-        }
+        onValueChange = { text = it },
+        keyboardOptions = KeyboardOptions.Default.copy(
+        imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = {
+            focusManager.clearFocus() }
+        )
     )
     //Fiks farge og mulighet til at alt i tekstboks forsvinner
     TextButton(
         onClick = {
             focusManager.clearFocus()
+            text = TextFieldValue("")
+            buttonClicked = false
         },
+        enabled = text.text.isNotEmpty() && !buttonClicked,
     ) {
-        Text(text = "Send")
+        Text(text = "Send", fontSize = 30.sp, fontWeight = FontWeight.Bold)
     }
 }
 
