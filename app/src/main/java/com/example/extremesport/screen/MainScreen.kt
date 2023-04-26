@@ -222,10 +222,10 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
                         buttonText = "Show more"
                     }
                 },
-                Modifier
+                colors = androidx.compose.material.ButtonDefaults.buttonColors(Color.LightGray),
+                modifier = Modifier
                     .height(40.dp)
                     .width(80.dp)
-                    .background(Color.LightGray)
             ) {
                 //Text(buttonText)
                 Image(painter = painterResource(id = picture), contentDescription = null,
