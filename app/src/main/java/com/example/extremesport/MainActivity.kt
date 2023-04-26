@@ -64,6 +64,7 @@ fun App() {
 }
 
 enum class Screens() {
+    LoadingScreen,
     MainScreen,
     ArkivScreen,
     FavorittScreen,
