@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.extremesport.helpFunctions.loadAPIs
 import com.example.extremesport.screen.*
 import com.example.extremesport.ui.theme.ExtremeSportTheme
 import com.example.extremesport.view.ESViewModel
@@ -45,8 +46,8 @@ fun App() {
         composable(Screens.LoadingScreen.name) {
             LoadingScreen(
                 navController = navController,
-                loadingFunction =
-                viewModel)
+                loadingFunction = {loadAPIs(viewModel)}
+            )
         }
         composable(Screens.MainScreen.name) {
             MainScreen(navController = navController, viewModel)
