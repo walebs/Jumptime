@@ -1,5 +1,6 @@
 package com.example.extremesport.data
 
+import com.example.extremesport.R
 import com.example.extremesport.model.*
 import com.google.gson.Gson
 import io.ktor.client.*
@@ -7,7 +8,6 @@ import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.gson.*
-import java.io.File
 
 class DataSource {
     private val client = HttpClient {
@@ -63,6 +63,7 @@ class DataSource {
 
     suspend fun getLocationData(): LocationData {
         //DIRTY fix for å sørge for at testingen kan kjøres uansett hvilken maskin du er på.
+        /*
         val locationDataString: String =
             if (System.getProperty("os.name") == "Windows 10" || System.getProperty("os.name") == "Windows 11") {
                 File("src\\main\\java\\com\\example\\extremesport\\data\\Locations.json").readText(
@@ -73,6 +74,9 @@ class DataSource {
                     Charsets.UTF_8
                 )
             }
+         */
+        //painterResource(id = R.drawable.baseline_menu_24_white)
+        val locationDataString = this::class.java.getResource("/raw/locations")?.readText()
         val gson = Gson()
         return gson.fromJson(locationDataString, LocationData::class.java)
     }
