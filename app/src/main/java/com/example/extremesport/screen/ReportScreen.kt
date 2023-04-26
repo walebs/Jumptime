@@ -1,5 +1,6 @@
 package com.example.extremesport.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -18,51 +19,61 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.extremesport.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ReportScreen(navController: NavController) {
-    Box(
-        modifier = Modifier.fillMaxSize()
+    val skop = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState()}
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState)},
     ) {
-        Column(
-            modifier = Modifier
-                .background("#1C6EAE".color)
-                .fillMaxWidth()
-                .height(200.dp)
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "LOGONAVN",
-                color = Color.White
-            )
-            Text(
-                text = "Hei",
-                fontSize = 30.sp,
-                color = Color.White
-            )
-            Text(
-                text = "Gi oss feedback :)",
-                color = Color.White
-            )
-        }
-        ElevatedCard(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(600.dp)
-                .padding(20.dp)
-                .offset(y = 100.dp)
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .background("#1C6EAE".color)
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(16.dp)
             ) {
-                Text(text = "Hvilket problem opplever du?")
-                DropDownMenu()
-                Spacer(modifier = Modifier.padding(40.dp))
-                Text(text = "Beskriv problemet dypere")
-                ReportBox()
+                Text(
+                    text = "LOGONAVN",
+                    color = Color.White
+                )
+                Text(
+                    text = "Hei",
+                    fontSize = 30.sp,
+                    color = Color.White
+                )
+                Text(
+                    text = "Gi oss feedback :)",
+                    color = Color.White
+                )
+            }
+            ElevatedCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(600.dp)
+                    .padding(20.dp)
+                    .offset(y = 100.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Hvilket problem opplever du?")
+                    DropDownMenu()
+                    Spacer(modifier = Modifier.padding(40.dp))
+                    Text(text = "Beskriv problemet dypere")
+                    ReportBox(skop, snackbarHostState)
+                }
             }
         }
     }
@@ -106,7 +117,7 @@ fun DropDownMenu() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReportBox() {
+fun ReportBox(skop: CoroutineScope, snackbarHostState: SnackbarHostState) {
     var text by remember { mutableStateOf(TextFieldValue("")) }
     val focusManager = LocalFocusManager.current
     var buttonClicked by remember { mutableStateOf(false) }
@@ -127,6 +138,10 @@ fun ReportBox() {
             focusManager.clearFocus()
             text = TextFieldValue("")
             buttonClicked = false
+            skop.launch { snackbarHostState.showSnackbar(
+                message = "Takk for feedback",
+                duration = SnackbarDuration.Short
+            ) }
         },
         enabled = text.text.isNotEmpty() && !buttonClicked,
     ) {
