@@ -24,11 +24,6 @@ import com.example.extremesport.R
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsScreen(navController: NavController) {
-    val sizeOfDevice = LocalConfiguration.current
-    val screenHeight = sizeOfDevice.screenHeightDp
-
-    var height by remember { mutableStateOf((screenHeight-(screenHeight/4)).dp) }
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -42,9 +37,7 @@ fun SettingsScreen(navController: NavController) {
                 .align(Alignment.BottomCenter)
                 .height(650.dp)
                 .fillMaxWidth()
-        ) {
-            // Add your content here
-        }
+        ) {}
         Column(
             modifier = Modifier
                 .background("#1C6EAE".color)
