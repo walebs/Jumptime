@@ -1,5 +1,6 @@
 package com.example.extremesport.view
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.extremesport.data.DataSource
@@ -15,6 +16,7 @@ import java.util.*
 import kotlin.collections.HashMap
 import android.content.Context
 
+@SuppressLint("StaticFieldLeak")
 class ESViewModel(private val context: Context): ViewModel() {
     // es: ExtremeSport
     private val ds = DataSource()
@@ -48,7 +50,6 @@ class ESViewModel(private val context: Context): ViewModel() {
                 val locationForecast = ds.getLocationForecast(altitude, latitude, longitude)
                 val openAdress = ds.getOpenAddress(latitude, longitude, radius)
                 val locationdata = ds.getLocationData(context)
-                print(locationdata.locations.size.toString() + "\n\n\n\n\n\n\n")
                 _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress, locationdata)
             } catch (_: IOException) {
 
