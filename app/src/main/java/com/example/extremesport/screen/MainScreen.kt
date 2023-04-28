@@ -15,13 +15,16 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -33,14 +36,16 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.util.Calendar
+import java.util.zip.DataFormatException
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen (navController: NavController, viewModel: ESViewModel) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    //Thread.sleep(5000)
-    //println("vente 5sek\n\n")
+    //TODO fjern?
     //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
     //val testBoolean2  = viewModel.checkRequirements("Testing")
 
@@ -76,6 +81,7 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
 
         bottomBar = {
             BottomAppBar(
+                //TODO skal den være her?
                 //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
                 modifier = Modifier
                     .height(65.dp),
@@ -183,12 +189,9 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
-    var height by remember { mutableStateOf((screenHeight-(screenHeight/4)).dp) }
+    var height by remember { mutableStateOf((screenHeight/4.5).dp) }
     var picture by remember { mutableStateOf(R.drawable.arrowdown) }
-    var keyword by remember { mutableStateOf("long") }
-    //TODO fjerne?
-    var buttonText by remember { mutableStateOf("Show more") }
-
+    var keyword by remember { mutableStateOf("short") }
 
     Column(
         modifier = Modifier
@@ -210,27 +213,25 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
             Button(
                 onClick = {
                     if (height == (screenHeight/4.5).dp) {
-                        height = (screenHeight-(screenHeight/4)).dp
+                        height = ((screenHeight-(screenHeight/4))+20).dp
                         picture = R.drawable.arrowup
                         keyword = "long"
-                        buttonText = "Show less"
                     } else {
                         height = (screenHeight/4.5).dp
                         picture = R.drawable.arrowdown
                         keyword = "short"
-                        buttonText = "Show more"
                     }
                 },
-                colors = androidx.compose.material.ButtonDefaults.buttonColors(Color.LightGray),
+                colors = androidx.compose.material.ButtonDefaults.buttonColors(Color.Gray),
                 modifier = Modifier
                     .height(40.dp)
                     .width(80.dp)
             ) {
-                //Text(buttonText)
-                Image(painter = painterResource(id = picture), contentDescription = null,
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.LightGray))
+                Image(
+                    painter = painterResource(id = picture),
+                    contentDescription = null,
+                    Modifier.fillMaxSize()
+                )
             }
         }
     }
@@ -269,50 +270,8 @@ fun ShortInformationBox(viewModel: ESViewModel) {
                 Text("Sted")
                 Text("Værforhold")
                 Text("Temp: ")
-                Text("H: & L: 3")
-                Text("Vindinfo: 5 m/s")
-            }
-            Spacer(Modifier.padding(50.dp))
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, end = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Sikkerhetsnivå")
-                Image(
-                    //TODO: dette må være en variabel og ikke et fast icon
-                    //TODO: kommer ann på hva checkrequerments sier
-                    painter = painterResource(id = R.drawable.red_icon),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .size(50.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun LongInformationBox(viewModel: ESViewModel) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-    ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-            ) {
-                Text("Sted")
-                Text("Værforhold")
-                Text("Temp: ")
-                Text("H: & L: 3")
-                Text("Vindinfo: 5 m/s")
+                Text("H: & L: ")
+                Text("Vindinfo: ")
             }
             Spacer(Modifier.padding(50.dp))
             Column(
@@ -333,47 +292,66 @@ fun LongInformationBox(viewModel: ESViewModel) {
                 )
             }
         }
-        Spacer(modifier = Modifier.height(30.dp))
-        //Info om stedet
+    }
+}
+
+@Composable
+fun LongInformationBox(viewModel: ESViewModel) {
+    ShortInformationBox(viewModel = viewModel)
+
+    Spacer(modifier = Modifier.height(15.dp))
+    //Info om stedet
+    Column(
+        Modifier.padding(start = 20.dp)
+    ) {
+        Text("Oslo fallskjermklubb", fontSize = 20.sp)
+        Column(Modifier.padding(bottom = 10.dp)) {
+            LocationInfo(R.drawable.marker, "Oslo gate 5, 0882, Oslo")
+            LocationInfo(R.drawable.clock_icon, "9-17")
+            LocationInfo(R.drawable.internett_icon, "fallskjerm.no")
+            LocationInfo(R.drawable.phone_icon, "876 54 321")
+        }
         Column(
-            Modifier.padding(start = 20.dp)
+            Modifier.fillMaxWidth()
         ) {
-            Text("Oslo fallskjermklubb", fontSize = 20.sp)
-            Column() {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.marker),
-                        contentDescription = null,
-                        Modifier.size(40.dp)
-                    )
-                    Text("Oslo gate 5, 0882, Oslo")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.clock_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("9-17")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.internett_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("fallskjerm.no")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.phone_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("876 54 321")
+            Text(text = "7 - Dagersvarsel", Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            Column(Modifier.fillMaxWidth()) {
+                for(i in 0..6) {
+                    WeatherForecast()
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LocationInfo(icon: Int, str: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            Modifier
+                .size(30.dp)
+                .padding(end = 5.dp)
+        )
+        Text(str)
+    }
+}
+
+@Composable
+fun WeatherForecast() {
+    Row(
+        Modifier.fillMaxWidth().padding(bottom = 2.dp)
+    ) {
+        Text(text = "man.  regn  H: 5\u00B0  L: 1\u00B0  Vindinfo: 7 m/s", textAlign = TextAlign.Center)
+        Spacer(modifier = Modifier.weight(4f))
+        Image(
+            painter = painterResource(id = R.drawable.green_icon),
+            contentDescription = null,
+            Modifier
+                .size(30.dp)
+                .padding(end = 5.dp)
+        )
     }
 }
 
@@ -419,7 +397,9 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                     fontWeight = FontWeight.Bold,
                     fontSize = 25.sp,
                     color = Color.White,
-                    modifier = Modifier.width(IntrinsicSize.Min).padding(end = 6.dp, start = 6.dp)
+                    modifier = Modifier
+                        .width(IntrinsicSize.Min)
+                        .padding(end = 6.dp, start = 6.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Row(
