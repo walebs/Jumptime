@@ -1,6 +1,7 @@
 package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color.parseColor
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -37,10 +38,10 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen (navController: NavController) {
+fun MainScreen (navController: NavController, context: Context) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    val viewModel = ESViewModel()
+    val viewModel = ESViewModel(context)
     //Thread.sleep(5000)
     //println("vente 5sek\n\n")
     //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")

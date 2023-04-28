@@ -1,5 +1,8 @@
 package com.example.extremesport.data
 
+import android.app.Application
+import android.content.Context
+import android.content.res.Resources
 import com.example.extremesport.R
 import com.example.extremesport.model.*
 import com.google.gson.Gson
@@ -8,6 +11,7 @@ import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.gson.*
+import java.io.BufferedReader
 
 class DataSource {
     private val client = HttpClient {
@@ -61,7 +65,7 @@ class DataSource {
         return openAddress
     }
 
-    suspend fun getLocationData(): LocationData {
+    suspend fun getLocationData(context: Context): LocationData {
         //DIRTY fix for å sørge for at testingen kan kjøres uansett hvilken maskin du er på.
         /*
         val locationDataString: String =
@@ -76,7 +80,10 @@ class DataSource {
             }
          */
         //painterResource(id = R.drawable.baseline_menu_24_white)
-        val locationDataString = this::class.java.getResource("/raw/locations")?.readText()
+        val content = context.resources.openRawResource(R.raw.locations)
+        val locationDataString = content.bufferedReader().use(BufferedReader::readText)
+        //ree.openRawResource()
+        //val locationDataString = this::class.java.getResource("/raw/locations")?.readText()
         val gson = Gson()
         return gson.fromJson(locationDataString, LocationData::class.java)
     }

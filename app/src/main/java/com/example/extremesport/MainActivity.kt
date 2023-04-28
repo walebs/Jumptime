@@ -1,5 +1,6 @@
 package com.example.extremesport
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    App()
+                    App(this)
                 }
             }
         }
@@ -33,14 +34,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun App() {
+fun App(context: Context) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
         startDestination = Screens.MainScreen.name
     ) {
         composable(Screens.MainScreen.name) {
-            MainScreen(navController = navController)
+            MainScreen(navController = navController, context)
         }
         composable(Screens.SettingsScreen.name) {
             SettingsScreen(navController = navController)
@@ -68,11 +69,12 @@ enum class Screens() {
     OmOssScreen,
     ReportScreen
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     ExtremeSportTheme {
-       App()
+       App(context = )
     }
 }
+ */

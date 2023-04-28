@@ -13,8 +13,9 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
+import android.content.Context
 
-class ESViewModel: ViewModel() {
+class ESViewModel(private val context: Context): ViewModel() {
     // es: ExtremeSport
     private val ds = DataSource()
     private var _esState = MutableStateFlow(ESUiState())
@@ -46,7 +47,8 @@ class ESViewModel: ViewModel() {
                 val nowcast = ds.getNowcast(latitude, longitude)
                 val locationForecast = ds.getLocationForecast(altitude, latitude, longitude)
                 val openAdress = ds.getOpenAddress(latitude, longitude, radius)
-                val locationdata = ds.getLocationData()
+                val locationdata = ds.getLocationData(context)
+                print(locationdata.locations.size.toString() + "\n\n\n\n\n\n\n")
                 _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress)
             } catch (_: IOException) {
 
