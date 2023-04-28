@@ -257,6 +257,7 @@ fun InformationBox(keyword: String, viewModel: ESViewModel) {
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun ShortInformationBox(viewModel: ESViewModel) {
     Column(
@@ -274,7 +275,7 @@ fun ShortInformationBox(viewModel: ESViewModel) {
                 Text("Sted")
                 Text("Værforhold")
                 Text("Temp: ")
-                Text("H: & L: 3")
+                Text("H: & L: ")
                 Text("Vindinfo: 5 m/s")
             }
             Spacer(Modifier.padding(50.dp))

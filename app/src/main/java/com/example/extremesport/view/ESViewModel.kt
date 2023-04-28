@@ -49,7 +49,7 @@ class ESViewModel(private val context: Context): ViewModel() {
                 val openAdress = ds.getOpenAddress(latitude, longitude, radius)
                 val locationdata = ds.getLocationData(context)
                 print(locationdata.locations.size.toString() + "\n\n\n\n\n\n\n")
-                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress)
+                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress, locationdata)
             } catch (_: IOException) {
 
             }
