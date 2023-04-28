@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,6 +22,8 @@ import com.example.extremesport.R
 @Composable
 fun OmOssScreen(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) {
@@ -48,7 +51,7 @@ fun OmOssScreen(navController: NavController) {
             ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(600.dp)
+                    .height(screenHeight-150.dp)
                     .padding(20.dp)
                     .offset(y = 100.dp)
             ) {

@@ -24,6 +24,7 @@ import com.example.extremesport.R
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsScreen(navController: NavController) {
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -32,11 +33,9 @@ fun SettingsScreen(navController: NavController) {
             modifier = Modifier
                 .background(Color.LightGray, RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
                 .alpha(1f)
-                .clip(shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
                 .padding(5.dp)
                 .align(Alignment.BottomCenter)
-                .height(650.dp)
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {}
         Column(
             modifier = Modifier
@@ -49,7 +48,6 @@ fun SettingsScreen(navController: NavController) {
                 text = "LOGONAVN",
                 color = Color.White
             )
-            Spacer(modifier = Modifier.padding(15.dp))
             Text(
                 text = "Settings",
                 fontSize = 30.sp,
@@ -66,7 +64,8 @@ fun SettingsScreen(navController: NavController) {
                 .clip(shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp))
                 .padding(5.dp)
                 .align(Alignment.BottomCenter)
-                .height(650.dp)
+                //Kan være vi bør gjøre den mindre m tanke på at vi har få settings
+                .height(screenHeight - 120.dp)
                 .fillMaxWidth()
         ) {
             Row(

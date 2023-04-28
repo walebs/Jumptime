@@ -11,12 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
 fun FavorittScreen(navController: NavController){
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -25,11 +27,9 @@ fun FavorittScreen(navController: NavController){
             modifier = Modifier
                 .background(Color.LightGray, RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
                 .alpha(1f)
-                .clip(shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
                 .padding(5.dp)
                 .align(Alignment.BottomCenter)
-                .height(650.dp)
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {}
         Column(
             modifier = Modifier
@@ -42,9 +42,8 @@ fun FavorittScreen(navController: NavController){
                 text = "LOGONAVN",
                 color = Color.White
             )
-            Spacer(modifier = Modifier.padding(15.dp))
             Text(
-                text = "Favoritter - Dine <3",
+                text = "Favoritter - <3!",
                 fontSize = 30.sp,
                 color = Color.White
             )
@@ -59,7 +58,7 @@ fun FavorittScreen(navController: NavController){
                 .clip(shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp))
                 .padding(5.dp)
                 .align(Alignment.BottomCenter)
-                .height(650.dp)
+                .height(screenHeight - 120.dp)
                 .fillMaxWidth()
         ) {
             Column() {

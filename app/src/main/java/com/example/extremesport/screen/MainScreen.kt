@@ -519,7 +519,7 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                     TextButton(
                         onClick = { coroutineScope.launch { scaffoldState.drawerState.close()} }
                         ) {
-                        Text(text = "Tilbake -->", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        Text(text = "Tilbake", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                     }
                 }
             }
