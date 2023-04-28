@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +29,9 @@ import kotlinx.coroutines.launch
 fun ReportScreen(navController: NavController) {
     val skop = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState()}
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState)},
     ) {
@@ -58,7 +62,7 @@ fun ReportScreen(navController: NavController) {
             ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(600.dp)
+                    .height(screenHeight-150.dp)
                     .padding(20.dp)
                     .offset(y = 100.dp)
             ) {
