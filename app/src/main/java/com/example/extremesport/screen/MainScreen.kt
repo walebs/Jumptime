@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import com.example.extremesport.Screens
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -72,7 +74,7 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
         floatingActionButtonPosition = FabPosition.Center,
 
         drawerContent = { DrawerMenu(navController, scaffoldState, coroutineScope) },
-        drawerGesturesEnabled = false,
+        drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
 
         bottomBar = {
             BottomAppBar(
@@ -134,12 +136,16 @@ fun Map(){
         position = CameraPosition.fromLatLngZoom(tromsoo, 6f)
     }
 
+    val context = LocalContext.current
+
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
+    val mapProperties by remember { mutableStateOf(MapProperties(mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.aubergine)))}
 
     val googleMap = GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
-        uiSettings =  MapUiSettings()
+        uiSettings =  uiSettings,
+        properties = mapProperties
     ) {
         Markers()
     }
