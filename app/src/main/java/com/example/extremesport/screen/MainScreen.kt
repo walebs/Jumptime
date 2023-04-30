@@ -127,9 +127,9 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
             ) {
                 Map()
             }
-            Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
+            /*Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
                 ShowWeatherBox(viewModel)
-            }
+            }*/
         }
     )
 }
@@ -153,6 +153,7 @@ fun Map(){
 
 @Composable
 fun Markers(){
+    //TODO hente fra JSON filen eller lage til en liste
     val tromsoo = LatLng(69.67575, 18.91752)
     val troms = LatLng(69.05894, 18.54549)
     val bodoo = LatLng(67.27268, 14.41794)
@@ -343,6 +344,7 @@ fun WeatherForecast() {
     Row(
         Modifier.fillMaxWidth().padding(bottom = 2.dp)
     ) {
+        //TODO dette skal være variabler og alle verdiene skal trolig hentes fra den ferdige checkrequerment fun
         Text(text = "man.  regn  H: 5\u00B0  L: 1\u00B0  Vindinfo: 7 m/s", textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.weight(4f))
         Image(
@@ -428,6 +430,7 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
             modifier = Modifier
                 .fillMaxWidth()
         ) {
+            //TODO komprimere lik kode
             TextButton(
                 onClick = { navController.navigate(Screens.FavorittScreen.name) {popUpTo(Screens.MainScreen.name)} },
             ) {
