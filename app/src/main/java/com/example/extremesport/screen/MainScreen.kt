@@ -199,7 +199,7 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
             Button(
                 onClick = {
                     if (height == (screenHeight/4.5).dp) {
-                        height = ((screenHeight-(screenHeight/4))+20).dp
+                        height = ((screenHeight-(screenHeight/5))+20).dp
                         picture = R.drawable.arrowup
                         keyword = "long"
                     } else {
@@ -301,7 +301,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
         Column(
             Modifier.fillMaxWidth()
         ) {
-            Text(text = "7 - Dagersvarsel", Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            Text(text = "7 - Dagersvarsel", Modifier.fillMaxWidth().padding(bottom = 5.dp), textAlign = TextAlign.Center, fontSize = 20.sp)
             Column(Modifier.fillMaxWidth()) {
                 for(i in 0..6) {
                     WeatherForecast()
