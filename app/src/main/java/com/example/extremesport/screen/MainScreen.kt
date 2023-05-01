@@ -15,12 +15,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,12 +31,11 @@ import com.example.extremesport.Screens
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.util.Calendar
-import java.util.zip.DataFormatException
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -125,16 +122,18 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                Map()
+                Map(viewModel)
             }
-            /*Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
+            //TODO fjerne
+            Box {
                 ShowWeatherBox(viewModel)
-            }*/
+            }
         }
     )
 }
+
 @Composable
-fun Map(){
+fun Map(viewModel: ESViewModel) {
     val tromsoo = LatLng(69.67575, 18.91752)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(tromsoo, 6f)
@@ -142,49 +141,35 @@ fun Map(){
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
 
-    val googleMap = GoogleMap(
+    GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         uiSettings =  MapUiSettings()
     ) {
-        Markers()
+        Markers(viewModel)
     }
 }
 
 @Composable
-fun Markers(){
-    //TODO hente fra JSON filen eller lage til en liste
-    val tromsoo = LatLng(69.67575, 18.91752)
-    val troms = LatLng(69.05894, 18.54549)
-    val bodoo = LatLng(67.27268, 14.41794)
-    val ntnu = LatLng(63.89993, 10.36208)
-    val oppdal = LatLng(62.65002, 9.85408)
-    val fooniks = LatLng(62.74936, 7.26345)
-    val lesja = LatLng(62.23288, 8.25007)
+fun Markers(viewModel: ESViewModel) {
+    //TODO hente fra JSON filen
+    val listOfPos = listOf (
+        LatLng(69.67575, 18.91752), //tromsoo
+        LatLng(69.05894, 18.54549), //troms
+        LatLng(67.27268, 14.41794), //bodoo
+        LatLng(63.89993, 10.36208), //ntnu
+        LatLng(62.65002, 9.85408),  //oppdal
+        LatLng(62.74936, 7.26345),  //fooniks
+        LatLng(62.23288, 8.25007),  //lesja
+    )
 
-    Marker(
-        state = MarkerState(position = tromsoo)
-        //, onClick = {  }
-    )
-    Marker(
-        state = MarkerState(position = troms)
-    )
-    Marker(
-        state = MarkerState(position = bodoo)
-    )
-    Marker(
-        state = MarkerState(position = ntnu)
-    )
-    Marker(
-        state = MarkerState(position = oppdal)
-    )
-    Marker(
-        state = MarkerState(position = fooniks)
-    )
-    Marker(
-        state = MarkerState(position = lesja)
-    )
+    for (pos in listOfPos) {
+        Marker(
+            state = MarkerState(pos)
+        )
+    }
 }
+
 @Composable
 fun ShowWeatherBox(viewModel: ESViewModel) {
     val sizeOfDevice = LocalConfiguration.current
@@ -201,7 +186,7 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
             .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .alpha(1f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .padding(5.dp)
+            .border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
     ) {
         InformationBox(keyword, viewModel)
         Column(
@@ -227,6 +212,7 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
                 modifier = Modifier
                     .height(40.dp)
                     .width(80.dp)
+                    .padding(bottom = 5.dp)
             ) {
                 Image(
                     painter = painterResource(id = picture),
@@ -266,7 +252,7 @@ fun ShortInformationBox(viewModel: ESViewModel) {
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(start = 20.dp, top = 10.dp)
+                modifier = Modifier.padding(start = 25.dp, top = 15.dp)
             ) {
                 Text("Sted")
                 Text("Værforhold")
@@ -281,7 +267,7 @@ fun ShortInformationBox(viewModel: ESViewModel) {
                     .padding(top = 10.dp, end = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Sikkerhetsnivå")
+                Text("Sikkerhetsnivå", Modifier.padding(top = 10.dp))
                 Image(
                     //TODO: dette må være en variabel og ikke et fast icon
                     //TODO: kommer ann på hva checkrequerments sier
@@ -305,7 +291,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
     Column(
         Modifier.padding(start = 20.dp)
     ) {
-        Text("Oslo fallskjermklubb", fontSize = 20.sp)
+        Text("Oslo fallskjermklubb", Modifier.padding(bottom = 5.dp), fontSize = 20.sp)
         Column(Modifier.padding(bottom = 10.dp)) {
             LocationInfo(R.drawable.marker, "Oslo gate 5, 0882, Oslo")
             LocationInfo(R.drawable.clock_icon, "9-17")
@@ -342,7 +328,9 @@ fun LocationInfo(icon: Int, str: String) {
 @Composable
 fun WeatherForecast() {
     Row(
-        Modifier.fillMaxWidth().padding(bottom = 2.dp)
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = 2.dp)
     ) {
         //TODO dette skal være variabler og alle verdiene skal trolig hentes fra den ferdige checkrequerment fun
         Text(text = "man.  regn  H: 5\u00B0  L: 1\u00B0  Vindinfo: 7 m/s", textAlign = TextAlign.Center)
