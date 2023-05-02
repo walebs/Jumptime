@@ -52,19 +52,19 @@ fun App() {
             MainScreen(navController = navController, viewModel)
         }
         composable(Screens.SettingsScreen.name) {
-            SettingsScreen(navController = navController)
+            SettingsScreen(navController = navController, viewModel)
         }
         composable(Screens.ArkivScreen.name) {
-            ArkivScreen(navController = navController)
+            ArkivScreen(navController = navController, /*viewModel*/)
         }
         composable(Screens.FavorittScreen.name) {
-            FavorittScreen(navController = navController)
+            FavorittScreen(navController = navController, /*viewModel*/)
         }
         composable(Screens.ReportScreen.name) {
-            ReportScreen(navController = navController)
+            ReportScreen(navController = navController, /*viewModel*/)
         }
         composable(Screens.OmOssScreen.name) {
-            OmOssScreen(navController = navController)
+            OmOssScreen(navController = navController, /*viewModel*/)
         }
     }
 }
