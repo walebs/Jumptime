@@ -31,14 +31,6 @@ fun ArkivScreen(navController: NavController){
     ) {
         Column(
             modifier = Modifier
-                .background(Color.LightGray, RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
-                .alpha(1f)
-                .padding(5.dp)
-                .align(Alignment.BottomCenter)
-                .fillMaxSize()
-        ) {}
-        Column(
-            modifier = Modifier
                 .background("#1C6EAE".color)
                 .fillMaxWidth()
                 .height(200.dp)
@@ -67,12 +59,21 @@ fun ArkivScreen(navController: NavController){
                 .height(screenHeight - 120.dp)
                 .fillMaxWidth()
         ) {
-            Column() {
-                LazyColumn {
-                    //Dette må være antall stasjoner brukeren har hoppet
-                    items(1) {
-                        Cards()
-                    }
+            LazyColumn {
+                //Dette må være antall stasjoner brukeren har hoppet
+                item {
+                    Cards(
+                        stationName = "StasjonNavn",
+                        rating = 3,
+                        stationInfo = "Mer informasjon"
+                    )
+                }
+                item {
+                    Cards(
+                        stationName = "StasjonNavn",
+                        rating = 2,
+                        stationInfo = "Mer informasjon"
+                    )
                 }
             }
         }
@@ -80,7 +81,11 @@ fun ArkivScreen(navController: NavController){
 }
 
 @Composable
-fun Cards() {
+fun Cards(
+    stationName: String,
+    rating: Int,
+    stationInfo: String
+) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,13 +106,13 @@ fun Cards() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "StasjonNavn",
+                    text = stationName,
                     fontWeight = FontWeight.Bold,
                     fontSize = 25.sp)
                 //Rating må saves på en eller annen måte på hver stasjon
-                Rating(rating = 3)
+                Rating(rating = rating)
             }
-            Text(text = "Mer informasjon")
+            Text(text = stationInfo)
         }
     }
 }

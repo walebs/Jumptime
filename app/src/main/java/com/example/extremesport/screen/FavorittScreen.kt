@@ -61,11 +61,15 @@ fun FavorittScreen(navController: NavController){
                 .height(screenHeight - 120.dp)
                 .fillMaxWidth()
         ) {
-            Column() {
+            Column {
                 LazyColumn {
                     //Dette må være antall stasjoner brukeren har hoppet
                     items(1) {
-                        Cards()
+                        Cards(
+                            stationName = "StasjonNavn",
+                            rating = 3,
+                            stationInfo = "Mer informasjon"
+                        )
                     }
                 }
             }

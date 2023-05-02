@@ -40,7 +40,7 @@ fun App() {
 
     NavHost(
         navController = navController,
-        startDestination = Screens.LoadingScreen.name
+        startDestination = Screens.ArkivScreen.name
     ) {
         composable(Screens.LoadingScreen.name) {
             LoadingScreen(
