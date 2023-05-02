@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ReportScreen(navController: NavController) {
-    val skop = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState()}
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
@@ -38,7 +38,7 @@ fun ReportScreen(navController: NavController) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Column(
+            Column( // This first column has repeated on different screens, Could be a function for a backdrop. Would also make it easier to change style later
                 modifier = Modifier
                     .background("#1C6EAE".color)
                     .fillMaxWidth()
@@ -76,7 +76,7 @@ fun ReportScreen(navController: NavController) {
                     DropDownMenu()
                     Spacer(modifier = Modifier.padding(40.dp))
                     Text(text = "Beskriv problemet dypere")
-                    ReportBox(skop, snackbarHostState)
+                    ReportBox(scope, snackbarHostState)
                 }
             }
         }
@@ -105,7 +105,7 @@ fun DropDownMenu() {
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            list.forEach() { problemer ->
+            list.forEach { problemer ->
                 DropdownMenuItem(
                     text = { Text(text = problemer) },
                     onClick = {
@@ -121,7 +121,7 @@ fun DropDownMenu() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReportBox(skop: CoroutineScope, snackbarHostState: SnackbarHostState) {
+fun ReportBox(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
     var text by remember { mutableStateOf(TextFieldValue("")) }
     val focusManager = LocalFocusManager.current
     var buttonClicked by remember { mutableStateOf(false) }
@@ -142,7 +142,7 @@ fun ReportBox(skop: CoroutineScope, snackbarHostState: SnackbarHostState) {
             focusManager.clearFocus()
             text = TextFieldValue("")
             buttonClicked = false
-            skop.launch { snackbarHostState.showSnackbar(
+            scope.launch { snackbarHostState.showSnackbar(
                 message = "Takk for feedback",
                 duration = SnackbarDuration.Short
             ) }

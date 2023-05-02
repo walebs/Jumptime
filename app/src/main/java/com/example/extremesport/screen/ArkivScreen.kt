@@ -134,9 +134,9 @@ fun ArkivScreen(navController: NavController){
         ) {
             LazyColumn {
                 //Dette må være antall stasjoner brukeren har hoppet
-                for (card in cards) {
+                cards.forEach {
                     item {
-                        card.DisplayCard()
+                        it.DisplayCard()
                     }
                 }
             }

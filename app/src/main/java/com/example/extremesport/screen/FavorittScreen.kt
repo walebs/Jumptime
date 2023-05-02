@@ -65,9 +65,9 @@ fun FavorittScreen(navController: NavController){
                 .fillMaxWidth()
         ) {
             LazyColumn {
-                for (card in cards) {
+                cards.forEach {
                     item {
-                        card.DisplayCard()
+                        it.DisplayCard()
                     }
                 }
             }
