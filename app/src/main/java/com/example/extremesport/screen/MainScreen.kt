@@ -34,13 +34,13 @@ import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+val String.color get() = Color(parseColor(this))
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen (navController: NavController, viewModel: ESViewModel) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    //Thread.sleep(5000)
-    //println("vente 5sek\n\n")
     //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
     //val testBoolean2  = viewModel.checkRequirements("Testing")
 
@@ -74,6 +74,18 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
         drawerContent = { DrawerMenu(navController, scaffoldState, coroutineScope) },
         drawerGesturesEnabled = false,
 
+        content = { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                Map(viewModel)
+            }
+            Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
+                ShowWeatherBox(viewModel)
+            }
+        },
         bottomBar = {
             BottomAppBar(
                 //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
@@ -112,23 +124,11 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
                     }
                 )
             }
-        },
-        content = { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                Map()
-            }
-            Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
-                ShowWeatherBox(viewModel)
-            }
         }
     )
 }
 @Composable
-fun Map(){
+fun Map(viewModel: ESViewModel){
     val tromsoo = LatLng(69.67575, 18.91752)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(tromsoo, 6f)
@@ -136,17 +136,17 @@ fun Map(){
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
 
-    val googleMap = GoogleMap(
+    GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         uiSettings =  MapUiSettings()
     ) {
-        Markers()
+        Markers(viewModel)
     }
 }
 
 @Composable
-fun Markers(){
+fun Markers(viewModel: ESViewModel){
     val tromsoo = LatLng(69.67575, 18.91752)
     val troms = LatLng(69.05894, 18.54549)
     val bodoo = LatLng(67.27268, 14.41794)
@@ -178,28 +178,35 @@ fun Markers(){
         state = MarkerState(position = lesja)
     )
 }
+
 @Composable
 fun ShowWeatherBox(viewModel: ESViewModel) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
-    var height by remember { mutableStateOf((screenHeight-(screenHeight/4)).dp) }
-    var picture by remember { mutableStateOf(R.drawable.arrowdown) }
-    var keyword by remember { mutableStateOf("long") }
-    //TODO fjerne?
-    var buttonText by remember { mutableStateOf("Show more") }
+    //var height by remember { mutableStateOf((screenHeight-(screenHeight/4)).dp) }
+    val height = mapOf(
+        "short" to (screenHeight/4.5).dp,
+        "long" to (screenHeight-(screenHeight/4)).dp
+    )
+    val picture = mapOf(
+        "long" to R.drawable.arrowup,
+        "short" to R.drawable.arrowdown
+    )
+    //var picture by remember { mutableStateOf(R.drawable.arrowdown) }
+    var keyword by remember { mutableStateOf("short") }
 
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(height)
+            .height(height[keyword]!!)
             .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .alpha(1f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .padding(5.dp)
     ) {
-        InformationBox(keyword, viewModel)
+        InformationBox(viewModel, keyword)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -209,25 +216,14 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
         ) {
             Button(
                 onClick = {
-                    if (height == (screenHeight/4.5).dp) {
-                        height = (screenHeight-(screenHeight/4)).dp
-                        picture = R.drawable.arrowup
-                        keyword = "long"
-                        buttonText = "Show less"
-                    } else {
-                        height = (screenHeight/4.5).dp
-                        picture = R.drawable.arrowdown
-                        keyword = "short"
-                        buttonText = "Show more"
-                    }
+                    keyword = if (keyword == "short") "long" else "short"
                 },
-                colors = androidx.compose.material.ButtonDefaults.buttonColors(Color.LightGray),
+                colors = ButtonDefaults.buttonColors(Color.LightGray),
                 modifier = Modifier
                     .height(40.dp)
                     .width(80.dp)
             ) {
-                //Text(buttonText)
-                Image(painter = painterResource(id = picture), contentDescription = null,
+                Image(painter = painterResource(id = picture[keyword]!!), contentDescription = null,
                     Modifier
                         .fillMaxSize()
                         .background(Color.LightGray))
@@ -236,24 +232,9 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
     }
 }
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun InformationBox(keyword: String, viewModel: ESViewModel) {
-    when (keyword) {
-        "short" -> {
-            ShortInformationBox(viewModel = viewModel)
-        }
-        "long" -> {
-            LongInformationBox(viewModel = viewModel)
-        }
-        else -> {
+fun InformationBox(viewModel: ESViewModel, keyword: String) {
 
-        }
-    }
-}
-
-@Composable
-fun ShortInformationBox(viewModel: ESViewModel) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -268,9 +249,9 @@ fun ShortInformationBox(viewModel: ESViewModel) {
             ) {
                 Text("Sted")
                 Text("Værforhold")
-                Text("Temp: ")
-                Text("H: & L: 3")
-                Text("Vindinfo: 5 m/s")
+                Text("Temp:")
+                Text("H: & L:")
+                Text("Vindinfo:")
             }
             Spacer(Modifier.padding(50.dp))
             Column(
@@ -292,86 +273,52 @@ fun ShortInformationBox(viewModel: ESViewModel) {
             }
         }
     }
+
+    if (keyword == "long") {
+        LongInformation(viewModel = viewModel)
+    }
 }
 
 @Composable
-fun LongInformationBox(viewModel: ESViewModel) {
+fun LongInformation(viewModel: ESViewModel) {
+    Spacer(modifier = Modifier.height(30.dp))
+    //Info om stedet
     Column(
-        Modifier
-            .fillMaxWidth()
+        Modifier.padding(start = 20.dp)
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-            ) {
-                Text("Sted")
-                Text("Værforhold")
-                Text("Temp: ")
-                Text("H: & L: 3")
-                Text("Vindinfo: 5 m/s")
-            }
-            Spacer(Modifier.padding(50.dp))
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, end = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Sikkerhetsnivå")
+        Text("Oslo fallskjermklubb", fontSize = 20.sp)
+        Column() {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    //TODO: dette må være en variabel og ikke et fast icon
-                    //TODO: kommer ann på hva checkrequerments sier
-                    painter = painterResource(id = R.drawable.green_icon),
+                    painter = painterResource(id = R.drawable.marker),
                     contentDescription = null,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .size(50.dp)
+                    Modifier.size(40.dp)
                 )
+                Text("Oslo gate 5, 0882, Oslo")
             }
-        }
-        Spacer(modifier = Modifier.height(30.dp))
-        //Info om stedet
-        Column(
-            Modifier.padding(start = 20.dp)
-        ) {
-            Text("Oslo fallskjermklubb", fontSize = 20.sp)
-            Column() {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.marker),
-                        contentDescription = null,
-                        Modifier.size(40.dp)
-                    )
-                    Text("Oslo gate 5, 0882, Oslo")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.clock_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("9-17")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.internett_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("fallskjerm.no")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.phone_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("876 54 321")
-                }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = R.drawable.clock_icon),
+                    contentDescription = null,
+                    Modifier.size(30.dp)
+                )
+                Text("9-17")
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = R.drawable.internett_icon),
+                    contentDescription = null,
+                    Modifier.size(30.dp)
+                )
+                Text("fallskjerm.no")
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = R.drawable.phone_icon),
+                    contentDescription = null,
+                    Modifier.size(30.dp)
+                )
+                Text("876 54 321")
             }
         }
     }
@@ -419,7 +366,9 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                     fontWeight = FontWeight.Bold,
                     fontSize = 25.sp,
                     color = Color.White,
-                    modifier = Modifier.width(IntrinsicSize.Min).padding(end = 6.dp, start = 6.dp)
+                    modifier = Modifier
+                        .width(IntrinsicSize.Min)
+                        .padding(end = 6.dp, start = 6.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Row(
@@ -526,5 +475,3 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
         }
     }
 }
-
-val String.color get() = Color(parseColor(this))
