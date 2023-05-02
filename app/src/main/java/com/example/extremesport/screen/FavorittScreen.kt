@@ -16,21 +16,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+
+// This could be a setting in ArkivScreen, that toggles to only display favorited cards
 @Composable
 fun FavorittScreen(navController: NavController){
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
+    var cards = listOf(
+        Card(
+            stationName = "StasjonNavn",
+            rating = 3,
+            stationInfo = "mer informasjon",
+            isFavorite = true
+        )
+    )
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        Column(
-            modifier = Modifier
-                .background(Color.LightGray, RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
-                .alpha(1f)
-                .padding(5.dp)
-                .align(Alignment.BottomCenter)
-                .fillMaxSize()
-        ) {}
         Column(
             modifier = Modifier
                 .background("#1C6EAE".color)
@@ -61,15 +64,10 @@ fun FavorittScreen(navController: NavController){
                 .height(screenHeight - 120.dp)
                 .fillMaxWidth()
         ) {
-            Column {
-                LazyColumn {
-                    //Dette må være antall stasjoner brukeren har hoppet
-                    items(1) {
-                        Cards(
-                            stationName = "StasjonNavn",
-                            rating = 3,
-                            stationInfo = "Mer informasjon"
-                        )
+            LazyColumn {
+                for (card in cards) {
+                    item {
+                        card.DisplayCard()
                     }
                 }
             }
