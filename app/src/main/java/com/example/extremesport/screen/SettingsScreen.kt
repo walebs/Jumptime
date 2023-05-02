@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,10 +22,59 @@ import androidx.navigation.NavController
 import com.example.extremesport.R
 import com.example.extremesport.view.ESViewModel
 
+
+data class Setting(
+    val description: String,
+    val icon_id: Int = R.drawable.baseline_mode_night_24_black, // Maybe change to another default image
+    val contentDescription: String = "",
+    val buttonText: String = "",
+    val onClick: () -> Unit
+) {
+    @Composable
+    fun DisplaySetting() {
+        Row(
+            modifier = Modifier.padding(15.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(icon_id),
+                contentDescription = contentDescription
+            )
+            Spacer(modifier = Modifier.padding(3.dp))
+            Text(
+                text = description,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Button(onClick = onClick) {
+                Text(text = buttonText)
+            }
+        }
+    }
+
+}
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsScreen(navController: NavController, viewModel: ESViewModel) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val settings = listOf(
+        Setting(
+            description = "Night Mode",
+            contentDescription = "Logo for night mode",
+            buttonText = "Test",
+            onClick = {}
+        ),
+        Setting(
+            description = "Ny setting",
+            //icon = "new image here",
+            contentDescription = "Ny setting",
+            buttonText = "Test",
+            onClick = {}
+        )
+    )
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -62,51 +110,9 @@ fun SettingsScreen(navController: NavController, viewModel: ESViewModel) {
                 .height(screenHeight - 120.dp)
                 .fillMaxWidth()
         ) {
-            Setting(
-                description = "Night Mode",
-                contentDescription = "Logo for night mode",
-                buttonText = "Test"
-            ) {
-                // What the setting does here
+            settings.forEach {
+                it.DisplaySetting()
             }
-            Setting(
-                description = "Ny setting",
-                //icon = "new image here",
-                contentDescription = "Ny setting",
-                buttonText = "Test"
-            ) {
-
-            }
-        }
-    }
-}
-
-@Composable
-fun Setting(
-    description: String,
-    icon: Painter = painterResource(id = R.drawable.baseline_mode_night_24_black), // Maybe change to another default image
-    contentDescription: String = "",
-    buttonText: String = "",
-    onClick: () -> Unit
-) {
-
-    Row(
-        modifier = Modifier.padding(15.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = icon,
-            contentDescription = contentDescription
-        )
-        Spacer(modifier = Modifier.padding(3.dp))
-        Text(
-            text = description,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Button(onClick = onClick) {
-            Text(text = buttonText)
         }
     }
 }

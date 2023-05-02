@@ -64,7 +64,6 @@ data class Card(
 
     @Composable
     fun Rating() {
-        var ratingState by remember { mutableStateOf(rating) }
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -77,10 +76,9 @@ data class Card(
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {
-                            //ratingState = i
                             rating = i
                         },
-                    tint = if (i <= ratingState) Color(0xFFFFD700) else Color(0xFFA2ADB1)
+                    tint = if (i <= rating) Color(0xFFFFD700) else Color(0xFFA2ADB1)
                 )
             }
         }
