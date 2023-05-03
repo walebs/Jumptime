@@ -2,6 +2,7 @@ package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
 import android.graphics.Color.parseColor
+import android.media.ImageReader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -34,15 +36,12 @@ import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+var boolShow by mutableStateOf(false)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen (navController: NavController, viewModel: ESViewModel) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    //Thread.sleep(5000)
-    //println("vente 5sek\n\n")
-    //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
-    //val testBoolean2  = viewModel.checkRequirements("Testing")
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -76,6 +75,7 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
 
         bottomBar = {
             BottomAppBar(
+                //TODO skal den være her?
                 //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
                 modifier = Modifier
                     .height(65.dp),
@@ -120,23 +120,24 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
                     .padding(innerPadding)
             ) {
                 Map()
-            }
-            Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
-                ShowWeatherBox(viewModel)
+                if (boolShow) {
+                    ShowWeatherBox(viewModel)
+                }
             }
         }
     )
 }
+
 @Composable
-fun Map(){
-    val tromsoo = LatLng(69.67575, 18.91752)
+fun Map() {
+    val startPos = LatLng(69.67575, 18.91752)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(tromsoo, 6f)
+        position = CameraPosition.fromLatLngZoom(startPos, 6f)
     }
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
 
-    val googleMap = GoogleMap(
+    GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         uiSettings =  MapUiSettings()
@@ -146,49 +147,37 @@ fun Map(){
 }
 
 @Composable
-fun Markers(){
-    val tromsoo = LatLng(69.67575, 18.91752)
-    val troms = LatLng(69.05894, 18.54549)
-    val bodoo = LatLng(67.27268, 14.41794)
-    val ntnu = LatLng(63.89993, 10.36208)
-    val oppdal = LatLng(62.65002, 9.85408)
-    val fooniks = LatLng(62.74936, 7.26345)
-    val lesja = LatLng(62.23288, 8.25007)
+fun Markers() {
+    //TODO hente fra JSON filen
+    val listOfPos = listOf (
+        LatLng(69.67575, 18.91752), //tromsoo
+        LatLng(69.05894, 18.54549), //troms
+        LatLng(67.27268, 14.41794), //bodoo
+        LatLng(63.89993, 10.36208), //ntnu
+        LatLng(62.65002, 9.85408),  //oppdal
+        LatLng(62.74936, 7.26345),  //fooniks
+        LatLng(62.23288, 8.25007),  //lesja
+    )
 
-    Marker(
-        state = MarkerState(position = tromsoo)
-        //, onClick = {  }
-    )
-    Marker(
-        state = MarkerState(position = troms)
-    )
-    Marker(
-        state = MarkerState(position = bodoo)
-    )
-    Marker(
-        state = MarkerState(position = ntnu)
-    )
-    Marker(
-        state = MarkerState(position = oppdal)
-    )
-    Marker(
-        state = MarkerState(position = fooniks)
-    )
-    Marker(
-        state = MarkerState(position = lesja)
-    )
+    listOfPos.forEach {
+        Marker(
+            state = MarkerState(it),
+            onClick = {
+                boolShow = !boolShow
+                true
+            }
+        )
+    }
 }
+
 @Composable
 fun ShowWeatherBox(viewModel: ESViewModel) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
-    var height by remember { mutableStateOf((screenHeight-(screenHeight/4)).dp) }
+    var height by remember { mutableStateOf((screenHeight/4.5).dp) }
     var picture by remember { mutableStateOf(R.drawable.arrowdown) }
-    var keyword by remember { mutableStateOf("long") }
-    //TODO fjerne?
-    var buttonText by remember { mutableStateOf("Show more") }
-
+    var keyword by remember { mutableStateOf("short") }
 
     Column(
         modifier = Modifier
@@ -197,7 +186,11 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
             .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .alpha(1f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .padding(5.dp)
+            .border(
+                width = 1.dp,
+                Color.Black,
+                RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+            )
     ) {
         InformationBox(keyword, viewModel)
         Column(
@@ -210,27 +203,26 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
             Button(
                 onClick = {
                     if (height == (screenHeight/4.5).dp) {
-                        height = (screenHeight-(screenHeight/4)).dp
+                        height = ((screenHeight-(screenHeight/5))+20).dp
                         picture = R.drawable.arrowup
                         keyword = "long"
-                        buttonText = "Show less"
                     } else {
                         height = (screenHeight/4.5).dp
                         picture = R.drawable.arrowdown
                         keyword = "short"
-                        buttonText = "Show more"
                     }
                 },
-                colors = androidx.compose.material.ButtonDefaults.buttonColors(Color.LightGray),
+                colors = androidx.compose.material.ButtonDefaults.buttonColors(Color.Gray),
                 modifier = Modifier
                     .height(40.dp)
                     .width(80.dp)
+                    .padding(bottom = 5.dp)
             ) {
-                //Text(buttonText)
-                Image(painter = painterResource(id = picture), contentDescription = null,
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.LightGray))
+                Image(
+                    painter = painterResource(id = picture),
+                    contentDescription = null,
+                    Modifier.fillMaxSize()
+                )
             }
         }
     }
@@ -264,13 +256,13 @@ fun ShortInformationBox(viewModel: ESViewModel) {
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(start = 20.dp, top = 10.dp)
+                modifier = Modifier.padding(start = 25.dp, top = 15.dp)
             ) {
                 Text("Sted")
                 Text("Værforhold")
                 Text("Temp: ")
-                Text("H: & L: 3")
-                Text("Vindinfo: 5 m/s")
+                Text("H: & L: ")
+                Text("Vindinfo: ")
             }
             Spacer(Modifier.padding(50.dp))
             Column(
@@ -279,11 +271,11 @@ fun ShortInformationBox(viewModel: ESViewModel) {
                     .padding(top = 10.dp, end = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Sikkerhetsnivå")
+                Text("Sikkerhetsnivå", Modifier.padding(top = 10.dp))
                 Image(
                     //TODO: dette må være en variabel og ikke et fast icon
                     //TODO: kommer ann på hva checkrequerments sier
-                    painter = painterResource(id = R.drawable.red_icon),
+                    painter = painterResource(id = R.drawable.green_icon),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(15.dp)
@@ -296,84 +288,74 @@ fun ShortInformationBox(viewModel: ESViewModel) {
 
 @Composable
 fun LongInformationBox(viewModel: ESViewModel) {
+    ShortInformationBox(viewModel = viewModel)
+
+    Spacer(modifier = Modifier.height(15.dp))
+    //Info om stedet
     Column(
-        Modifier
-            .fillMaxWidth()
+        Modifier.padding(start = 20.dp)
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
+        Text("Oslo fallskjermklubb", Modifier.padding(bottom = 5.dp), fontSize = 20.sp)
+        Column(Modifier.padding(bottom = 10.dp)) {
+            LocationInfo(R.drawable.marker, "Oslo gate 5, 0882, Oslo")
+            LocationInfo(R.drawable.clock_icon, "9-17")
+            LocationInfo(R.drawable.internett_icon, "fallskjerm.no")
+            LocationInfo(R.drawable.phone_icon, "876 54 321")
+        }
+        Column(
+            Modifier.fillMaxWidth()
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-            ) {
-                Text("Sted")
-                Text("Værforhold")
-                Text("Temp: ")
-                Text("H: & L: 3")
-                Text("Vindinfo: 5 m/s")
-            }
-            Spacer(Modifier.padding(50.dp))
-            Column(
+            Text(text = "7 - Dagersvarsel",
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp, end = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Sikkerhetsnivå")
-                Image(
-                    //TODO: dette må være en variabel og ikke et fast icon
-                    //TODO: kommer ann på hva checkrequerments sier
-                    painter = painterResource(id = R.drawable.green_icon),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .size(50.dp)
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(30.dp))
-        //Info om stedet
-        Column(
-            Modifier.padding(start = 20.dp)
-        ) {
-            Text("Oslo fallskjermklubb", fontSize = 20.sp)
-            Column() {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.marker),
-                        contentDescription = null,
-                        Modifier.size(40.dp)
-                    )
-                    Text("Oslo gate 5, 0882, Oslo")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.clock_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("9-17")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.internett_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("fallskjerm.no")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.phone_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("876 54 321")
+                    .padding(bottom = 5.dp), textAlign = TextAlign.Center, fontSize = 20.sp)
+            Column(Modifier.fillMaxWidth()) {
+                val days = listOf("man", "tir", "ons", "tor", "fre", "lør", "søn")
+                (0..6).zip(days) { _, day ->
+                    WeatherForecast(day)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LocationInfo(icon: Int, str: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            Modifier
+                .size(30.dp)
+                .padding(end = 5.dp)
+        )
+        Text(str)
+    }
+}
+
+@Composable
+fun WeatherForecast(
+    day: String,
+    weather: String = "regn",
+    highTemp: Int = 0,
+    lowTemp: Int = 0,
+    wind: Int = 0,
+    icon: Int = R.drawable.green_icon
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = 2.dp)
+    ) {
+        Text(text = "${day}.  $weather  H: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  Vindinfo: ${wind}m/s", textAlign = TextAlign.Center)
+        Spacer(modifier = Modifier.weight(4f))
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            Modifier
+                .size(30.dp)
+                .padding(end = 5.dp)
+        )
     }
 }
 
@@ -419,7 +401,9 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                     fontWeight = FontWeight.Bold,
                     fontSize = 25.sp,
                     color = Color.White,
-                    modifier = Modifier.width(IntrinsicSize.Min).padding(end = 6.dp, start = 6.dp)
+                    modifier = Modifier
+                        .width(IntrinsicSize.Min)
+                        .padding(end = 6.dp, start = 6.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Row(
@@ -448,6 +432,7 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
             modifier = Modifier
                 .fillMaxWidth()
         ) {
+            //TODO komprimere lik kode
             TextButton(
                 onClick = { navController.navigate(Screens.FavorittScreen.name) {popUpTo(Screens.MainScreen.name)} },
             ) {
