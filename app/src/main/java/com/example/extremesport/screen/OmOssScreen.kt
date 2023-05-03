@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -35,16 +36,22 @@ fun OmOssScreen() {
                     .fillMaxWidth()
                     .height(200.dp)
                     .padding(16.dp)
+                    .offset(y = -50.dp)
             ) {
-                Text(
-                    text = "LOGONAVN",
-                    color = Color.White
+                Image(
+                    painterResource(id = R.drawable.jumptime_tekst_whiteontransparent),
+                    contentDescription = "Logonavn",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .size(130.dp)
+                        .offset(x = -17.dp),
                 )
-                Spacer(modifier = Modifier.padding(15.dp))
                 Text(
                     text = "Om oss",
                     fontSize = 30.sp,
-                    color = Color.White
+                    color = Color.White,
+                    modifier = Modifier
+                            .offset(y = -30.dp)
                 )
             }
             ElevatedCard(
