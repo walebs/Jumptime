@@ -35,7 +35,7 @@ import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-var alpha by mutableStateOf(0f)
+var boolShow by mutableStateOf(false)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen (navController: NavController, viewModel: ESViewModel) {
@@ -119,7 +119,9 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
                     .padding(innerPadding)
             ) {
                 Map()
-                ShowWeatherBox(viewModel, alpha)
+                if (boolShow) {
+                    ShowWeatherBox(viewModel)
+                }
             }
         }
     )
@@ -160,11 +162,7 @@ fun Markers() {
         Marker(
             state = MarkerState(pos),
             onClick = {
-                alpha = if (alpha == 0f) {
-                    1f
-                } else {
-                    0f
-                }
+                boolShow = !boolShow
                 true
             }
         )
@@ -172,7 +170,7 @@ fun Markers() {
 }
 
 @Composable
-fun ShowWeatherBox(viewModel: ESViewModel, alpha: Float) {
+fun ShowWeatherBox(viewModel: ESViewModel) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
@@ -185,7 +183,7 @@ fun ShowWeatherBox(viewModel: ESViewModel, alpha: Float) {
             .fillMaxWidth()
             .height(height)
             .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .alpha(0f)
+            .alpha(1f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .border(
                 width = 1.dp,
