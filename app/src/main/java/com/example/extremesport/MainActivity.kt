@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun App(context: Context) {
+fun App(context: Context?) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -69,12 +69,11 @@ enum class Screens() {
     OmOssScreen,
     ReportScreen
 }
-/*
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     ExtremeSportTheme {
-       App(context = )
+       App(context = null)
     }
 }
- */

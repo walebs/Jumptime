@@ -7,7 +7,7 @@ import org.junit.Test
 class CheckRequirementsTest {
     @Test
     fun parachuteRequirements_isCorrect() {
-        val viewmodel = ESViewModel()
+        val viewmodel = ESViewModel(null)
 
         //TODO venter på at api-ene skal loade, og dette er antakeligvis ikke den beste løsningen lol.
         Thread.sleep(5000)
