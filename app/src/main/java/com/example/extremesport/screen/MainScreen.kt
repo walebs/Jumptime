@@ -31,20 +31,16 @@ import com.example.extremesport.Screens
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+var alpha by mutableStateOf(0f)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen (navController: NavController, viewModel: ESViewModel) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    //TODO fjern?
-    //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
-    //val testBoolean2  = viewModel.checkRequirements("Testing")
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -122,36 +118,33 @@ fun MainScreen (navController: NavController, viewModel: ESViewModel) {
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                Map(viewModel)
-            }
-            //TODO fjerne
-            Box {
-                ShowWeatherBox(viewModel)
+                Map()
+                ShowWeatherBox(viewModel, alpha)
             }
         }
     )
 }
 
 @Composable
-fun Map(viewModel: ESViewModel) {
-    val tromsoo = LatLng(69.67575, 18.91752)
+fun Map() {
+    val startPos = LatLng(69.67575, 18.91752)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(tromsoo, 6f)
+        position = CameraPosition.fromLatLngZoom(startPos, 6f)
     }
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
 
-    GoogleMap(
+    var googleMap = GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         uiSettings =  MapUiSettings()
     ) {
-        Markers(viewModel)
+        Markers()
     }
 }
 
 @Composable
-fun Markers(viewModel: ESViewModel) {
+fun Markers() {
     //TODO hente fra JSON filen
     val listOfPos = listOf (
         LatLng(69.67575, 18.91752), //tromsoo
@@ -165,13 +158,21 @@ fun Markers(viewModel: ESViewModel) {
 
     for (pos in listOfPos) {
         Marker(
-            state = MarkerState(pos)
+            state = MarkerState(pos),
+            onClick = {
+                alpha = if (alpha == 0f) {
+                    1f
+                } else {
+                    0f
+                }
+                true
+            }
         )
     }
 }
 
 @Composable
-fun ShowWeatherBox(viewModel: ESViewModel) {
+fun ShowWeatherBox(viewModel: ESViewModel, alpha: Float) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
@@ -184,9 +185,13 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
             .fillMaxWidth()
             .height(height)
             .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .alpha(1f)
+            .alpha(0f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .border(
+                width = 1.dp,
+                Color.Black,
+                RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+            )
     ) {
         InformationBox(keyword, viewModel)
         Column(
@@ -301,7 +306,10 @@ fun LongInformationBox(viewModel: ESViewModel) {
         Column(
             Modifier.fillMaxWidth()
         ) {
-            Text(text = "7 - Dagersvarsel", Modifier.fillMaxWidth().padding(bottom = 5.dp), textAlign = TextAlign.Center, fontSize = 20.sp)
+            Text(text = "7 - Dagersvarsel",
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp), textAlign = TextAlign.Center, fontSize = 20.sp)
             Column(Modifier.fillMaxWidth()) {
                 for(i in 0..6) {
                     WeatherForecast()
