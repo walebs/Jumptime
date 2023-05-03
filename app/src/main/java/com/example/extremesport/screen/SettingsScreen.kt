@@ -20,11 +20,61 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.extremesport.R
+import com.example.extremesport.view.ESViewModel
+
+
+data class Setting(
+    val description: String,
+    val icon_id: Int = R.drawable.baseline_mode_night_24_black, // Maybe change to another default image
+    val contentDescription: String = "",
+    val buttonText: String = "",
+    val onClick: () -> Unit
+) {
+    @Composable
+    fun DisplaySetting() {
+        Row(
+            modifier = Modifier.padding(15.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(icon_id),
+                contentDescription = contentDescription
+            )
+            Spacer(modifier = Modifier.padding(3.dp))
+            Text(
+                text = description,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Button(onClick = onClick) {
+                Text(text = buttonText)
+            }
+        }
+    }
+
+}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(viewModel: ESViewModel) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val settings = listOf(
+        Setting(
+            description = "Night Mode",
+            contentDescription = "Logo for night mode",
+            buttonText = "Test",
+            onClick = {}
+        ),
+        Setting(
+            description = "Ny setting",
+            //icon = "new image here",
+            contentDescription = "Ny setting",
+            buttonText = "Test",
+            onClick = {}
+        )
+    )
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -67,45 +117,11 @@ fun SettingsScreen() {
                 .height(screenHeight - 120.dp)
                 .fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier.padding(15.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painterResource(id = R.drawable.baseline_mode_night_24_black),
-                    contentDescription = "Logo for night mode")
-                Spacer(modifier = Modifier.padding(3.dp))
-                Text(
-                    text = "Night Mode",
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Test")
-                }
-            }
-            Row(
-                modifier = Modifier.padding(15.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painterResource(id = R.drawable.baseline_mode_night_24_black),
-                    contentDescription = "Ny setting")
-                Spacer(modifier = Modifier.padding(3.dp))
-                Text(
-                    text = "Ny Setting",
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Test")
-                }
+            settings.forEach {
+                it.DisplaySetting()
             }
         }
     }
 }
-
 
 
