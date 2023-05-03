@@ -2,6 +2,7 @@ package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
 import android.graphics.Color.parseColor
+import android.media.ImageReader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -136,7 +137,7 @@ fun Map() {
 
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
 
-    var googleMap = GoogleMap(
+    GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         uiSettings =  MapUiSettings()
@@ -158,9 +159,9 @@ fun Markers() {
         LatLng(62.23288, 8.25007),  //lesja
     )
 
-    for (pos in listOfPos) {
+    listOfPos.forEach {
         Marker(
-            state = MarkerState(pos),
+            state = MarkerState(it),
             onClick = {
                 boolShow = !boolShow
                 true
@@ -309,8 +310,9 @@ fun LongInformationBox(viewModel: ESViewModel) {
                     .fillMaxWidth()
                     .padding(bottom = 5.dp), textAlign = TextAlign.Center, fontSize = 20.sp)
             Column(Modifier.fillMaxWidth()) {
-                for(i in 0..6) {
-                    WeatherForecast()
+                val days = listOf("man", "tir", "ons", "tor", "fre", "lør", "søn")
+                (0..6).zip(days) { _, day ->
+                    WeatherForecast(day)
                 }
             }
         }
@@ -332,17 +334,23 @@ fun LocationInfo(icon: Int, str: String) {
 }
 
 @Composable
-fun WeatherForecast() {
+fun WeatherForecast(
+    day: String,
+    weather: String = "regn",
+    highTemp: Int = 0,
+    lowTemp: Int = 0,
+    wind: Int = 0,
+    icon: Int = R.drawable.green_icon
+) {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(bottom = 2.dp)
     ) {
-        //TODO dette skal være variabler og alle verdiene skal trolig hentes fra den ferdige checkrequerment fun
-        Text(text = "man.  regn  H: 5\u00B0  L: 1\u00B0  Vindinfo: 7 m/s", textAlign = TextAlign.Center)
+        Text(text = "${day}.  $weather  H: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  Vindinfo: ${wind}m/s", textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.weight(4f))
         Image(
-            painter = painterResource(id = R.drawable.green_icon),
+            painter = painterResource(id = icon),
             contentDescription = null,
             Modifier
                 .size(30.dp)
