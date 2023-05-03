@@ -8,11 +8,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +18,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +30,7 @@ import com.example.extremesport.Screens
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -39,93 +38,20 @@ import kotlinx.coroutines.launch
 var boolShow by mutableStateOf(false)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen (navController: NavController, viewModel: ESViewModel) {
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
-
-    Scaffold(
-        scaffoldState = scaffoldState,
-        floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier
-                    .size(80.dp)
-                    .border(
-                        BorderStroke(1.dp, Color.Black),
-                        shape = CircleShape
-                    )
-                    .clip(CircleShape),
-                contentColor = Color.Black,
-                onClick = {
-                    coroutineScope.launch {
-                        scaffoldState.snackbarHostState
-                            .showSnackbar("hei")
-                        }
-                     },
-                backgroundColor = Color.White
-            )
-            {
-                Icon(imageVector = Icons.Default.Add, null)
-            }
-        },
-        isFloatingActionButtonDocked = true,
-        floatingActionButtonPosition = FabPosition.Center,
-
-        drawerContent = { DrawerMenu(navController, scaffoldState, coroutineScope) },
-        drawerGesturesEnabled = false,
-
-        bottomBar = {
-            BottomAppBar(
-                //TODO skal den være her?
-                //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
-                modifier = Modifier
-                    .height(65.dp),
-                backgroundColor = "#1C6EAE".color
-            )
-            {
-                BottomNavigationItem(
-                    selected = false,
-                    onClick = { coroutineScope.launch { scaffoldState.drawerState.open()} },
-                    selectedContentColor = Color.Red,
-                    unselectedContentColor = Color.White,
-                    icon = {
-                        Icon(
-                            painterResource(id = R.drawable.baseline_menu_24_white),
-                            contentDescription = "Menyknapp",
-                            modifier = Modifier
-                                .size(40.dp)
-                        )
-                    }
-                )
-                Spacer(modifier = Modifier.padding(130.dp))
-                BottomNavigationItem(
-                    selected = false,
-                    onClick =  { navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)} },
-                    selectedContentColor = Color.Red,
-                    unselectedContentColor = Color.White,
-                    icon = {
-                        Icon(
-                            painterResource(id = R.drawable.baseline_settings_24_white),
-                            contentDescription = "Settingsknapp",
-                            modifier = Modifier
-                                .size(40.dp)
-                        )
-                    }
-                )
-            }
-        },
-        content = { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                Map()
-                if (boolShow) {
-                    ShowWeatherBox(viewModel)
-                }
-            }
+fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+    ) {
+        Map()
+        if (boolShow) {
+            ShowWeatherBox(viewModel)
         }
-    )
+    }
+    Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
+        ShowWeatherBox(viewModel)
+    }
 }
 
 @Composable
@@ -135,12 +61,16 @@ fun Map() {
         position = CameraPosition.fromLatLngZoom(startPos, 6f)
     }
 
+    val context = LocalContext.current
+
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
+    val mapProperties by remember { mutableStateOf(MapProperties(mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.aubergine)))}
 
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
-        uiSettings =  MapUiSettings()
+        uiSettings =  uiSettings,
+        properties = mapProperties
     ) {
         Markers()
     }
@@ -434,7 +364,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
         ) {
             //TODO komprimere lik kode
             TextButton(
-                onClick = { navController.navigate(Screens.FavorittScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                onClick = {
+                    coroutineScope.launch { scaffoldState.drawerState.close()}
+                    navController.navigate(Screens.FavorittScreen.name) {popUpTo(Screens.MainScreen.name)}
+                          },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_save_24),
@@ -446,7 +379,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                 Text(text = "Favoritter", fontWeight = FontWeight.Bold)
             }
             TextButton(
-                onClick = { navController.navigate(Screens.ArkivScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                onClick = {
+                    coroutineScope.launch { scaffoldState.drawerState.close()}
+                    navController.navigate(Screens.ArkivScreen.name) {popUpTo(Screens.MainScreen.name)}
+                          },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_archive_24),
@@ -458,7 +394,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                 Text(text = "Arkiv", fontWeight = FontWeight.Bold)
             }
             TextButton(
-                onClick = { navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                onClick = {
+                    coroutineScope.launch { scaffoldState.drawerState.close()}
+                    navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)}
+                          },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_settings_24),
@@ -474,7 +413,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                 verticalArrangement = Arrangement.Bottom,
             ) {
                 TextButton(
-                    onClick = { navController.navigate(Screens.OmOssScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                    onClick = {
+                        coroutineScope.launch { scaffoldState.drawerState.close()}
+                        navController.navigate(Screens.OmOssScreen.name) {popUpTo(Screens.MainScreen.name)}
+                              },
                 ) {
                     Image(
                         painterResource(id = R.drawable.baseline_groups_24),
@@ -490,7 +432,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     TextButton(
-                        onClick = { navController.navigate(Screens.ReportScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                        onClick = {
+                            coroutineScope.launch { scaffoldState.drawerState.close()}
+                            navController.navigate(Screens.ReportScreen.name) {popUpTo(Screens.MainScreen.name)}
+                                  },
                     ) {
                         Image(
                             painterResource(id = R.drawable.baseline_report_problem_24),
