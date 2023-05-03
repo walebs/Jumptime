@@ -18,7 +18,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.extremesport.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -26,7 +25,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ReportScreen(navController: NavController) {
+fun ReportScreen() {
     val skop = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState()}
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp

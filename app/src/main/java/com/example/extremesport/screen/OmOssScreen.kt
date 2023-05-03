@@ -14,13 +14,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.extremesport.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun OmOssScreen(navController: NavController) {
+fun OmOssScreen() {
     val snackbarHostState = remember { SnackbarHostState() }
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
