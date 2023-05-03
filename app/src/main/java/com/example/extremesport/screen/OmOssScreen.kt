@@ -52,7 +52,7 @@ fun OmOssScreen(viewModel: ESViewModel) {
                     fontSize = 30.sp,
                     color = Color.White,
                     modifier = Modifier
-                            .offset(y = -30.dp)
+                            .offset(y = (-30).dp)
                 )
             }
             ElevatedCard(

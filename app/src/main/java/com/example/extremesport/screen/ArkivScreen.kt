@@ -116,14 +116,14 @@ fun ArkivScreen(viewModel: ESViewModel){
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .size(130.dp)
-                    .offset(x = -17.dp),
+                    .offset(x = (-17).dp),
             )
             Text(
                 text = "Arkiv - Alle dine hopp!",
                 fontSize = 30.sp,
                 color = Color.White,
                 modifier = Modifier
-                    .offset(y = -55.dp)
+                    .offset(y = (-55).dp)
             )
         }
         Column(

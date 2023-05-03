@@ -54,14 +54,14 @@ fun ReportScreen(viewModel: ESViewModel) {
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .size(130.dp)
-                        .offset(x = -17.dp),
+                        .offset(x = (-17).dp),
                 )
                 Text(
                     text = "Settings",
                     fontSize = 30.sp,
                     color = Color.White,
                     modifier = Modifier
-                        .offset(y = -30.dp)
+                        .offset(y = (-30).dp)
                 )
             }
             ElevatedCard(

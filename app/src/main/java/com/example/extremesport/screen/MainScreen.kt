@@ -93,7 +93,7 @@ fun Markers(viewModel: ESViewModel) {
         Marker(
             state = MarkerState(it),
             onClick = {
-                boolShow = !boolShow
+                boolShow = !boolShow // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
                 true
             }
         )
@@ -113,7 +113,6 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
         "long" to R.drawable.arrowup,
         "short" to R.drawable.arrowdown
     )
-    //var picture by remember { mutableStateOf(R.drawable.arrowdown) }
     var keyword by remember { mutableStateOf("short") }
 
     Column(
@@ -159,7 +158,6 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
 
 @Composable
 fun InformationBox(viewModel: ESViewModel, keyword: String) {
-
     Column(
         Modifier
             .fillMaxWidth()
@@ -314,7 +312,6 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-//<<<<<<< HEAD
                 Image(
                     painterResource(id = R.drawable.jumptime_tekst_whiteontransparent),
                     contentDescription = "Logonavn",
@@ -331,16 +328,6 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                     fontSize = 20.sp,
                     color = Color.White,
                     modifier = Modifier.width(IntrinsicSize.Min)
-/*=======
-                Text(
-                    text = "JumpTime",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp,
-                    color = Color.White,
-                    modifier = Modifier
-                        .width(IntrinsicSize.Min)
-                        .padding(end = 6.dp, start = 6.dp)
->>>>>>> cleanup*/
                 )
             }
         }

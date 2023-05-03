@@ -44,7 +44,7 @@ fun FavorittScreen(viewModel: ESViewModel){
                 .fillMaxWidth()
                 .height(200.dp)
                 .padding(16.dp)
-                .offset(y = -50.dp)
+                .offset(y = (-50).dp)
         ) {
             Image(
                 painterResource(id = R.drawable.jumptime_tekst_whiteontransparent),
@@ -52,7 +52,7 @@ fun FavorittScreen(viewModel: ESViewModel){
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .size(130.dp)
-                    .offset(x = -17.dp)
+                    .offset(x = (-17).dp)
             )
             Text(
                 text = "Favoritter - <3!",
