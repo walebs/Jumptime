@@ -16,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -48,9 +50,6 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
         if (boolShow) {
             ShowWeatherBox(viewModel)
         }
-    }
-    Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
-        ShowWeatherBox(viewModel)
     }
 }
 
@@ -291,76 +290,67 @@ fun WeatherForecast(
 
 @Composable
 fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope) {
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Column {
         Column(
             modifier = Modifier
                 .background("#1C6EAE".color)
                 .fillMaxWidth()
-                .height(250.dp)
+                .height(screenHeight - 550.dp)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(0.75f),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .wrapContentSize()
-                        .size(250.dp),
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painterResource(id = R.drawable.baseline_account_circle_24_white),
-                        contentDescription = "Profilbilde",
+                    Image(
+                        painterResource(id = R.drawable.jumptime_logo_whiteonblue),
+                        contentDescription = "Jumptime Logo",
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
-                            .size(150.dp),
-                        tint = Color.White
+                            .size(350.dp)
                     )
                 }
             }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp),
+                    .height(150.dp)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .weight(0.25f),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "JumpTime",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp,
-                    color = Color.White,
+                Image(
+                    painterResource(id = R.drawable.jumptime_tekst_whiteontransparent),
+                    contentDescription = "Logonavn",
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
-                        .width(IntrinsicSize.Min)
-                        .padding(end = 6.dp, start = 6.dp)
+                        .size(150.dp)
+                        .weight(1f)
+                        .offset(x = (-24).dp)
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Text(
-                        text = "Poeng:  ",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = Color.White,
-                        modifier = Modifier.width(IntrinsicSize.Min)
-                    )
-                    Text(
-                        text = "<x>",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                        color = Color.White,
-                        modifier = Modifier.width(IntrinsicSize.Min)
-                    )
-                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = "Poeng:<X>  ",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    modifier = Modifier.width(IntrinsicSize.Min)
+                )
             }
         }
+
         //Profil, scoreboards osv
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
             //TODO komprimere lik kode
             TextButton(

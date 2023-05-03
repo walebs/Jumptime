@@ -1,5 +1,6 @@
 package com.example.extremesport.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,27 +32,26 @@ fun ArkivScreen(){
     ) {
         Column(
             modifier = Modifier
-                .background(Color.LightGray, RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
-                .alpha(1f)
-                .padding(5.dp)
-                .align(Alignment.BottomCenter)
-                .fillMaxSize()
-        ) {}
-        Column(
-            modifier = Modifier
                 .background("#1C6EAE".color)
                 .fillMaxWidth()
                 .height(200.dp)
                 .padding(16.dp)
+                .offset(y = -50.dp)
         ) {
-            Text(
-                text = "LOGONAVN",
-                color = Color.White
+            Image(
+                painterResource(id = R.drawable.jumptime_tekst_whiteontransparent),
+                contentDescription = "Logonavn",
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .size(130.dp)
+                    .offset(x = -17.dp),
             )
             Text(
                 text = "Arkiv - Alle dine hopp!",
                 fontSize = 30.sp,
-                color = Color.White
+                color = Color.White,
+                modifier = Modifier
+                    .offset(y = -55.dp)
             )
         }
         Column(

@@ -1,6 +1,7 @@
 package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -10,8 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -30,7 +33,6 @@ fun ReportScreen() {
     val snackbarHostState = remember { SnackbarHostState()}
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
-
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState)},
     ) {
@@ -43,19 +45,22 @@ fun ReportScreen() {
                     .fillMaxWidth()
                     .height(200.dp)
                     .padding(16.dp)
+                    .offset(y = -50.dp)
             ) {
-                Text(
-                    text = "LOGONAVN",
-                    color = Color.White
+                Image(
+                    painterResource(id = R.drawable.jumptime_tekst_whiteontransparent),
+                    contentDescription = "Logonavn",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .size(130.dp)
+                        .offset(x = -17.dp),
                 )
                 Text(
-                    text = "Hei",
+                    text = "Settings",
                     fontSize = 30.sp,
-                    color = Color.White
-                )
-                Text(
-                    text = "Gi oss feedback :)",
-                    color = Color.White
+                    color = Color.White,
+                    modifier = Modifier
+                        .offset(y = -30.dp)
                 )
             }
             ElevatedCard(
@@ -114,7 +119,6 @@ fun DropDownMenu() {
                 )
             }
         }
-
     }
 }
 
