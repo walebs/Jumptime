@@ -57,17 +57,11 @@ fun ReportScreen(navController: NavController) {
                         .offset(x = -17.dp),
                 )
                 Text(
-                    text = "Hei",
+                    text = "Settings",
                     fontSize = 30.sp,
                     color = Color.White,
                     modifier = Modifier
-                        .offset(y = -45.dp)
-                )
-                Text(
-                    text = "Gi oss feedback :)",
-                    color = Color.White,
-                    modifier = Modifier
-                        .offset(y = -70.dp)
+                        .offset(y = -30.dp)
                 )
             }
             ElevatedCard(
@@ -126,7 +120,6 @@ fun DropDownMenu() {
                 )
             }
         }
-
     }
 }
 
