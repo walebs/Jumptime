@@ -30,7 +30,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.extremesport.helpFunctions.loadAPIs
 import com.example.extremesport.screen.*
 import com.example.extremesport.ui.theme.ExtremeSportTheme
 import com.example.extremesport.view.ESViewModel
@@ -164,19 +163,19 @@ fun Navigering(navController: NavHostController, viewModel: ESViewModel, innerPa
             MainScreen(viewModel, innerPadding = innerPaddingValues)
         }
         composable(Screens.SettingsScreen.name) {
-            SettingsScreen()
+            SettingsScreen(viewModel)
         }
         composable(Screens.ArkivScreen.name) {
-            ArkivScreen()
+            ArkivScreen(viewModel)
         }
         composable(Screens.FavorittScreen.name) {
-            FavorittScreen()
+            FavorittScreen(viewModel)
         }
         composable(Screens.ReportScreen.name) {
-            ReportScreen()
+            ReportScreen(viewModel)
         }
         composable(Screens.OmOssScreen.name) {
-            OmOssScreen()
+            OmOssScreen(viewModel)
         }
     }
 }

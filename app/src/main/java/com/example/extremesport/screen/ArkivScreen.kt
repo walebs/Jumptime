@@ -22,10 +22,82 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.extremesport.R
+import com.example.extremesport.view.ESViewModel
+
+
+data class Card(
+    val stationName: String,
+    var rating: Int,
+    val stationInfo: String,
+    var isFavorite: Boolean = false
+) {
+    @Composable
+    fun DisplayCard() {
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stationName,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 25.sp)
+                    //Rating må saves på en eller annen måte på hver stasjon
+                    Rating()
+                }
+                Text(text = stationInfo)
+            }
+        }
+    }
+
+    @Composable
+    fun Rating() {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            for (i in 1..5) {
+                Icon(
+                    painterResource(id = R.drawable.baseline_star_24_grey),
+                    contentDescription = "Tom stjerne",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            rating = i
+                        },
+                    tint = if (i <= rating) Color(0xFFFFD700) else Color(0xFFA2ADB1)
+                )
+            }
+        }
+
+    }
+}
 
 @Composable
-fun ArkivScreen(){
+fun ArkivScreen(viewModel: ESViewModel){
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    var cards = listOf(
+        Card(
+            stationName = "StasjonNavn",
+            rating = 3,
+            stationInfo = "mer informasjon"
+        )
+    )
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -44,14 +116,14 @@ fun ArkivScreen(){
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .size(130.dp)
-                    .offset(x = -17.dp),
+                    .offset(x = (-17).dp),
             )
             Text(
                 text = "Arkiv - Alle dine hopp!",
                 fontSize = 30.sp,
                 color = Color.White,
                 modifier = Modifier
-                    .offset(y = -55.dp)
+                    .offset(y = (-55).dp)
             )
         }
         Column(
@@ -67,70 +139,14 @@ fun ArkivScreen(){
                 .height(screenHeight - 120.dp)
                 .fillMaxWidth()
         ) {
-            Column() {
-                LazyColumn {
-                    //Dette må være antall stasjoner brukeren har hoppet
-                    items(1) {
-                        Cards()
+            LazyColumn {
+                //Dette må være antall stasjoner brukeren har hoppet
+                cards.forEach {
+                    item {
+                        it.DisplayCard()
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun Cards() {
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "StasjonNavn",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp)
-                //Rating må saves på en eller annen måte på hver stasjon
-                Rating(rating = 3)
-            }
-            Text(text = "Mer informasjon")
-        }
-    }
-}
-
-@Composable
-fun Rating(rating: Int) {
-    var ratingState by remember { mutableStateOf(rating) }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        for (i in 1..5) {
-            Icon(
-                painterResource(id = R.drawable.baseline_star_24_grey),
-                contentDescription = "Tom stjerne",
-                modifier = Modifier
-                    .size(30.dp)
-                    .clickable {
-                        ratingState = i
-                    },
-                tint = if (i <= ratingState) Color(0xFFFFD700) else Color(0xFFA2ADB1)
-            )
         }
     }
 }

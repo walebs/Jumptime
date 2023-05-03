@@ -37,6 +37,7 @@ import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+val String.color get() = Color(parseColor(this))
 var boolShow by mutableStateOf(false)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -46,7 +47,7 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        Map()
+        Map(viewModel)
         if (boolShow) {
             ShowWeatherBox(viewModel)
         }
@@ -54,7 +55,7 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
 }
 
 @Composable
-fun Map() {
+fun Map(viewModel: ESViewModel) {
     val startPos = LatLng(69.67575, 18.91752)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(startPos, 6f)
@@ -71,12 +72,12 @@ fun Map() {
         uiSettings =  uiSettings,
         properties = mapProperties
     ) {
-        Markers()
+        Markers(viewModel)
     }
 }
 
 @Composable
-fun Markers() {
+fun Markers(viewModel: ESViewModel) {
     //TODO hente fra JSON filen
     val listOfPos = listOf (
         LatLng(69.67575, 18.91752), //tromsoo
@@ -92,7 +93,7 @@ fun Markers() {
         Marker(
             state = MarkerState(it),
             onClick = {
-                boolShow = !boolShow
+                boolShow = !boolShow // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
                 true
             }
         )
@@ -104,14 +105,20 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
-    var height by remember { mutableStateOf((screenHeight/4.5).dp) }
-    var picture by remember { mutableStateOf(R.drawable.arrowdown) }
+    val height = mapOf(
+        "short" to (screenHeight/4.5).dp,
+        "long" to (screenHeight-(screenHeight/4)).dp
+    )
+    val picture = mapOf(
+        "long" to R.drawable.arrowup,
+        "short" to R.drawable.arrowdown
+    )
     var keyword by remember { mutableStateOf("short") }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(height)
+            .height(height[keyword]!!)
             .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .alpha(1f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
@@ -121,7 +128,7 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
                 RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
             )
     ) {
-        InformationBox(keyword, viewModel)
+        InformationBox(viewModel, keyword)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -131,24 +138,16 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
         ) {
             Button(
                 onClick = {
-                    if (height == (screenHeight/4.5).dp) {
-                        height = ((screenHeight-(screenHeight/5))+20).dp
-                        picture = R.drawable.arrowup
-                        keyword = "long"
-                    } else {
-                        height = (screenHeight/4.5).dp
-                        picture = R.drawable.arrowdown
-                        keyword = "short"
-                    }
+                    keyword = if (keyword == "short") "long" else "short"
                 },
-                colors = androidx.compose.material.ButtonDefaults.buttonColors(Color.Gray),
+                colors = ButtonDefaults.buttonColors(Color.LightGray),
                 modifier = Modifier
                     .height(40.dp)
                     .width(80.dp)
                     .padding(bottom = 5.dp)
             ) {
                 Image(
-                    painter = painterResource(id = picture),
+                    painter = painterResource(id = picture[keyword]!!),
                     contentDescription = null,
                     Modifier.fillMaxSize()
                 )
@@ -157,24 +156,8 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
     }
 }
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun InformationBox(keyword: String, viewModel: ESViewModel) {
-    when (keyword) {
-        "short" -> {
-            ShortInformationBox(viewModel = viewModel)
-        }
-        "long" -> {
-            LongInformationBox(viewModel = viewModel)
-        }
-        else -> {
-
-        }
-    }
-}
-
-@Composable
-fun ShortInformationBox(viewModel: ESViewModel) {
+fun InformationBox(viewModel: ESViewModel, keyword: String) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -189,9 +172,9 @@ fun ShortInformationBox(viewModel: ESViewModel) {
             ) {
                 Text("Sted")
                 Text("Værforhold")
-                Text("Temp: ")
-                Text("H: & L: ")
-                Text("Vindinfo: ")
+                Text("Temp:")
+                Text("H: & L:")
+                Text("Vindinfo:")
             }
             Spacer(Modifier.padding(50.dp))
             Column(
@@ -213,12 +196,14 @@ fun ShortInformationBox(viewModel: ESViewModel) {
             }
         }
     }
+
+    if (keyword == "long") {
+        LongInformationBox(viewModel = viewModel)
+    }
 }
 
 @Composable
 fun LongInformationBox(viewModel: ESViewModel) {
-    ShortInformationBox(viewModel = viewModel)
-
     Spacer(modifier = Modifier.height(15.dp))
     //Info om stedet
     Column(
@@ -446,5 +431,3 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
         }
     }
 }
-
-val String.color get() = Color(parseColor(this))

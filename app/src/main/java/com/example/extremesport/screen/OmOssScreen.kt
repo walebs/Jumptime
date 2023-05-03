@@ -16,11 +16,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.extremesport.R
+import com.example.extremesport.view.ESViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun OmOssScreen() {
+fun OmOssScreen(viewModel: ESViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
@@ -51,7 +52,7 @@ fun OmOssScreen() {
                     fontSize = 30.sp,
                     color = Color.White,
                     modifier = Modifier
-                            .offset(y = -30.dp)
+                            .offset(y = (-30).dp)
                 )
             }
             ElevatedCard(
