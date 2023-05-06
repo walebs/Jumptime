@@ -2,6 +2,7 @@ package com.example.extremesport.screen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,19 +18,17 @@ import com.example.extremesport.view.ESViewModel
 fun LoadingScreen(navController: NavController, loadingFunction: () -> Unit) {
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background("#126fb0".color),
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.clock_icon),
-            contentDescription = null,
-            Modifier
-                .size(100.dp)
-                .wrapContentSize()
+            painter = painterResource(id = R.drawable.jumptime_loadingscreen),
+            contentDescription = "Jumptime loading screen",
         )
     }
     loadingFunction()
-    navController.navigate(Screens.MainScreen.name) {popUpTo(Screens.LoadingScreen.name)}
+    //navController.navigate(Screens.MainScreen.name) {popUpTo(Screens.LoadingScreen.name)}
 }
 
 fun loadAPIs(vm: ESViewModel) {
