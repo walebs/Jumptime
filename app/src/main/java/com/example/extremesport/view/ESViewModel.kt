@@ -33,9 +33,25 @@ class ESViewModel: ViewModel() {
         update(latitude, longitude, altitude, radius, date, offset)
 
         //TODO Midlertidig, dette burde gjøres gjennom datasource og en JSON-fil.
-        //TODO dette er uansett obviously feil. Jeg hadde ikke hoppet i fallskjerm i 9999m/s vind
-        sports["Testing"] = SportRequirements(10000.0,10000.0,10000.0,10000.0,-20.0, 10000.0, 10000.0, 0.0)
-        sports["Fallskjermhopping"] = SportRequirements(6.26,10.0,10.0,10.0,5.0)
+        //TODO numrene må fininstilles.
+        sports["Testing"] = SportRequirements(
+            10000.0, 10000.0,
+            10000.0, 10000.0,
+            10000.0, 10000.0,
+            listOf(-20.0, 10000.0), listOf(-20.0, 10000.0),
+            10000.0, 10000.0,
+            10000.0, 10000.0,
+            10000.0, 10000.0
+        )
+        sports["Fallskjermhopping"] = SportRequirements(
+            6.0, 10.0,
+            0.0, 0.1,
+            5.0, 5.0,
+            listOf(10.0, 35.0), listOf(5.0, 35.0),
+            0.0, 10.0,
+            3.0, 6.0,
+            4.0, 7.0
+        )
     }
 
     fun update(latitude: Double, longitude: Double, altitude: Int, radius: Int, date: String, offset: String) {
@@ -55,13 +71,7 @@ class ESViewModel: ViewModel() {
 
     //Returner akkurat nå bare en boolean for om det anbefales å hoppe akkurat nå.
     fun checkRequirements(sport: String): Boolean {
-        var windspeed = false
-        var precipitation = false
-        var cloud_area_fraction = false
-        var fog_area_fraction = false
-        var temperature = false
-        var sunriseBoolean = false
-        var sunsetBoolean = false
+        var reqTest: Double
 
         _esState.update { currentState ->
             try {
@@ -70,25 +80,13 @@ class ESViewModel: ViewModel() {
                 val locationForecastData = currentState.locationForecast?.properties?.timeseries?.get(0)?.data!!
                 val sunriseData = currentState.sunrise?.properties!!
 
-                windspeed = nowcastData.instant.details.wind_speed < chosenSport.windspeed
-                precipitation = nowcastData.next_1_hours.details.precipitation_amount < chosenSport.precipitation
-                cloud_area_fraction = locationForecastData.instant.details.cloud_area_fraction < chosenSport.cloud_area_fraction
-                fog_area_fraction = locationForecastData.instant.details.fog_area_fraction < chosenSport.fog_area_fraction
-                temperature = nowcastData.instant.details.air_temperature > chosenSport.temperature
-
-                //For at testene skal kjøre, må resultatet være true. Kommenter ut hva som trengs for at dette
-                //skal skje
-                compareTime(sunriseData.sunrise.time)
-                //sunriseBoolean = compareTime(sunriseData.sunrise.time)
-                sunriseBoolean = true
-                //sunsetBoolean = !compareTime(sunriseData.sunset.time)
-                sunsetBoolean = true
+                //uh
             } catch (_: Exception) {
 
             }
             currentState.copy()
         }
-        return windspeed && precipitation && cloud_area_fraction && fog_area_fraction && temperature && sunriseBoolean && sunsetBoolean
+        return true
     }
 
     //Hjelpemetode for å sammenligne tidspunkter på dagen.
