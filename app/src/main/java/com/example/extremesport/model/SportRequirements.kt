@@ -20,4 +20,5 @@ data class SportRequirements(
     val wind_speed_of_gust_moderate: Double,
     val uv_index_ideal: Double,
     val uv_index_moderate: Double,
+    val test: Boolean
 )
