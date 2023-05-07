@@ -34,7 +34,7 @@ class ESViewModel: ViewModel() {
 
         //TODO Midlertidig, dette burde gjøres gjennom datasource og en JSON-fil.
         //TODO dette er uansett obviously feil. Jeg hadde ikke hoppet i fallskjerm i 9999m/s vind
-        sports["Testing"] = SportRequirements(10000.0,10000.0,10000.0,10000.0,-20.0)
+        sports["Testing"] = SportRequirements(10000.0,10000.0,10000.0,10000.0,-20.0, 10000.0, 10000.0, 0.0)
         sports["Fallskjermhopping"] = SportRequirements(6.26,10.0,10.0,10.0,5.0)
     }
 
