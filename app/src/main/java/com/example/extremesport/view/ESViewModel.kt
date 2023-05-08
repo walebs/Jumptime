@@ -124,16 +124,16 @@ class ESViewModel: ViewModel() {
                     0
                 }
 
-                val uv_index: Int = if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max > chosenSport.uv_index_ideal) {
+                val uv_index: Int = if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max >= chosenSport.uv_index_ideal) {
                     2
-                } else if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max > chosenSport.uv_index_moderate) {
+                } else if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max >= chosenSport.uv_index_moderate) {
                     1
                 } else {
                     0
                 }
 
-                val cloud_area: Boolean = locationForecastData.instant.details.cloud_area_fraction < chosenSport.cloud_area_fraction
-                val fog_area: Boolean = locationForecastData.instant.details.fog_area_fraction < chosenSport.fog_area_fraction
+                val cloud_area: Boolean = locationForecastData.instant.details.cloud_area_fraction <= chosenSport.cloud_area_fraction
+                val fog_area: Boolean = locationForecastData.instant.details.fog_area_fraction <= chosenSport.fog_area_fraction
                 val sunriseBoolean = compareTime(sunriseData.sunrise.time)
                 val sunsetBoolean = !compareTime(sunriseData.sunset.time)
 
