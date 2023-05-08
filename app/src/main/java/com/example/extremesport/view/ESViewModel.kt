@@ -3,6 +3,7 @@ package com.example.extremesport.view
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.extremesport.data.DataSource
+import com.example.extremesport.model.RequirementsResult
 import com.example.extremesport.model.SportRequirements
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,8 +73,8 @@ class ESViewModel: ViewModel() {
     }
 
     //Returner akkurat nå bare en boolean for om det anbefales å hoppe akkurat nå.
-    fun checkRequirements(sport: String): Boolean {
-        var reqTest: Double
+    fun checkRequirements(sport: String): RequirementsResult {
+        var requirementsResult = RequirementsResult(0.0, "NaN", "NaN", "NaN", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, "NaN")
 
         _esState.update { currentState ->
             try {
@@ -81,15 +82,9 @@ class ESViewModel: ViewModel() {
                 val nowcastData = currentState.nowcast?.properties?.timeseries?.get(0)?.data!!
                 val locationForecastData = currentState.locationForecast?.properties?.timeseries?.get(0)?.data!!
                 val sunriseData = currentState.sunrise?.properties!!
+                val openAddressData = currentState.openAdress?.adresser?.get(0)!!
 
-                val windspeed: Int
-                val wind_speed_of_gust: Int
-                val temp: Int
-                val precipitation: Int
-                val probability_of_thunder: Int
-                val uv_index: Int
-
-                windspeed = if(nowcastData.instant.details.wind_speed <= chosenSport.windspeed_ideal) {
+                val windspeed: Int = if(nowcastData.instant.details.wind_speed <= chosenSport.windspeed_ideal) {
                     2
                 } else if(nowcastData.instant.details.wind_speed <= chosenSport.windspeed_moderate) {
                     1
@@ -97,7 +92,7 @@ class ESViewModel: ViewModel() {
                     0
                 }
 
-                wind_speed_of_gust = if(nowcastData.instant.details.wind_speed_of_gust <= chosenSport.wind_speed_of_gust_ideal) {
+                val wind_speed_of_gust: Int = if(nowcastData.instant.details.wind_speed_of_gust <= chosenSport.wind_speed_of_gust_ideal) {
                     2
                 } else if (nowcastData.instant.details.wind_speed_of_gust <= chosenSport.wind_speed_of_gust_moderate) {
                     1
@@ -105,7 +100,7 @@ class ESViewModel: ViewModel() {
                     0
                 }
 
-                temp = if(nowcastData.instant.details.air_temperature <= chosenSport.temperature_ideal[1] && nowcastData.instant.details.air_temperature >= chosenSport.temperature_ideal[0]) {
+                val temp: Int = if(nowcastData.instant.details.air_temperature <= chosenSport.temperature_ideal[1] && nowcastData.instant.details.air_temperature >= chosenSport.temperature_ideal[0]) {
                     2
                 } else if (nowcastData.instant.details.air_temperature <= chosenSport.temperature_moderate[1] && nowcastData.instant.details.air_temperature >= chosenSport.temperature_moderate[0]) {
                     1
@@ -113,7 +108,7 @@ class ESViewModel: ViewModel() {
                     0
                 }
 
-                precipitation = if(locationForecastData.next_1_hours.details.precipitation_amount <= chosenSport.precipitation_ideal) {
+                val precipitation: Int = if(locationForecastData.next_1_hours.details.precipitation_amount <= chosenSport.precipitation_ideal) {
                     2
                 } else if(locationForecastData.next_1_hours.details.precipitation_amount <= chosenSport.precipitation_moderate) {
                     1
@@ -121,7 +116,7 @@ class ESViewModel: ViewModel() {
                     0
                 }
 
-                probability_of_thunder = if(locationForecastData.next_1_hours.details.probability_of_thunder <= chosenSport.probability_of_thunder_ideal) {
+                val probability_of_thunder: Int = if(locationForecastData.next_1_hours.details.probability_of_thunder <= chosenSport.probability_of_thunder_ideal) {
                     2
                 } else if(locationForecastData.next_1_hours.details.probability_of_thunder <= chosenSport.probability_of_thunder_moderate) {
                     1
@@ -129,7 +124,7 @@ class ESViewModel: ViewModel() {
                     0
                 }
 
-                uv_index = if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max > chosenSport.uv_index_ideal) {
+                val uv_index: Int = if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max > chosenSport.uv_index_ideal) {
                     2
                 } else if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max > chosenSport.uv_index_moderate) {
                     1
@@ -143,17 +138,33 @@ class ESViewModel: ViewModel() {
                 val sunsetBoolean = !compareTime(sunriseData.sunset.time)
 
                 val boolcollector = cloud_area && fog_area && ((sunriseBoolean && sunsetBoolean) || chosenSport.test)
-                val numbaverage = if(windspeed == 0 || wind_speed_of_gust == 0 || temp == 0 || precipitation == 0 || probability_of_thunder == 0 || uv_index == 0) {
-                    0
+                val numbaverage = if(windspeed == 0 || wind_speed_of_gust == 0 || temp == 0 || precipitation == 0 || probability_of_thunder == 0 || uv_index == 0 || boolcollector) {
+                    0.0
                 } else {
-                    (windspeed + wind_speed_of_gust + temp + precipitation + probability_of_thunder + uv_index) / 6
+                    (windspeed + wind_speed_of_gust + temp + precipitation + probability_of_thunder + uv_index).toDouble() / 6.0
                 }
+
+                val summaryCode1 = locationForecastData.next_1_hours.summary.symbol_code
+                val summaryCode6 = locationForecastData.next_6_hours.summary.symbol_code
+                val summaryCode12 = locationForecastData.next_12_hours.summary.symbol_code
+                val currentTemp = locationForecastData.instant.details.air_temperature
+                val highTemp1 = locationForecastData.next_1_hours.details.air_temperature_max
+                val lowTemp1 = locationForecastData.next_1_hours.details.air_temperature_min
+                val highTemp6 = locationForecastData.next_6_hours.details.air_temperature_max
+                val lowTemp6 = locationForecastData.next_6_hours.details.air_temperature_min
+                val highTemp12 = locationForecastData.next_12_hours.details.air_temperature_max
+                val lowTemp12 = locationForecastData.next_12_hours.details.air_temperature_min
+                val windStrength = locationForecastData.instant.details.wind_speed
+                val windDirection = locationForecastData.instant.details.wind_from_direction
+                val openAddressName = openAddressData.adressenavn
+
+                requirementsResult = RequirementsResult(numbaverage, summaryCode1, summaryCode6, summaryCode12, currentTemp, highTemp1, lowTemp1, highTemp6, lowTemp6, highTemp12, lowTemp12, windStrength, windDirection, openAddressName)
             } catch (_: Exception) {
 
             }
             currentState.copy()
         }
-        return true
+        return requirementsResult
     }
 
     //Hjelpemetode for å sammenligne tidspunkter på dagen.
