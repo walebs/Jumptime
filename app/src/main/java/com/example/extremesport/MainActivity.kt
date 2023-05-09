@@ -53,6 +53,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/*
+    Holds the function for a screen, makes it easier to display screens.
+    The screen names still will have to be added to the enum class at the end,
+    and the both the screens list and the enum class needs to be in the same order.
+*/
+data class Screen(
+    val DisplayScreen: @Composable (PaddingValues?) -> Unit
+)
+
 @Composable
 fun App() {
     val scaffoldState = rememberScaffoldState()
@@ -60,72 +69,45 @@ fun App() {
     val navController = rememberNavController()
     val viewModel = ESViewModel()
 
+    val screenNames = Screens.values().map { it.name }
+    val screens = listOf(
+        Screen {
+            LoadingScreen(
+                navController = navController,
+                loadingFunction = { loadAPIs(viewModel) }
+            )
+        },
+        Screen { innerPaddingValues ->
+            MainScreen(viewModel = viewModel, innerPadding = innerPaddingValues!!)
+        },
+        Screen { SettingsScreen(viewModel) },
+        Screen { ArkivScreen(viewModel) },
+        Screen { FavorittScreen(viewModel) },
+        Screen { ReportScreen(viewModel) },
+        Screen { OmOssScreen(viewModel) },
+    )
+
     NavHost(
         navController = navController,
         startDestination = Screens.LoadingScreen.name
     ) {
-        composable(Screens.LoadingScreen.name) {
-            LoadingScreen(
-                navController = navController,
-                loadingFunction = {loadAPIs(viewModel)}
-            )
-        }
-        composable(Screens.MainScreen.name) {
-            MainScaffold(
-                navController = navController,
-                scaffoldState = scaffoldState,
-                coroutineScope = coroutineScope
-            ) {
-                MainScreen(viewModel, innerPadding = it)
-            }
-        }
-        composable(Screens.SettingsScreen.name) {
-            MainScaffold(
-                navController = navController,
-                scaffoldState = scaffoldState,
-                coroutineScope = coroutineScope
-            ) {
-                SettingsScreen(viewModel)
-            }
-        }
-        composable(Screens.ArkivScreen.name) {
-            MainScaffold(
-                navController = navController,
-                scaffoldState = scaffoldState,
-                coroutineScope = coroutineScope
-            ) {
-                ArkivScreen(viewModel)
-            }
-        }
-        composable(Screens.FavorittScreen.name) {
-            MainScaffold(
-                navController = navController,
-                scaffoldState = scaffoldState,
-                coroutineScope = coroutineScope
-            ) {
-                FavorittScreen(viewModel)
-            }
-        }
-        composable(Screens.ReportScreen.name) {
-            MainScaffold(
-                navController = navController,
-                scaffoldState = scaffoldState,
-                coroutineScope = coroutineScope
-            ) {
-                ReportScreen(viewModel)
-            }
-        }
-        composable(Screens.OmOssScreen.name) {
-            MainScaffold(
-                navController = navController,
-                scaffoldState = scaffoldState,
-                coroutineScope = coroutineScope
-            ) {
-                OmOssScreen(viewModel)
+
+        screens.zip(screenNames) {screen, name ->
+            composable(name) {
+                if (name == "LoadingScreen") {
+                    screen.DisplayScreen(null)
+                } else {
+                    MainScaffold(
+                        navController = navController,
+                        scaffoldState = scaffoldState,
+                        coroutineScope = coroutineScope
+                    ) {
+                        screen.DisplayScreen(it)
+                    }
+                }
             }
         }
     }
-
 }
 
 @Composable
@@ -236,6 +218,6 @@ enum class Screens {
 @Composable
 fun DefaultPreview() {
     ExtremeSportTheme {
-       App()
+        App()
     }
 }
