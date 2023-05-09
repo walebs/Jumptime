@@ -60,6 +60,81 @@ fun App() {
     val navController = rememberNavController()
     val viewModel = ESViewModel()
 
+    NavHost(
+        navController = navController,
+        startDestination = Screens.LoadingScreen.name
+    ) {
+        composable(Screens.LoadingScreen.name) {
+            LoadingScreen(
+                navController = navController,
+                loadingFunction = {loadAPIs(viewModel)}
+            )
+        }
+        composable(Screens.MainScreen.name) {
+            MainScaffold(
+                navController = navController,
+                scaffoldState = scaffoldState,
+                coroutineScope = coroutineScope
+            ) {
+                MainScreen(viewModel, innerPadding = it)
+            }
+        }
+        composable(Screens.SettingsScreen.name) {
+            MainScaffold(
+                navController = navController,
+                scaffoldState = scaffoldState,
+                coroutineScope = coroutineScope
+            ) {
+                SettingsScreen(viewModel)
+            }
+        }
+        composable(Screens.ArkivScreen.name) {
+            MainScaffold(
+                navController = navController,
+                scaffoldState = scaffoldState,
+                coroutineScope = coroutineScope
+            ) {
+                ArkivScreen(viewModel)
+            }
+        }
+        composable(Screens.FavorittScreen.name) {
+            MainScaffold(
+                navController = navController,
+                scaffoldState = scaffoldState,
+                coroutineScope = coroutineScope
+            ) {
+                FavorittScreen(viewModel)
+            }
+        }
+        composable(Screens.ReportScreen.name) {
+            MainScaffold(
+                navController = navController,
+                scaffoldState = scaffoldState,
+                coroutineScope = coroutineScope
+            ) {
+                ReportScreen(viewModel)
+            }
+        }
+        composable(Screens.OmOssScreen.name) {
+            MainScaffold(
+                navController = navController,
+                scaffoldState = scaffoldState,
+                coroutineScope = coroutineScope
+            ) {
+                OmOssScreen(viewModel)
+            }
+        }
+    }
+
+}
+
+@Composable
+fun MainScaffold(
+    navController: NavHostController,
+    scaffoldState: ScaffoldState,
+    coroutineScope: CoroutineScope,
+    content: @Composable (PaddingValues) -> Unit
+) {
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = { DrawerMenu(navController, scaffoldState, coroutineScope) },
@@ -67,11 +142,10 @@ fun App() {
         bottomBar = {
             BottomBar(navController = navController, scaffoldState = scaffoldState, coroutineScope = coroutineScope)
         },
-        content = { innerPadding ->
-            Navigering(navController = navController, viewModel = viewModel, innerPaddingValues = innerPadding)
-        }
+        content = content
     )
 }
+
 
 @Composable
 fun BottomBar(navController: NavHostController, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
@@ -147,38 +221,6 @@ fun BottomBar(navController: NavHostController, scaffoldState: ScaffoldState, co
     }
 }
 
-@Composable
-fun Navigering(navController: NavHostController, viewModel: ESViewModel, innerPaddingValues: PaddingValues){
-    NavHost(
-        navController = navController,
-        startDestination = Screens.LoadingScreen.name
-    ) {
-        composable(Screens.LoadingScreen.name) {
-            LoadingScreen(
-                navController = navController,
-                loadingFunction = {loadAPIs(viewModel)}
-            )
-        }
-        composable(Screens.MainScreen.name) {
-            MainScreen(viewModel, innerPadding = innerPaddingValues)
-        }
-        composable(Screens.SettingsScreen.name) {
-            SettingsScreen(viewModel)
-        }
-        composable(Screens.ArkivScreen.name) {
-            ArkivScreen(viewModel)
-        }
-        composable(Screens.FavorittScreen.name) {
-            FavorittScreen(viewModel)
-        }
-        composable(Screens.ReportScreen.name) {
-            ReportScreen(viewModel)
-        }
-        composable(Screens.OmOssScreen.name) {
-            OmOssScreen(viewModel)
-        }
-    }
-}
 
 enum class Screens {
     LoadingScreen,
