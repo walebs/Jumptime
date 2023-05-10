@@ -10,6 +10,9 @@ data class LocationData(
         val longitude: Double,
         val website: String,
         //Hva slags type lokasjon dette er, altså om det er en klubb eller bare en spot f.eks.
-        val type: String
+        val type: String,
+        val adress: String,
+        val phoneNr: String,
+        val openingtime: String
     )
 }
