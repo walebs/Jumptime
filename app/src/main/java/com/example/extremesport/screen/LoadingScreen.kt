@@ -28,7 +28,7 @@ fun LoadingScreen(navController: NavController, loadingFunction: () -> Unit) {
         )
     }
     loadingFunction()
-    //navController.navigate(Screens.MainScreen.name) {popUpTo(Screens.LoadingScreen.name)}
+    navController.navigate(Screens.MainScreen.name) {popUpTo(Screens.LoadingScreen.name)}
 }
 
 fun loadAPIs(vm: ESViewModel) {
