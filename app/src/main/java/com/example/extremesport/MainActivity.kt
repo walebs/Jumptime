@@ -80,11 +80,11 @@ fun App() {
         Screen { innerPaddingValues ->
             MainScreen(viewModel = viewModel, innerPadding = innerPaddingValues!!)
         },
-        Screen { SettingsScreen(viewModel) },
         Screen { ArkivScreen(viewModel) },
         Screen { FavorittScreen(viewModel) },
-        Screen { ReportScreen(viewModel) },
+        Screen { SettingsScreen(viewModel) },
         Screen { OmOssScreen(viewModel) },
+        Screen { ReportScreen(viewModel) },
     )
 
     NavHost(
@@ -100,7 +100,8 @@ fun App() {
                     MainScaffold(
                         navController = navController,
                         scaffoldState = scaffoldState,
-                        coroutineScope = coroutineScope
+                        coroutineScope = coroutineScope,
+                        selected = name,
                     ) {
                         screen.DisplayScreen(it)
                     }
@@ -115,6 +116,7 @@ fun MainScaffold(
     navController: NavHostController,
     scaffoldState: ScaffoldState,
     coroutineScope: CoroutineScope,
+    selected: String,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
@@ -122,7 +124,7 @@ fun MainScaffold(
         drawerContent = { DrawerMenu(navController, scaffoldState, coroutineScope) },
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
         bottomBar = {
-            BottomBar(navController = navController, scaffoldState = scaffoldState, coroutineScope = coroutineScope)
+            BottomBar(navController = navController, scaffoldState = scaffoldState, coroutineScope = coroutineScope, selected = selected)
         },
         content = content
     )
@@ -130,8 +132,16 @@ fun MainScaffold(
 
 
 @Composable
-fun BottomBar(navController: NavHostController, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
-    var selected by remember { mutableStateOf("main")}
+fun BottomBar(navController: NavHostController, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope, selected: String){ //, newSelected: (String) -> Unit){
+
+    val screens = listOf(
+        Screens.MainScreen.name,
+        Screens.SettingsScreen.name,
+    )
+    val icons = listOf(
+        Pair(R.drawable.baseline_place_24, R.drawable.outline_place_24),
+        Pair(R.drawable.baseline_settings_24, R.drawable.outline_settings_24),
+    )
 
     BottomNavigation(
         modifier = Modifier
@@ -140,12 +150,10 @@ fun BottomBar(navController: NavHostController, scaffoldState: ScaffoldState, co
     )
     {
         BottomNavigationItem(
-            selected = selected == "hamburger",
+            selected = true,
             onClick = {
                 coroutineScope.launch { scaffoldState.drawerState.open()}
-                selected = "hamburger"
             },
-            unselectedContentColor = Color.LightGray,
             selectedContentColor = Color.White,
             icon = {
                 Icon(
@@ -156,50 +164,30 @@ fun BottomBar(navController: NavHostController, scaffoldState: ScaffoldState, co
                 )
             },
         )
-        BottomNavigationItem(
-            selected = selected == "main",
-            onClick =  {
-                navController.navigate(Screens.MainScreen.name) {popUpTo(Screens.MainScreen.name)}
-                selected = "main"
-            },
-            unselectedContentColor = Color.LightGray,
-            selectedContentColor = Color.White,
-            icon = {
-                Icon(
-                    painterResource(id =
-                    if (selected == "main"){
-                        R.drawable.baseline_place_24
-                    }else{
-                        R.drawable.outline_place_24 }
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(40.dp)
-                )
-            }
-        )
-        BottomNavigationItem(
-            selected = selected == "settings",
-            onClick =  {
-                navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)}
-                selected = "settings"
-            },
-            unselectedContentColor = Color.LightGray,
-            selectedContentColor = Color.White,
-            icon = {
-                Icon(
-                    painterResource(id =
-                    if (selected == "settings"){
-                        R.drawable.baseline_settings_24_white
-                    }else{
-                        R.drawable.outline_settings_24 }
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(40.dp)
-                )
-            }
-        )
+
+        screens.zip(icons) { screen, iconSet ->
+            BottomNavigationItem(
+                selected = true,
+                onClick =  {
+                    navController.navigate(screen) {popUpTo(screen)}
+                },
+                selectedContentColor = Color.White,
+                icon = {
+                    Icon(
+                        painterResource(id =
+                            if (selected == screen){
+                                iconSet.first
+                            }else{
+                                iconSet.second
+                            }
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(40.dp)
+                    )
+                }
+            )
+        }
     }
 }
 

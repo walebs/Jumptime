@@ -61,16 +61,9 @@ fun Map(viewModel: ESViewModel) {
         position = CameraPosition.fromLatLngZoom(startPos, 6f)
     }
 
-    val context = LocalContext.current
-
-    var uiSettings by remember { mutableStateOf(MapUiSettings()) }
-    val mapProperties by remember { mutableStateOf(MapProperties(mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.aubergine)))}
-
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
-        uiSettings =  uiSettings,
-        properties = mapProperties
     ) {
         Markers(viewModel)
     }
