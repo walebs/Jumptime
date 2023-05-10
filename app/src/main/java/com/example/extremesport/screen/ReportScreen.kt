@@ -57,7 +57,7 @@ fun ReportScreen(viewModel: ESViewModel) {
                         .offset(x = (-17).dp),
                 )
                 Text(
-                    text = "Settings",
+                    text = "Rapporter",
                     fontSize = 30.sp,
                     color = Color.White,
                     modifier = Modifier
