@@ -73,21 +73,8 @@ class ESViewModel: ViewModel() {
     }
 
     //Returner akkurat nå bare en boolean for om det anbefales å hoppe akkurat nå.
-    fun checkRequirements(sport: String): RequirementsResult {
+    fun checkRequirements(sport: String): Double {
         var numbAverage = 0.0
-        var summaryCode1 = "NaN"
-        var summaryCode6 = "NaN"
-        var summaryCode12 = "NaN"
-        var currentTemp = 0.0
-        var highTemp1 = 0.0
-        var lowTemp1 = 0.0
-        var highTemp6 = 0.0
-        var lowTemp6 = 0.0
-        var highTemp12 = 0.0
-        var lowTemp12 = 0.0
-        var windStrength = 0.0
-        var windDirection = 0.0
-        var openAddressName = "NaN"
 
         _esState.update { currentState ->
             try {
@@ -157,6 +144,36 @@ class ESViewModel: ViewModel() {
                     (windspeed + wind_speed_of_gust + temp + precipitation + probability_of_thunder + uv_index).toDouble() / 6.0
                 }
 
+            } catch (_: Exception) {
+
+            }
+            currentState.copy()
+        }
+        return numbAverage
+    }
+
+    fun getInfo(): RequirementsResult {
+        var summaryCode1 = "NaN"
+        var summaryCode6 = "NaN"
+        var summaryCode12 = "NaN"
+        var currentTemp = 0.0
+        var highTemp1 = 0.0
+        var lowTemp1 = 0.0
+        var highTemp6 = 0.0
+        var lowTemp6 = 0.0
+        var highTemp12 = 0.0
+        var lowTemp12 = 0.0
+        var windStrength = 0.0
+        var windDirection = 0.0
+        var openAddressName = "NaN"
+
+        _esState.update { currentState ->
+            try {
+                //val nowcastData = currentState.nowcast?.properties?.timeseries?.get(0)?.data!!
+                val locationForecastData = currentState.locationForecast?.properties?.timeseries?.get(0)?.data!!
+                //val sunriseData = currentState.sunrise?.properties!!
+                val openAddressData = currentState.openAdress?.adresser?.get(0)!!
+
                 summaryCode1 = locationForecastData.next_1_hours.summary.symbol_code
                 summaryCode6 = locationForecastData.next_6_hours.summary.symbol_code
                 summaryCode12 = locationForecastData.next_12_hours.summary.symbol_code
@@ -170,13 +187,12 @@ class ESViewModel: ViewModel() {
                 windStrength = locationForecastData.instant.details.wind_speed
                 windDirection = locationForecastData.instant.details.wind_from_direction
                 openAddressName = openAddressData.adressenavn
-
             } catch (_: Exception) {
 
             }
             currentState.copy()
         }
-        return RequirementsResult(numbAverage, summaryCode1, summaryCode6, summaryCode12, currentTemp, highTemp1, lowTemp1, highTemp6, lowTemp6, highTemp12, lowTemp12, windStrength, windDirection, openAddressName)
+        return RequirementsResult(summaryCode1, summaryCode6, summaryCode12, currentTemp, highTemp1, lowTemp1, highTemp6, lowTemp6, highTemp12, lowTemp12, windStrength, windDirection, openAddressName)
     }
 
     //Hjelpemetode for å sammenligne tidspunkter på dagen.

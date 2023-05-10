@@ -1,7 +1,6 @@
 package com.example.extremesport.model
 
 data class RequirementsResult(
-    var numbAverage: Double,
     var summaryCode1: String,
     var summaryCode6: String,
     var summaryCode12:String,

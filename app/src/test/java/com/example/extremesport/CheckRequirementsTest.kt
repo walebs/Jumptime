@@ -13,7 +13,7 @@ class CheckRequirementsTest {
         Thread.sleep(5000)
 
         val cR = viewmodel.checkRequirements("Testing")
-        Assert.assertEquals(true, cR.numbAverage > 0)
+        Assert.assertEquals(true, cR > 0)
     }
 
     @Test
