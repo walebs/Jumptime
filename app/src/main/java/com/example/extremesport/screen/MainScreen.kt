@@ -43,6 +43,7 @@ var boolShow by mutableStateOf(false)
 )
 @Composable
 fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
+    var currentMarkerId by remember { mutableStateOf<String>("")}
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -50,16 +51,19 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
     ) {
         Map(viewModel,
             onClick = { marker: Marker ->
-                val sdf = SimpleDateFormat("yyyy-MM-dd")
-                val currentDate = sdf.format(Date())
-                //TODO updatere når marker er trykket på?
-                val oldState = viewModel.esState.value
-                viewModel.update(marker.position.latitude, marker.position.longitude, 1, 1000, currentDate, "+01:00")
-                while (oldState == viewModel.esState.value) {
-                    Thread.sleep(1)
+                boolShow = !boolShow || currentMarkerId != marker.id // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
+                currentMarkerId = marker.id
+                if (boolShow) {
+                    val sdf = SimpleDateFormat("yyyy-MM-dd")
+                    val currentDate = sdf.format(Date())
+                    //TODO updatere når marker er trykket på?
+                    val oldState = viewModel.esState.value
+                    viewModel.update(marker.position.latitude, marker.position.longitude, 1, 1000, currentDate, "+01:00")
+                    while (oldState == viewModel.esState.value) {
+                        Thread.sleep(1)
+                    }
                 }
                 //vente til API-ene har oppdatert seg, kanskje bruke loadAPI fra loadingskjerm?
-                boolShow = !boolShow // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
                 true
             })
         if (boolShow) {
