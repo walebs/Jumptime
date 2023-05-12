@@ -213,7 +213,11 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
     fun returnLocations(): List<LocationData.Location> {
         var locationDataList: List<LocationData.Location> = listOf()
         _esState.update { currentState ->
-            locationDataList = currentState.locationData?.locations!!
+            try {
+                locationDataList = currentState.locationData?.locations!!
+            } catch (_: Exception) {
+                
+            }
             print(locationDataList[0])
             print("\n\n\n\n\n\n")
             currentState.copy()

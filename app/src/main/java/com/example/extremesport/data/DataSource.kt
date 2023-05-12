@@ -58,32 +58,21 @@ class DataSource {
         return locationForecast
     }
 
-    suspend fun getOpenAddress(latitude: Double, longitude: Double, radius: Int): OpenAddressData {
+    suspend fun getOpenAddress(latitude: Double, longitude: Double, radius: Int): OpenAddressData? {
         //Radius er vel egentlig unødvendig å ha som parameter, men kan kanskje være nyttig uansett, idk.
         val apiLink = "https://ws.geonorge.no/adresser/v1/punktsok?lat=${latitude}&lon=${longitude}&radius=${radius}"
-        val openAddress: OpenAddressData = client.get(apiLink).body()
+        var openAddress: OpenAddressData? = null
+        try {
+            openAddress = client.get(apiLink).body()
+        } catch (_: Exception) {
+
+        }
         return openAddress
     }
 
     fun getLocationData(appDataContainer: AppDataContainer): LocationData {
-        //DIRTY fix for å sørge for at testingen kan kjøres uansett hvilken maskin du er på.
-        /*
-        val locationDataString: String =
-            if (System.getProperty("os.name") == "Windows 10" || System.getProperty("os.name") == "Windows 11") {
-                File("src\\main\\java\\com\\example\\extremesport\\data\\Locations.json").readText(
-                    Charsets.UTF_8
-                )
-            } else {
-                File("./src/main/java/com/example/extremesport/data/Locations.json").readText(
-                    Charsets.UTF_8
-                )
-            }
-         */
-        //painterResource(id = R.drawable.baseline_menu_24_white)
         val content = appDataContainer.JSON
         val locationDataString = content.bufferedReader().use(BufferedReader::readText)
-        //ree.openRawResource()
-        //val locationDataString = this::class.java.getResource("/raw/locations")?.readText()
         val gson = Gson()
         return gson.fromJson(locationDataString, LocationData::class.java)
     }

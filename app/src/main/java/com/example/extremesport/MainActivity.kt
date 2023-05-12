@@ -71,7 +71,7 @@ fun App(appDataContainer: AppDataContainer?) {
     val navController = rememberNavController()
     val viewModel = ESViewModel(appDataContainer)
     //TODO fjern
-    Thread.sleep(5000)
+    //Thread.sleep(5000)
     viewModel.returnLocations()
 
     val screenNames = Screens.values().map { it.name }
