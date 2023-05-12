@@ -45,6 +45,7 @@ var boolShow by mutableStateOf(false)
 @Composable
 fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
     var currentMarkerId by remember { mutableStateOf<String>("")}
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +53,7 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
     ) {
         Map(viewModel,
             onClick = { marker: Marker ->
-                boolShow = !boolShow || currentMarkerId != marker.id // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
+                boolShow = !boolShow //|| currentMarkerId != marker.id // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
                 currentMarkerId = marker.id
                 if (boolShow) {
                     val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -68,8 +69,12 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
                 true
             })
         if (boolShow) {
+            val info = viewModel.getInfo()
+            val checkReq = viewModel.checkRequirements("Fallskjermhopping")
             ShowWeatherBox(
-                viewModel = viewModel
+                viewModel = viewModel,
+                info,
+                checkReq
             )
         }
     }
@@ -79,7 +84,7 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
 fun Map(viewModel: ESViewModel, onClick: (Marker) -> Boolean) {
     val startPos = LatLng(59.9138, 10.7387)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(startPos, 5f)
+        position = CameraPosition.fromLatLngZoom(startPos, 6f)
     }
 
     GoogleMap(
@@ -121,7 +126,7 @@ fun Markers(viewModel: ESViewModel, onClick: (Marker) -> Boolean) {
 }
 
 @Composable
-fun ShowWeatherBox(viewModel: ESViewModel) {
+fun ShowWeatherBox(viewModel: ESViewModel, info: RequirementsResult, checkReq: Double) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
@@ -135,10 +140,8 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
     )
     var keyword by remember { mutableStateOf("short") }
 
-    val checkReq = viewModel.checkRequirements("Fallskjermhopping")
     val icons = listOf(R.drawable.red_icon, R.drawable.yellow_icon, R.drawable.green_icon)
     val icon = icons[round(checkReq).toInt()]
-    val info = viewModel.getInfo()
 
     Column(
         modifier = Modifier
