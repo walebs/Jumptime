@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.extremesport.R
 import com.example.extremesport.Screens
+import com.example.extremesport.data.AppDataContainer
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -37,10 +38,12 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen (navController: NavController, context: Context?) {
+fun MainScreen (navController: NavController, appDataContainer: AppDataContainer?) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    val viewModel = ESViewModel(context)
+    val viewModel = ESViewModel(appDataContainer)
+    //TODO tenk på dette
+    //val jsonData = context?.let { AppDataContainer(it) }
     //Thread.sleep(5000)
     //println("vente 5sek\n\n")
     //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")

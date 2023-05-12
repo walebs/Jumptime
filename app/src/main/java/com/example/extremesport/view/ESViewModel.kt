@@ -15,10 +15,12 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
 import android.content.Context
+import com.example.extremesport.data.AppDataContainer
+import com.example.extremesport.data.JSONGet
 import com.example.extremesport.model.LocationData
 
-@SuppressLint("StaticFieldLeak")
-class ESViewModel(private val context: Context?): ViewModel() {
+//@SuppressLint("StaticFieldLeak")
+class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
     // es: ExtremeSport
     private val ds = DataSource()
     private var _esState = MutableStateFlow(ESUiState())
@@ -50,8 +52,7 @@ class ESViewModel(private val context: Context?): ViewModel() {
                 val nowcast = ds.getNowcast(latitude, longitude)
                 val locationForecast = ds.getLocationForecast(altitude, latitude, longitude)
                 val openAdress = ds.getOpenAddress(latitude, longitude, radius)
-                val locationdata: LocationData? = context?.let { ds.getLocationData(it) }
-                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress, locationdata)
+                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress)
             } catch (_: IOException) {
 
             }

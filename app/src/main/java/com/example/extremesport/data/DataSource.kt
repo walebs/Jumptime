@@ -65,7 +65,7 @@ class DataSource {
         return openAddress
     }
 
-    suspend fun getLocationData(context: Context): LocationData {
+    suspend fun getLocationData(appDataContainer: AppDataContainer): LocationData {
         //DIRTY fix for å sørge for at testingen kan kjøres uansett hvilken maskin du er på.
         /*
         val locationDataString: String =
@@ -80,7 +80,7 @@ class DataSource {
             }
          */
         //painterResource(id = R.drawable.baseline_menu_24_white)
-        val content = context.resources.openRawResource(R.raw.locations)
+        val content = appDataContainer.JSON
         val locationDataString = content.bufferedReader().use(BufferedReader::readText)
         //ree.openRawResource()
         //val locationDataString = this::class.java.getResource("/raw/locations")?.readText()
