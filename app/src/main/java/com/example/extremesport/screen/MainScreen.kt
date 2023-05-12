@@ -97,7 +97,8 @@ fun Markers(viewModel: ESViewModel) {
             state = MarkerState(it),
             onClick = {
                 //TODO updatere når marker er trykket på?
-                viewModel.update(it.position.latitude, it.position.longitude, 0, 0, currentDate, "")
+                viewModel.update(it.position.latitude, it.position.longitude, 1, 1000, currentDate, "+01:00")
+                //vente til API-ene har oppdatert seg, kanskje bruke loadAPI fra loadingskjerm?
                 boolShow = !boolShow // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
                 true
             }
