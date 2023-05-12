@@ -28,6 +28,7 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
     val esState: StateFlow<ESUiState> = _esState.asStateFlow()
     //Kan hende dette burde være i esuistate.
     private var sports: HashMap<String, SportRequirements> = HashMap()
+    private val jsonData = appDataContainer?.let { ds.getLocationData(it) }
 
     init {
         val latitude = 59.933333
@@ -71,7 +72,7 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                 val nowcast = ds.getNowcast(latitude, longitude)
                 val locationForecast = ds.getLocationForecast(altitude, latitude, longitude)
                 val openAdress = ds.getOpenAddress(latitude, longitude, radius)
-                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress)
+                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress, jsonData)
             } catch (_: IOException) {
 
             }
@@ -207,5 +208,16 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
         val realTimeInt = (rightNow.get(Calendar.HOUR_OF_DAY).toString() + rightNow.get(Calendar.MINUTE).toString()).toInt()
         val sunriseAPIInt = (sunriseAPITime.substring(11,13) + sunriseAPITime.substring(14,16)).toInt()
         return sunriseAPIInt < realTimeInt
+    }
+
+    fun returnLocations(): List<LocationData.Location> {
+        var locationDataList: List<LocationData.Location> = listOf()
+        _esState.update { currentState ->
+            locationDataList = currentState.locationData?.locations!!
+            print(locationDataList[0])
+            print("\n\n\n\n\n\n")
+            currentState.copy()
+        }
+        return locationDataList
     }
 }

@@ -65,7 +65,7 @@ class DataSource {
         return openAddress
     }
 
-    suspend fun getLocationData(appDataContainer: AppDataContainer): LocationData {
+    fun getLocationData(appDataContainer: AppDataContainer): LocationData {
         //DIRTY fix for å sørge for at testingen kan kjøres uansett hvilken maskin du er på.
         /*
         val locationDataString: String =

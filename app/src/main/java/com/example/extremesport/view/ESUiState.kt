@@ -7,4 +7,5 @@ data class ESUiState(
     val nowcast: NowcastData? = null,
     val locationForecast: LocationForecastData? = null,
     val openAdress: OpenAddressData? = null,
+    val locationData: LocationData? = null
 )
