@@ -1,5 +1,6 @@
 package com.example.extremesport.view
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.extremesport.data.DataSource
@@ -12,9 +13,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
+@SuppressLint("SimpleDateFormat")
 class ESViewModel: ViewModel() {
     // es: ExtremeSport
     private val ds = DataSource()
@@ -24,14 +27,15 @@ class ESViewModel: ViewModel() {
     private var sports: HashMap<String, SportRequirements> = HashMap()
 
     init {
-        val latitude = 59.933333
-        val longitude = 10.716667
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val currentDate = sdf.format(Date())
+        val latitude = 59.9138
+        val longitude = 10.7387
         val altitude = 1
         val radius = 1000
-        val date = "2023-05-07"
         val offset = "+01:00"
 
-        update(latitude, longitude, altitude, radius, date, offset)
+        update(latitude, longitude, altitude, radius, currentDate, offset)
 
         //TODO Midlertidig, dette burde gjøres gjennom datasource og en JSON-fil.
         //TODO numrene må fininnstilles.

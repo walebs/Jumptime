@@ -2,8 +2,6 @@ package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
 import android.graphics.Color.parseColor
-import android.media.ImageReader
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,11 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -29,13 +25,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.extremesport.R
 import com.example.extremesport.Screens
+import com.example.extremesport.model.RequirementsResult
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 val String.color get() = Color(parseColor(this))
 var boolShow by mutableStateOf(false)
@@ -56,9 +54,9 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
 
 @Composable
 fun Map(viewModel: ESViewModel) {
-    val startPos = LatLng(69.67575, 18.91752)
+    val startPos = LatLng(59.9138, 10.7387)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(startPos, 6f)
+        position = CameraPosition.fromLatLngZoom(startPos, 5f)
     }
 
     GoogleMap(
@@ -69,9 +67,13 @@ fun Map(viewModel: ESViewModel) {
     }
 }
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun Markers(viewModel: ESViewModel) {
-    //TODO hente fra JSON filen
+    val sdf = SimpleDateFormat("yyyy-MM-dd")
+    val currentDate = sdf.format(Date())
+
+    //TODO hente fra JSON filen eller lage en instans av en marker dataklasse
     val listOfPos = listOf (
         LatLng(69.67575, 18.91752), //tromsoo
         LatLng(69.05894, 18.54549), //troms
@@ -80,12 +82,22 @@ fun Markers(viewModel: ESViewModel) {
         LatLng(62.65002, 9.85408),  //oppdal
         LatLng(62.74936, 7.26345),  //fooniks
         LatLng(62.23288, 8.25007),  //lesja
+        LatLng(61.25667, 11.67063), //oslo
+        LatLng(60.81757, 11.06997), //hagl
+        LatLng(60.63989, 6.50189),  //voss
+        LatLng(60.63989, 6.50189),  //bergen
+        LatLng(58.89314, 5.63200),  //stavanger
+        LatLng(58.20514, 8.07187),  //kjevik
+        LatLng(59.29889, 10.36689), //tønsberg
+        LatLng(59.39895, 11.34331)  //viken
     )
 
-    listOfPos.forEach {
+    listOfPos.forEach { it ->
         Marker(
             state = MarkerState(it),
             onClick = {
+                //TODO updatere når marker er trykket på?
+                viewModel.update(it.position.latitude, it.position.longitude, 0, 0, currentDate, "")
                 boolShow = !boolShow // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
                 true
             }
@@ -100,7 +112,7 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
 
     val height = mapOf(
         "short" to (screenHeight/4.5).dp,
-        "long" to (screenHeight-(screenHeight/4)).dp
+        "long" to (screenHeight-(screenHeight/5)).dp
     )
     val picture = mapOf(
         "long" to R.drawable.arrowup,
@@ -108,11 +120,15 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
     )
     var keyword by remember { mutableStateOf("short") }
 
+    val checkReq = viewModel.checkRequirements("Fallskjermhopping")
+    val icon = R.drawable.green_icon
+    val info = viewModel.getInfo()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(height[keyword]!!)
-            .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .background("#1C6EAE".color, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .alpha(1f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .border(
@@ -121,11 +137,11 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
                 RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
             )
     ) {
-        InformationBox(viewModel, keyword)
+        InformationBox(viewModel, keyword, icon, info)
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.LightGray),
+                .background("#1C6EAE".color),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -133,16 +149,17 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
                 onClick = {
                     keyword = if (keyword == "short") "long" else "short"
                 },
-                colors = ButtonDefaults.buttonColors(Color.LightGray),
+                colors = ButtonDefaults.buttonColors("#1C6EAE".color),
                 modifier = Modifier
                     .height(40.dp)
                     .width(80.dp)
                     .padding(bottom = 5.dp)
             ) {
-                Image(
+                Icon(
                     painter = painterResource(id = picture[keyword]!!),
                     contentDescription = null,
-                    Modifier.fillMaxSize()
+                    Modifier.fillMaxSize(),
+                    tint = Color.White
                 )
             }
         }
@@ -150,7 +167,12 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
 }
 
 @Composable
-fun InformationBox(viewModel: ESViewModel, keyword: String) {
+fun InformationBox(
+    viewModel: ESViewModel,
+    keyword: String,
+    icon: Int,
+    info: RequirementsResult
+) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -163,11 +185,10 @@ fun InformationBox(viewModel: ESViewModel, keyword: String) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(start = 25.dp, top = 15.dp)
             ) {
-                Text("Sted")
-                Text("Værforhold")
-                Text("Temp:")
-                Text("H: & L:")
-                Text("Vindinfo:")
+                Text("Sted", color = Color.White)
+                Text(info.summaryCode1, color = Color.White)
+                Text("Temp: ${info.currentTemp.toInt()}°", color = Color.White)
+                Text("Vindinfo: ${info.windStrength} m/s", color = Color.White)
             }
             Spacer(Modifier.padding(50.dp))
             Column(
@@ -176,11 +197,11 @@ fun InformationBox(viewModel: ESViewModel, keyword: String) {
                     .padding(top = 10.dp, end = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Sikkerhetsnivå", Modifier.padding(top = 10.dp))
+                Text("Sikkerhetsnivå", Modifier.padding(top = 10.dp), color = Color.White)
                 Image(
                     //TODO: dette må være en variabel og ikke et fast icon
                     //TODO: kommer ann på hva checkrequerments sier
-                    painter = painterResource(id = R.drawable.green_icon),
+                    painter = painterResource(id = icon),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(15.dp)
@@ -191,18 +212,22 @@ fun InformationBox(viewModel: ESViewModel, keyword: String) {
     }
 
     if (keyword == "long") {
-        LongInformationBox(viewModel = viewModel)
+        LongInformationBox(viewModel, icon, info)
     }
 }
 
 @Composable
-fun LongInformationBox(viewModel: ESViewModel) {
+fun LongInformationBox(viewModel: ESViewModel, icon: Int, info: RequirementsResult) {
     Spacer(modifier = Modifier.height(15.dp))
     //Info om stedet
     Column(
         Modifier.padding(start = 20.dp)
     ) {
-        Text("Oslo fallskjermklubb", Modifier.padding(bottom = 5.dp), fontSize = 20.sp)
+        Text("Oslo fallskjermklubb",
+            Modifier.padding(bottom = 5.dp),
+            fontSize = 20.sp,
+            color = Color.White
+        )
         Column(Modifier.padding(bottom = 10.dp)) {
             LocationInfo(R.drawable.marker, "Oslo gate 5, 0882, Oslo")
             LocationInfo(R.drawable.clock_icon, "9-17")
@@ -212,14 +237,22 @@ fun LongInformationBox(viewModel: ESViewModel) {
         Column(
             Modifier.fillMaxWidth()
         ) {
-            Text(text = "7 - Dagersvarsel",
+            Text(text = "Dagsvarsel",
                 Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 5.dp), textAlign = TextAlign.Center, fontSize = 20.sp)
+                    .padding(bottom = 5.dp),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
+                color = Color.White
+            )
             Column(Modifier.fillMaxWidth()) {
-                val days = listOf("man", "tir", "ons", "tor", "fre", "lør", "søn")
-                (0..6).zip(days) { _, day ->
-                    WeatherForecast(day)
+                val times = listOf("next 1h", "next 6h", "next 12h")
+                for (time in times) {
+                    when (time) {
+                        "next 1h" -> WeatherForecast(time, info.summaryCode1, info.highTemp1.toInt(), info.lowTemp1.toInt(), info.windStrength.toInt(), icon)
+                        "next 6h" -> WeatherForecast(time, info.summaryCode6, info.highTemp6.toInt(), info.lowTemp6.toInt(), info.windStrength.toInt(), icon)
+                        "next 12h" -> WeatherForecast(time, info.summaryCode12, info.highTemp12.toInt(), info.lowTemp12.toInt(), info.windStrength.toInt(), icon)
+                    }
                 }
             }
         }
@@ -229,24 +262,24 @@ fun LongInformationBox(viewModel: ESViewModel) {
 @Composable
 fun LocationInfo(icon: Int, str: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Image(
+        Icon(
             painter = painterResource(id = icon),
             contentDescription = null,
             Modifier
                 .size(30.dp)
                 .padding(end = 5.dp)
         )
-        Text(str)
+        Text(str, color = Color.White)
     }
 }
 
 @Composable
 fun WeatherForecast(
-    day: String,
+    time: String,
     weather: String = "regn",
-    highTemp: Int = 0,
-    lowTemp: Int = 0,
-    wind: Int = 0,
+    highTemp: Int,
+    lowTemp: Int,
+    wind: Int,
     icon: Int = R.drawable.green_icon
 ) {
     Row(
@@ -254,14 +287,18 @@ fun WeatherForecast(
             .fillMaxWidth()
             .padding(bottom = 2.dp)
     ) {
-        Text(text = "${day}.  $weather  H: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  Vindinfo: ${wind}m/s", textAlign = TextAlign.Center)
+        Text(
+            text = "${time}.  $weather  H: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  Vindinfo: ${wind} m/s",
+            textAlign = TextAlign.Center,
+            color = Color.White
+        )
         Spacer(modifier = Modifier.weight(4f))
         Image(
             painter = painterResource(id = icon),
             contentDescription = null,
             Modifier
                 .size(30.dp)
-                .padding(end = 5.dp)
+                .padding(end = 10.dp)
         )
     }
 }
