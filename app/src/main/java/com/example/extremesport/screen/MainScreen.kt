@@ -60,7 +60,7 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
                     val currentDate = sdf.format(Date())
                     //TODO updatere når marker er trykket på?
                     val oldState = viewModel.esState.value
-                    viewModel.update(marker.position.latitude, marker.position.longitude, 1, 1000, currentDate, "+01:00")
+                    viewModel.update(marker.position.latitude, marker.position.longitude, 1, 1200, currentDate, "+01:00")
                     while (oldState == viewModel.esState.value) {
                         Thread.sleep(1)
                     }
@@ -100,10 +100,10 @@ fun Markers(viewModel: ESViewModel, onClick: (Marker) -> Boolean) {
 
     //TODO hente fra JSON filen eller lage en instans av en marker dataklasse
     val listOfPos = listOf (
+        LatLng(63.89993, 10.36208), //ntnu
         LatLng(69.67575, 18.91752), //tromsoo
         LatLng(69.05894, 18.54549), //troms
         LatLng(67.27268, 14.41794), //bodoo
-        LatLng(63.89993, 10.36208), //ntnu
         LatLng(62.65002, 9.85408),  //oppdal
         LatLng(62.74936, 7.26345),  //fooniks
         LatLng(62.23288, 8.25007),  //lesja
@@ -206,8 +206,8 @@ fun InformationBox(
             ) {
                 Text("Sted", color = Color.White)
                 Text(info.summaryCode1, color = Color.White)
-                Text("Temp: ${info.currentTemp.toInt()}°", color = Color.White)
-                Text("Vindinfo: ${info.windStrength} m/s", color = Color.White)
+                Text("${info.currentTemp.toInt()}°", color = Color.White)
+                Text("${info.windStrength} m/s", color = Color.White)
             }
             Spacer(Modifier.padding(50.dp))
             Column(
@@ -218,8 +218,6 @@ fun InformationBox(
             ) {
                 Text("Sikkerhetsnivå", Modifier.padding(top = 10.dp), color = Color.White)
                 Image(
-                    //TODO: dette må være en variabel og ikke et fast icon
-                    //TODO: kommer ann på hva checkrequerments sier
                     painter = painterResource(id = icon),
                     contentDescription = null,
                     modifier = Modifier
@@ -307,7 +305,7 @@ fun WeatherForecast(
             .padding(bottom = 2.dp)
     ) {
         Text(
-            text = "${time}.  $weather  H: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  Vindinfo: ${wind} m/s",
+            text = "$time  $weather  H: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  $wind m/s",
             textAlign = TextAlign.Center,
             color = Color.White
         )

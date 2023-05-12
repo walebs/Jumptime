@@ -32,7 +32,7 @@ class ESViewModel: ViewModel() {
         val latitude = 59.9138
         val longitude = 10.7387
         val altitude = 1
-        val radius = 1000
+        val radius = 1200
         val offset = "+01:00"
 
         update(latitude, longitude, altitude, radius, currentDate, offset)
