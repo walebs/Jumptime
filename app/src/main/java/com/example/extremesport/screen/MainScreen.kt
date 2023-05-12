@@ -35,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.round
 
 val String.color get() = Color(parseColor(this))
 var boolShow by mutableStateOf(false)
@@ -135,7 +136,8 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
     var keyword by remember { mutableStateOf("short") }
 
     val checkReq = viewModel.checkRequirements("Fallskjermhopping")
-    val icon = R.drawable.green_icon
+    val icons = listOf(R.drawable.red_icon, R.drawable.yellow_icon, R.drawable.green_icon)
+    val icon = icons[round(checkReq).toInt()]
     val info = viewModel.getInfo()
 
     Column(
