@@ -3,26 +3,28 @@ package com.example.extremesport.screen
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color.parseColor
+import android.media.ImageReader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -32,181 +34,96 @@ import com.example.extremesport.data.AppDataContainer
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+val String.color get() = Color(parseColor(this))
+var boolShow by mutableStateOf(false)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen (navController: NavController, appDataContainer: AppDataContainer?) {
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
-    val viewModel = ESViewModel(appDataContainer)
-    //TODO tenk på dette
-    //val jsonData = context?.let { AppDataContainer(it) }
-    //Thread.sleep(5000)
-    //println("vente 5sek\n\n")
-    //val testBoolean  = viewModel.checkRequirements("Fallskjermhopping")
-    //val testBoolean2  = viewModel.checkRequirements("Testing")
-
-    Scaffold(
-        scaffoldState = scaffoldState,
-        floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier
-                    .size(80.dp)
-                    .border(
-                        BorderStroke(1.dp, Color.Black),
-                        shape = CircleShape
-                    )
-                    .clip(CircleShape),
-                contentColor = Color.Black,
-                onClick = {
-                    coroutineScope.launch {
-                        scaffoldState.snackbarHostState
-                            .showSnackbar("hei")
-                        }
-                     },
-                backgroundColor = Color.White
-            )
-            {
-                Icon(imageVector = Icons.Default.Add, null)
-            }
-        },
-        isFloatingActionButtonDocked = true,
-        floatingActionButtonPosition = FabPosition.Center,
-
-        drawerContent = { DrawerMenu(navController, scaffoldState, coroutineScope) },
-        drawerGesturesEnabled = false,
-
-        bottomBar = {
-            BottomAppBar(
-                //cutoutShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
-                modifier = Modifier
-                    .height(65.dp),
-                backgroundColor = "#1C6EAE".color
-            )
-            {
-                BottomNavigationItem(
-                    selected = false,
-                    onClick = { coroutineScope.launch { scaffoldState.drawerState.open()} },
-                    selectedContentColor = Color.Red,
-                    unselectedContentColor = Color.White,
-                    icon = {
-                        Icon(
-                            painterResource(id = R.drawable.baseline_menu_24_white),
-                            contentDescription = "Menyknapp",
-                            modifier = Modifier
-                                .size(40.dp)
-                        )
-                    }
-                )
-
-                Spacer(modifier = Modifier.padding(130.dp))
-
-                BottomNavigationItem(
-                    selected = false,
-                    onClick =  { navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)} },
-                    selectedContentColor = Color.Red,
-                    unselectedContentColor = Color.White,
-                    icon = {
-                        Icon(
-                            painterResource(id = R.drawable.baseline_settings_24_white),
-                            contentDescription = "Settingsknapp",
-                            modifier = Modifier
-                                .size(40.dp)
-                        )
-                    }
-                )
-            }
-        },
-        content = { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                Map()
-            }
-            Box(Modifier.border(width = 1.dp, Color.Black, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))) {
-                ShowWeatherBox(viewModel)
-            }
+fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+    ) {
+        Map(viewModel)
+        if (boolShow) {
+            ShowWeatherBox(viewModel)
         }
-    )
+    }
 }
+
 @Composable
-fun Map(){
-    val tromsoo = LatLng(69.67575, 18.91752)
+fun Map(viewModel: ESViewModel) {
+    val startPos = LatLng(69.67575, 18.91752)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(tromsoo, 6f)
+        position = CameraPosition.fromLatLngZoom(startPos, 6f)
     }
 
-    var uiSettings by remember { mutableStateOf(MapUiSettings()) }
-
-    val googleMap = GoogleMap(
+    GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
-        uiSettings =  MapUiSettings()
     ) {
-        Markers()
+        Markers(viewModel)
     }
 }
 
 @Composable
-fun Markers(){
-    val tromsoo = LatLng(69.67575, 18.91752)
-    val troms = LatLng(69.05894, 18.54549)
-    val bodoo = LatLng(67.27268, 14.41794)
-    val ntnu = LatLng(63.89993, 10.36208)
-    val oppdal = LatLng(62.65002, 9.85408)
-    val fooniks = LatLng(62.74936, 7.26345)
-    val lesja = LatLng(62.23288, 8.25007)
+fun Markers(viewModel: ESViewModel) {
+    //TODO hente fra JSON filen
+    val listOfPos = listOf (
+        LatLng(69.67575, 18.91752), //tromsoo
+        LatLng(69.05894, 18.54549), //troms
+        LatLng(67.27268, 14.41794), //bodoo
+        LatLng(63.89993, 10.36208), //ntnu
+        LatLng(62.65002, 9.85408),  //oppdal
+        LatLng(62.74936, 7.26345),  //fooniks
+        LatLng(62.23288, 8.25007),  //lesja
+    )
 
-    Marker(
-        state = MarkerState(position = tromsoo)
-        //, onClick = {  }
-    )
-    Marker(
-        state = MarkerState(position = troms)
-    )
-    Marker(
-        state = MarkerState(position = bodoo)
-    )
-    Marker(
-        state = MarkerState(position = ntnu)
-    )
-    Marker(
-        state = MarkerState(position = oppdal)
-    )
-    Marker(
-        state = MarkerState(position = fooniks)
-    )
-    Marker(
-        state = MarkerState(position = lesja)
-    )
+    listOfPos.forEach {
+        Marker(
+            state = MarkerState(it),
+            onClick = {
+                boolShow = !boolShow // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
+                true
+            }
+        )
+    }
 }
+
 @Composable
 fun ShowWeatherBox(viewModel: ESViewModel) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
-    var height by remember { mutableStateOf((screenHeight-(screenHeight/4)).dp) }
-    var picture by remember { mutableStateOf(R.drawable.arrowdown) }
-    var keyword by remember { mutableStateOf("long") }
-    //TODO fjerne?
-    var buttonText by remember { mutableStateOf("Show more") }
-
+    val height = mapOf(
+        "short" to (screenHeight/4.5).dp,
+        "long" to (screenHeight-(screenHeight/4)).dp
+    )
+    val picture = mapOf(
+        "long" to R.drawable.arrowup,
+        "short" to R.drawable.arrowdown
+    )
+    var keyword by remember { mutableStateOf("short") }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(height)
+            .height(height[keyword]!!)
             .background(Color.LightGray, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .alpha(1f)
             .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .padding(5.dp)
+            .border(
+                width = 1.dp,
+                Color.Black,
+                RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+            )
     ) {
-        InformationBox(keyword, viewModel)
+        InformationBox(viewModel, keyword)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -216,86 +133,18 @@ fun ShowWeatherBox(viewModel: ESViewModel) {
         ) {
             Button(
                 onClick = {
-                    if (height == (screenHeight/4.5).dp) {
-                        height = (screenHeight-(screenHeight/4)).dp
-                        picture = R.drawable.arrowup
-                        keyword = "long"
-                        buttonText = "Show less"
-                    } else {
-                        height = (screenHeight/4.5).dp
-                        picture = R.drawable.arrowdown
-                        keyword = "short"
-                        buttonText = "Show more"
-                    }
+                    keyword = if (keyword == "short") "long" else "short"
                 },
-                Modifier
+                colors = ButtonDefaults.buttonColors(Color.LightGray),
+                modifier = Modifier
                     .height(40.dp)
                     .width(80.dp)
-                    .background(Color.LightGray)
+                    .padding(bottom = 5.dp)
             ) {
-                //Text(buttonText)
-                Image(painter = painterResource(id = picture), contentDescription = null,
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.LightGray))
-            }
-        }
-    }
-}
-
-@SuppressLint("StateFlowValueCalledInComposition")
-@Composable
-fun InformationBox(keyword: String, viewModel: ESViewModel) {
-    when (keyword) {
-        "short" -> {
-            ShortInformationBox(viewModel = viewModel)
-        }
-        "long" -> {
-            LongInformationBox(viewModel = viewModel)
-        }
-        else -> {
-
-        }
-    }
-}
-
-@SuppressLint("StateFlowValueCalledInComposition")
-@Composable
-fun ShortInformationBox(viewModel: ESViewModel) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-    ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-            ) {
-                Text("Sted")
-                Text("Værforhold")
-                Text("Temp: ")
-                Text("H: & L: ")
-                Text("Vindinfo: 5 m/s")
-            }
-            Spacer(Modifier.padding(50.dp))
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, end = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Sikkerhetsnivå")
                 Image(
-                    //TODO: dette må være en variabel og ikke et fast icon
-                    //TODO: kommer ann på hva checkrequerments sier
-                    painter = painterResource(id = R.drawable.red_icon),
+                    painter = painterResource(id = picture[keyword]!!),
                     contentDescription = null,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .size(50.dp)
+                    Modifier.fillMaxSize()
                 )
             }
         }
@@ -303,7 +152,7 @@ fun ShortInformationBox(viewModel: ESViewModel) {
 }
 
 @Composable
-fun LongInformationBox(viewModel: ESViewModel) {
+fun InformationBox(viewModel: ESViewModel, keyword: String) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -314,13 +163,13 @@ fun LongInformationBox(viewModel: ESViewModel) {
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(start = 20.dp, top = 10.dp)
+                modifier = Modifier.padding(start = 25.dp, top = 15.dp)
             ) {
                 Text("Sted")
                 Text("Værforhold")
-                Text("Temp: ")
-                Text("H: & L: 3")
-                Text("Vindinfo: 5 m/s")
+                Text("Temp:")
+                Text("H: & L:")
+                Text("Vindinfo:")
             }
             Spacer(Modifier.padding(50.dp))
             Column(
@@ -329,7 +178,7 @@ fun LongInformationBox(viewModel: ESViewModel) {
                     .padding(top = 10.dp, end = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Sikkerhetsnivå")
+                Text("Sikkerhetsnivå", Modifier.padding(top = 10.dp))
                 Image(
                     //TODO: dette må være en variabel og ikke et fast icon
                     //TODO: kommer ann på hva checkrequerments sier
@@ -341,44 +190,38 @@ fun LongInformationBox(viewModel: ESViewModel) {
                 )
             }
         }
-        Spacer(modifier = Modifier.height(30.dp))
-        //Info om stedet
+    }
+
+    if (keyword == "long") {
+        LongInformationBox(viewModel = viewModel)
+    }
+}
+
+@Composable
+fun LongInformationBox(viewModel: ESViewModel) {
+    Spacer(modifier = Modifier.height(15.dp))
+    //Info om stedet
+    Column(
+        Modifier.padding(start = 20.dp)
+    ) {
+        Text("Oslo fallskjermklubb", Modifier.padding(bottom = 5.dp), fontSize = 20.sp)
+        Column(Modifier.padding(bottom = 10.dp)) {
+            LocationInfo(R.drawable.marker, "Oslo gate 5, 0882, Oslo")
+            LocationInfo(R.drawable.clock_icon, "9-17")
+            LocationInfo(R.drawable.internett_icon, "fallskjerm.no")
+            LocationInfo(R.drawable.phone_icon, "876 54 321")
+        }
         Column(
-            Modifier.padding(start = 20.dp)
+            Modifier.fillMaxWidth()
         ) {
-            Text("Oslo fallskjermklubb", fontSize = 20.sp)
-            Column() {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.marker),
-                        contentDescription = null,
-                        Modifier.size(40.dp)
-                    )
-                    Text("Oslo gate 5, 0882, Oslo")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.clock_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("9-17")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.internett_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("fallskjerm.no")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.phone_icon),
-                        contentDescription = null,
-                        Modifier.size(30.dp)
-                    )
-                    Text("876 54 321")
+            Text(text = "7 - Dagersvarsel",
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp), textAlign = TextAlign.Center, fontSize = 20.sp)
+            Column(Modifier.fillMaxWidth()) {
+                val days = listOf("man", "tir", "ons", "tor", "fre", "lør", "søn")
+                (0..6).zip(days) { _, day ->
+                    WeatherForecast(day)
                 }
             }
         }
@@ -386,78 +229,115 @@ fun LongInformationBox(viewModel: ESViewModel) {
 }
 
 @Composable
+fun LocationInfo(icon: Int, str: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            Modifier
+                .size(30.dp)
+                .padding(end = 5.dp)
+        )
+        Text(str)
+    }
+}
+
+@Composable
+fun WeatherForecast(
+    day: String,
+    weather: String = "regn",
+    highTemp: Int = 0,
+    lowTemp: Int = 0,
+    wind: Int = 0,
+    icon: Int = R.drawable.green_icon
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = 2.dp)
+    ) {
+        Text(text = "${day}.  $weather  H: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  Vindinfo: ${wind}m/s", textAlign = TextAlign.Center)
+        Spacer(modifier = Modifier.weight(4f))
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            Modifier
+                .size(30.dp)
+                .padding(end = 5.dp)
+        )
+    }
+}
+
+@Composable
 fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope) {
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Column {
         Column(
             modifier = Modifier
                 .background("#1C6EAE".color)
                 .fillMaxWidth()
-                .height(250.dp)
+                .height(screenHeight - 550.dp)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(0.75f),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .wrapContentSize()
-                        .size(250.dp),
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painterResource(id = R.drawable.baseline_account_circle_24_white),
-                        contentDescription = "Profilbilde",
+                    Image(
+                        painterResource(id = R.drawable.jumptime_logo_whiteonblue),
+                        contentDescription = "Jumptime Logo",
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
-                            .size(150.dp),
-                        tint = Color.White
+                            .size(350.dp)
                     )
                 }
             }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp),
+                    .height(150.dp)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .weight(0.25f),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "JumpTime",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp,
-                    color = Color.White,
-                    modifier = Modifier.width(IntrinsicSize.Min).padding(end = 6.dp, start = 6.dp)
+                Image(
+                    painterResource(id = R.drawable.jumptime_tekst_whiteontransparent),
+                    contentDescription = "Logonavn",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .size(150.dp)
+                        .weight(1f)
+                        .offset(x = (-24).dp)
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Text(
-                        text = "Poeng:  ",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = Color.White,
-                        modifier = Modifier.width(IntrinsicSize.Min)
-                    )
-                    Text(
-                        text = "<x>",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                        color = Color.White,
-                        modifier = Modifier.width(IntrinsicSize.Min)
-                    )
-                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = "Poeng:<X>  ",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    modifier = Modifier.width(IntrinsicSize.Min)
+                )
             }
         }
+
         //Profil, scoreboards osv
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
+            //TODO komprimere lik kode
             TextButton(
-                onClick = { navController.navigate(Screens.FavorittScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                onClick = {
+                    coroutineScope.launch { scaffoldState.drawerState.close()}
+                    navController.navigate(Screens.FavorittScreen.name) {popUpTo(Screens.MainScreen.name)}
+                          },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_save_24),
@@ -469,7 +349,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                 Text(text = "Favoritter", fontWeight = FontWeight.Bold)
             }
             TextButton(
-                onClick = { navController.navigate(Screens.ArkivScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                onClick = {
+                    coroutineScope.launch { scaffoldState.drawerState.close()}
+                    navController.navigate(Screens.ArkivScreen.name) {popUpTo(Screens.MainScreen.name)}
+                          },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_archive_24),
@@ -481,7 +364,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                 Text(text = "Arkiv", fontWeight = FontWeight.Bold)
             }
             TextButton(
-                onClick = { navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                onClick = {
+                    coroutineScope.launch { scaffoldState.drawerState.close()}
+                    navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)}
+                          },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_settings_24),
@@ -497,7 +383,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                 verticalArrangement = Arrangement.Bottom,
             ) {
                 TextButton(
-                    onClick = { navController.navigate(Screens.OmOssScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                    onClick = {
+                        coroutineScope.launch { scaffoldState.drawerState.close()}
+                        navController.navigate(Screens.OmOssScreen.name) {popUpTo(Screens.MainScreen.name)}
+                              },
                 ) {
                     Image(
                         painterResource(id = R.drawable.baseline_groups_24),
@@ -513,7 +402,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     TextButton(
-                        onClick = { navController.navigate(Screens.ReportScreen.name) {popUpTo(Screens.MainScreen.name)} },
+                        onClick = {
+                            coroutineScope.launch { scaffoldState.drawerState.close()}
+                            navController.navigate(Screens.ReportScreen.name) {popUpTo(Screens.MainScreen.name)}
+                                  },
                     ) {
                         Image(
                             painterResource(id = R.drawable.baseline_report_problem_24),
@@ -527,12 +419,10 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                     TextButton(
                         onClick = { coroutineScope.launch { scaffoldState.drawerState.close()} }
                         ) {
-                        Text(text = "Tilbake -->", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        Text(text = "Tilbake", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                     }
                 }
             }
         }
     }
 }
-
-val String.color get() = Color(parseColor(this))

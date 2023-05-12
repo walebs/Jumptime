@@ -1,82 +1,152 @@
 package com.example.extremesport.screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Yellow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.extremesport.R
+import com.example.extremesport.view.ESViewModel
 
-@Composable
-fun ArkivScreen(navController: NavController){
-    Column {
-        Text(text = "Arkiv")
-        Cards()
-    }
-}
 
-@Composable
-fun Cards() {
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        Column(
+data class Card(
+    val stationName: String,
+    var rating: Int,
+    val stationInfo: String,
+    var isFavorite: Boolean = false
+) {
+    @Composable
+    fun DisplayCard() {
+        ElevatedCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(30.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(10.dp)
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "StasjonNavn",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp)
-                Rating(rating = 3)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stationName,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 25.sp)
+                    //Rating må saves på en eller annen måte på hver stasjon
+                    Rating()
+                }
+                Text(text = stationInfo)
             }
+        }
+    }
 
+    @Composable
+    fun Rating() {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            for (i in 1..5) {
+                Icon(
+                    painterResource(id = R.drawable.baseline_star_24_grey),
+                    contentDescription = "Tom stjerne",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            rating = i
+                        },
+                    tint = if (i <= rating) Color(0xFFFFD700) else Color(0xFFA2ADB1)
+                )
+            }
         }
 
     }
 }
 
 @Composable
-fun Rating(rating: Int) {
-    var ratingState by remember { mutableStateOf(rating) }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+fun ArkivScreen(viewModel: ESViewModel){
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    var cards = listOf(
+        Card(
+            stationName = "StasjonNavn",
+            rating = 3,
+            stationInfo = "mer informasjon"
+        )
+    )
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        for (i in 1..5) {
-            Icon(
-                painterResource(id = R.drawable.baseline_star_border_24_white),
-                contentDescription = "Tom stjerne",
-                modifier = Modifier.clickable {
-                    ratingState = i
-                },
-                tint = if (i <= ratingState) Color.Yellow else Color.LightGray
+        Column(
+            modifier = Modifier
+                .background("#1C6EAE".color)
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(16.dp)
+                .offset(y = -50.dp)
+        ) {
+            Image(
+                painterResource(id = R.drawable.jumptime_tekst_whiteontransparent),
+                contentDescription = "Logonavn",
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .size(130.dp)
+                    .offset(x = (-17).dp),
             )
+            Text(
+                text = "Arkiv - Alle dine hopp!",
+                fontSize = 30.sp,
+                color = Color.White,
+                modifier = Modifier
+                    .offset(y = (-55).dp)
+            )
+        }
+        Column(
+            modifier = Modifier
+                .background(
+                    color = Color.White,
+                    RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)
+                )
+                .alpha(1f)
+                .clip(shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp))
+                .padding(5.dp)
+                .align(Alignment.BottomCenter)
+                .height(screenHeight - 120.dp)
+                .fillMaxWidth()
+        ) {
+            LazyColumn {
+                //Dette må være antall stasjoner brukeren har hoppet
+                cards.forEach {
+                    item {
+                        it.DisplayCard()
+                    }
+                }
+            }
         }
     }
 }
