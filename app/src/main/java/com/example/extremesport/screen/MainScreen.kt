@@ -29,6 +29,7 @@ import com.example.extremesport.model.RequirementsResult
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -37,7 +38,9 @@ import java.util.*
 
 val String.color get() = Color(parseColor(this))
 var boolShow by mutableStateOf(false)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter",
+    "SimpleDateFormat"
+)
 @Composable
 fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
     Box(
@@ -45,15 +48,30 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        Map(viewModel)
+        Map(viewModel,
+            onClick = { marker: Marker ->
+                val sdf = SimpleDateFormat("yyyy-MM-dd")
+                val currentDate = sdf.format(Date())
+                //TODO updatere når marker er trykket på?
+                val oldState = viewModel.esState.value
+                viewModel.update(marker.position.latitude, marker.position.longitude, 1, 1000, currentDate, "+01:00")
+                while (oldState == viewModel.esState.value) {
+                    Thread.sleep(1)
+                }
+                //vente til API-ene har oppdatert seg, kanskje bruke loadAPI fra loadingskjerm?
+                boolShow = !boolShow // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
+                true
+            })
         if (boolShow) {
-            ShowWeatherBox(viewModel)
+            ShowWeatherBox(
+                viewModel = viewModel
+            )
         }
     }
 }
 
 @Composable
-fun Map(viewModel: ESViewModel) {
+fun Map(viewModel: ESViewModel, onClick: (Marker) -> Boolean) {
     val startPos = LatLng(59.9138, 10.7387)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(startPos, 5f)
@@ -63,15 +81,12 @@ fun Map(viewModel: ESViewModel) {
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
     ) {
-        Markers(viewModel)
+        Markers(viewModel, onClick = onClick)
     }
 }
 
-@SuppressLint("SimpleDateFormat")
 @Composable
-fun Markers(viewModel: ESViewModel) {
-    val sdf = SimpleDateFormat("yyyy-MM-dd")
-    val currentDate = sdf.format(Date())
+fun Markers(viewModel: ESViewModel, onClick: (Marker) -> Boolean) {
 
     //TODO hente fra JSON filen eller lage en instans av en marker dataklasse
     val listOfPos = listOf (
@@ -95,13 +110,7 @@ fun Markers(viewModel: ESViewModel) {
     listOfPos.forEach { it ->
         Marker(
             state = MarkerState(it),
-            onClick = {
-                //TODO updatere når marker er trykket på?
-                viewModel.update(it.position.latitude, it.position.longitude, 1, 1000, currentDate, "+01:00")
-                //vente til API-ene har oppdatert seg, kanskje bruke loadAPI fra loadingskjerm?
-                boolShow = !boolShow // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
-                true
-            }
+            onClick = onClick
         )
     }
 }
