@@ -72,7 +72,7 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                 val nowcast = ds.getNowcast(latitude, longitude)
                 val locationForecast = ds.getLocationForecast(altitude, latitude, longitude)
                 val openAdress = ds.getOpenAddress(latitude, longitude, radius)
-                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress, jsonData)
+                _esState.value = ESUiState(sunrise, nowcast, locationForecast, openAdress)
             } catch (_: IOException) {
 
             }
@@ -210,18 +210,7 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
         return sunriseAPIInt < realTimeInt
     }
 
-    fun returnLocations(): List<LocationData.Location> {
-        var locationDataList: List<LocationData.Location> = listOf()
-        _esState.update { currentState ->
-            try {
-                locationDataList = currentState.locationData?.locations!!
-            } catch (_: Exception) {
-                
-            }
-            print(locationDataList[0])
-            print("\n\n\n\n\n\n")
-            currentState.copy()
-        }
-        return locationDataList
+    fun returnLocations(): LocationData? {
+        return jsonData
     }
 }
