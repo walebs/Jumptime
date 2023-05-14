@@ -140,13 +140,13 @@ fun ShowWeatherBox(
         modifier = Modifier
             .fillMaxWidth()
             .height(height[keyword]!!)
-            .background("#1C6EAE".color, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .background("#1C6EAE".color, RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
             .alpha(1f)
-            .clip(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .clip(shape = RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
             .border(
                 width = 1.dp,
                 Color.Black,
-                RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+                RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp)
             )
     ) {
         InformationBox(keyword, icon, info, jsonInfo)
