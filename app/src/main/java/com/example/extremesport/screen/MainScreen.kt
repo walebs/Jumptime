@@ -223,7 +223,7 @@ fun InformationBox(
                     painter = painterResource(id = R.drawable.baseline_close_24),
                     contentDescription = "close",
                     tint = Color.White,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
