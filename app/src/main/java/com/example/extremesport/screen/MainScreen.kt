@@ -272,9 +272,9 @@ fun LongInformationBox(
                 val times = listOf("next 1h", "next 6h", "next 12h")
                 for (time in times) {
                     when (time) {
-                        "next 1h" -> WeatherForecast(time, info.summaryCode1, info.highTemp1.toInt(), info.lowTemp1.toInt(), info.windStrength.toInt(), icon)
-                        "next 6h" -> WeatherForecast(time, info.summaryCode6, info.highTemp6.toInt(), info.lowTemp6.toInt(), info.windStrength.toInt(), icon)
-                        "next 12h" -> WeatherForecast(time, info.summaryCode12, info.highTemp12.toInt(), info.lowTemp12.toInt(), info.windStrength.toInt(), icon)
+                        "next 1h" -> WeatherForecast(time, info.summaryCode1, info.highTemp1.toInt(), info.lowTemp1.toInt(), info.windStrength, icon)
+                        "next 6h" -> WeatherForecast(time, info.summaryCode6, info.highTemp6.toInt(), info.lowTemp6.toInt(), info.windStrength, icon)
+                        "next 12h" -> WeatherForecast(time, info.summaryCode12, info.highTemp12.toInt(), info.lowTemp12.toInt(), info.windStrength, icon)
                     }
                 }
             }
@@ -302,7 +302,7 @@ fun WeatherForecast(
     weather: String = "regn",
     highTemp: Int,
     lowTemp: Int,
-    wind: Int,
+    wind: Double,
     icon: Int = R.drawable.green_icon
 ) {
     Row(

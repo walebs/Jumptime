@@ -16,13 +16,10 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
-import android.content.Context
 import com.example.extremesport.data.AppDataContainer
-import com.example.extremesport.data.JSONGet
 import com.example.extremesport.model.LocationData
 
 @SuppressLint("SimpleDateFormat")
-//@SuppressLint("StaticFieldLeak")
 class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
     // es: ExtremeSport
     private val ds = DataSource()
@@ -82,7 +79,6 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
         }
     }
 
-    //Returner akkurat nå bare en boolean for om det anbefales å hoppe akkurat nå.
     fun checkRequirements(sport: String): Double {
         var numbAverage = 0.0
 
@@ -92,7 +88,7 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                 val nowcastData = currentState.nowcast?.properties?.timeseries?.get(0)?.data!!
                 val locationForecastData = currentState.locationForecast?.properties?.timeseries?.get(0)?.data!!
                 val sunriseData = currentState.sunrise?.properties!!
-                val openAddressData = currentState.openAdress?.adresser?.get(0)!!
+                //val openAddressData = currentState.openAdress?.adresser?.get(0)!!
 
                 val windspeed: Int = if(nowcastData.instant.details.wind_speed <= chosenSport.windspeed_ideal) {
                     2
@@ -102,7 +98,7 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                     0
                 }
 
-                val wind_speed_of_gust: Int = if(nowcastData.instant.details.wind_speed_of_gust <= chosenSport.wind_speed_of_gust_ideal) {
+                val windSpeedOfGust: Int = if(nowcastData.instant.details.wind_speed_of_gust <= chosenSport.wind_speed_of_gust_ideal) {
                     2
                 } else if (nowcastData.instant.details.wind_speed_of_gust <= chosenSport.wind_speed_of_gust_moderate) {
                     1
@@ -126,7 +122,7 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                     0
                 }
 
-                val probability_of_thunder: Int = if(locationForecastData.next_1_hours.details.probability_of_thunder <= chosenSport.probability_of_thunder_ideal) {
+                val probabilityOfThunder: Int = if(locationForecastData.next_1_hours.details.probability_of_thunder <= chosenSport.probability_of_thunder_ideal) {
                     2
                 } else if(locationForecastData.next_1_hours.details.probability_of_thunder <= chosenSport.probability_of_thunder_moderate) {
                     1
@@ -134,7 +130,7 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                     0
                 }
 
-                val uv_index: Int = if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max <= chosenSport.uv_index_ideal) {
+                val uvIndex: Int = if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max <= chosenSport.uv_index_ideal) {
                     2
                 } else if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max <= chosenSport.uv_index_moderate) {
                     1
@@ -142,16 +138,16 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                     0
                 }
 
-                val cloud_area: Boolean = locationForecastData.instant.details.cloud_area_fraction <= chosenSport.cloud_area_fraction
-                val fog_area: Boolean = locationForecastData.instant.details.fog_area_fraction <= chosenSport.fog_area_fraction
+                val cloudArea: Boolean = locationForecastData.instant.details.cloud_area_fraction <= chosenSport.cloud_area_fraction
+                val fogArea: Boolean = locationForecastData.instant.details.fog_area_fraction <= chosenSport.fog_area_fraction
                 val sunriseBoolean = compareTime(sunriseData.sunrise.time)
                 val sunsetBoolean = !compareTime(sunriseData.sunset.time)
 
-                val boolcollector = cloud_area && fog_area && ((sunriseBoolean && sunsetBoolean) || chosenSport.test)
-                numbAverage = if(windspeed == 0 || wind_speed_of_gust == 0 || temp == 0 || precipitation == 0 || probability_of_thunder == 0 || uv_index == 0 || !boolcollector) {
+                val boolcollector = cloudArea && fogArea && ((sunriseBoolean && sunsetBoolean) || chosenSport.test)
+                numbAverage = if(windspeed == 0 || windSpeedOfGust == 0 || temp == 0 || precipitation == 0 || probabilityOfThunder == 0 || uvIndex == 0 || !boolcollector) {
                     0.0
                 } else {
-                    (windspeed + wind_speed_of_gust + temp + precipitation + probability_of_thunder + uv_index).toDouble() / 6.0
+                    (windspeed + windSpeedOfGust + temp + precipitation + probabilityOfThunder + uvIndex).toDouble() / 6.0
                 }
 
             } catch (_: Exception) {
