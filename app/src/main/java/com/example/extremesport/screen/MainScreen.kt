@@ -1,6 +1,7 @@
 package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color.parseColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.extremesport.R
 import com.example.extremesport.Screens
+import com.example.extremesport.data.AppDataContainer
 import com.example.extremesport.model.RequirementsResult
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
@@ -39,9 +41,7 @@ import kotlin.math.round
 
 val String.color get() = Color(parseColor(this))
 var boolShow by mutableStateOf(false)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter",
-    "SimpleDateFormat"
-)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter", "SimpleDateFormat")
 @Composable
 fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
     var currentMarkerId by remember { mutableStateOf<String>("")}

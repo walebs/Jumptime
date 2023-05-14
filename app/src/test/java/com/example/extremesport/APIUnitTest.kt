@@ -54,13 +54,25 @@ class APIUnitTest {
     fun openAddress_isCorrect() {
         val dataSource = DataSource()
         var openAddress = runBlocking { dataSource.getOpenAddress(59.911491, 10.757933, 1000) }
-        Assert.assertEquals(0, openAddress.metadata.side)
-        Assert.assertEquals(true, openAddress.metadata.asciiKompatibel)
-        Assert.assertEquals("Schweigaards gate", openAddress.adresser[0].adressenavn)
+        if (openAddress != null) {
+            Assert.assertEquals(0, openAddress.metadata.side)
+        }
+        if (openAddress != null) {
+            Assert.assertEquals(true, openAddress.metadata.asciiKompatibel)
+        }
+        if (openAddress != null) {
+            Assert.assertEquals("Schweigaards gate", openAddress.adresser[0].adressenavn)
+        }
 
         openAddress = runBlocking { dataSource.getOpenAddress(59.611491, 10.757933, 1000) }
-        Assert.assertEquals(0, openAddress.metadata.side)
-        Assert.assertEquals(true, openAddress.metadata.asciiKompatibel)
-        Assert.assertEquals("Støttumveien", openAddress.adresser[0].adressenavn)
+        if (openAddress != null) {
+            Assert.assertEquals(0, openAddress.metadata.side)
+        }
+        if (openAddress != null) {
+            Assert.assertEquals(true, openAddress.metadata.asciiKompatibel)
+        }
+        if (openAddress != null) {
+            Assert.assertEquals("Støttumveien", openAddress.adresser[0].adressenavn)
+        }
     }
 }

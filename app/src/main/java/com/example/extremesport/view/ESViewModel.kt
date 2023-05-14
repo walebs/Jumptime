@@ -16,15 +16,21 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
+import android.content.Context
+import com.example.extremesport.data.AppDataContainer
+import com.example.extremesport.data.JSONGet
+import com.example.extremesport.model.LocationData
 
 @SuppressLint("SimpleDateFormat")
-class ESViewModel: ViewModel() {
+//@SuppressLint("StaticFieldLeak")
+class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
     // es: ExtremeSport
     private val ds = DataSource()
     private var _esState = MutableStateFlow(ESUiState())
     val esState: StateFlow<ESUiState> = _esState.asStateFlow()
     //Kan hende dette burde være i esuistate.
     private var sports: HashMap<String, SportRequirements> = HashMap()
+    private val jsonData = appDataContainer?.let { ds.getLocationData(it) }
 
     init {
         val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -205,5 +211,9 @@ class ESViewModel: ViewModel() {
         val realTimeInt = (rightNow.get(Calendar.HOUR_OF_DAY).toString() + rightNow.get(Calendar.MINUTE).toString()).toInt()
         val sunriseAPIInt = (sunriseAPITime.substring(11,13) + sunriseAPITime.substring(14,16)).toInt()
         return sunriseAPIInt < realTimeInt
+    }
+
+    fun returnLocations(): LocationData? {
+        return jsonData
     }
 }

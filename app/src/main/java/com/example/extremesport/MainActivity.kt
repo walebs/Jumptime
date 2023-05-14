@@ -30,6 +30,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.extremesport.data.AppDataContainer
 import com.example.extremesport.screen.*
 import com.example.extremesport.ui.theme.ExtremeSportTheme
 import com.example.extremesport.view.ESViewModel
@@ -46,7 +47,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    App()
+                    val jsonData = AppDataContainer(this)
+                    App(jsonData)
                 }
             }
         }
@@ -63,11 +65,14 @@ data class Screen(
 )
 
 @Composable
-fun App() {
+fun App(appDataContainer: AppDataContainer?) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
-    val viewModel = ESViewModel()
+    val viewModel = ESViewModel(appDataContainer)
+    //TODO fjern
+    //Thread.sleep(5000)
+    viewModel.returnLocations()
 
     val screenNames = Screens.values().map { it.name }
     val screens = listOf(
@@ -91,7 +96,6 @@ fun App() {
         navController = navController,
         startDestination = Screens.LoadingScreen.name
     ) {
-
         screens.zip(screenNames) {screen, name ->
             composable(name) {
                 if (name == "LoadingScreen") {
@@ -206,6 +210,6 @@ enum class Screens {
 @Composable
 fun DefaultPreview() {
     ExtremeSportTheme {
-        App()
+       App(null)
     }
 }
