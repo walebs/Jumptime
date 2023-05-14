@@ -1,7 +1,6 @@
 package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color.parseColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.extremesport.R
 import com.example.extremesport.Screens
-import com.example.extremesport.data.AppDataContainer
+import com.example.extremesport.model.LocationData
 import com.example.extremesport.model.RequirementsResult
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
@@ -44,7 +43,8 @@ var boolShow by mutableStateOf(false)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter", "SimpleDateFormat")
 @Composable
 fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
-    var currentMarkerId by remember { mutableStateOf<String>("")}
+    var currentMarkerId by remember { mutableStateOf("") }
+    var clickedMarker: Marker? by remember { mutableStateOf(null) }
 
     Box(
         modifier = Modifier
@@ -54,6 +54,7 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
         Map(viewModel,
             onClick = { marker: Marker ->
                 boolShow = !boolShow //|| currentMarkerId != marker.id // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
+                clickedMarker = marker
                 currentMarkerId = marker.id
                 if (boolShow) {
                     val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -67,14 +68,16 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
                 }
                 //vente til API-ene har oppdatert seg, kanskje bruke loadAPI fra loadingskjerm?
                 true
-            })
+            }
+        )
         if (boolShow) {
             val info = viewModel.getInfo()
+            val jsonInfo = viewModel.returnLocations()?.locations?.find { it.latitude == clickedMarker?.position?.latitude && it.longitude == clickedMarker?.position?.longitude }
             val checkReq = viewModel.checkRequirements("Fallskjermhopping")
             ShowWeatherBox(
-                viewModel = viewModel,
                 info,
-                checkReq
+                checkReq,
+                jsonInfo
             )
         }
     }
@@ -97,42 +100,30 @@ fun Map(viewModel: ESViewModel, onClick: (Marker) -> Boolean) {
 
 @Composable
 fun Markers(viewModel: ESViewModel, onClick: (Marker) -> Boolean) {
+    val jsonData = viewModel.returnLocations()
 
-    //TODO hente fra JSON filen eller lage en instans av en marker dataklasse
-    val listOfPos = listOf (
-        LatLng(63.89993, 10.36208), //ntnu
-        LatLng(69.67575, 18.91752), //tromsoo
-        LatLng(69.05894, 18.54549), //troms
-        LatLng(67.27268, 14.41794), //bodoo
-        LatLng(62.65002, 9.85408),  //oppdal
-        LatLng(62.74936, 7.26345),  //fooniks
-        LatLng(62.23288, 8.25007),  //lesja
-        LatLng(61.25667, 11.67063), //oslo
-        LatLng(60.81757, 11.06997), //hagl
-        LatLng(60.63989, 6.50189),  //voss
-        LatLng(60.63989, 6.50189),  //bergen
-        LatLng(58.89314, 5.63200),  //stavanger
-        LatLng(58.20514, 8.07187),  //kjevik
-        LatLng(59.29889, 10.36689), //tønsberg
-        LatLng(59.39895, 11.34331)  //viken
-    )
-
-    listOfPos.forEach { it ->
+    jsonData?.locations?.forEach { location ->
         Marker(
-            state = MarkerState(it),
-            onClick = onClick
+            MarkerState(LatLng(location.latitude, location.longitude)),
+            onClick = { marker ->
+                onClick(marker)
+            }
         )
     }
 }
 
 @Composable
-fun ShowWeatherBox(viewModel: ESViewModel, info: RequirementsResult, checkReq: Double) {
+fun ShowWeatherBox(
+    info: RequirementsResult,
+    checkReq: Double,
+    jsonInfo: LocationData.Location?,
+) {
     val sizeOfDevice = LocalConfiguration.current
     val screenHeight = sizeOfDevice.screenHeightDp
 
     val height = mapOf(
         "short" to (screenHeight/4.5).dp,
-        "long" to (screenHeight-(screenHeight/5)).dp
+        "long" to (screenHeight-(screenHeight/4)).dp
     )
     val picture = mapOf(
         "long" to R.drawable.arrowup,
@@ -156,7 +147,7 @@ fun ShowWeatherBox(viewModel: ESViewModel, info: RequirementsResult, checkReq: D
                 RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
             )
     ) {
-        InformationBox(viewModel, keyword, icon, info)
+        InformationBox(keyword, icon, info, jsonInfo)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -187,10 +178,10 @@ fun ShowWeatherBox(viewModel: ESViewModel, info: RequirementsResult, checkReq: D
 
 @Composable
 fun InformationBox(
-    viewModel: ESViewModel,
     keyword: String,
     icon: Int,
-    info: RequirementsResult
+    info: RequirementsResult,
+    jsonInfo: LocationData.Location?,
 ) {
     Column(
         Modifier
@@ -204,17 +195,18 @@ fun InformationBox(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(start = 25.dp, top = 15.dp)
             ) {
-                Text("Sted", color = Color.White)
+                if (jsonInfo != null) {
+                    Text(jsonInfo.name, color = Color.White)
+                }
                 Text(info.summaryCode1, color = Color.White)
                 Text("${info.currentTemp.toInt()}°", color = Color.White)
                 Text("${info.windStrength} m/s", color = Color.White)
             }
-            Spacer(Modifier.padding(50.dp))
             Column(
                 Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp, end = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.End
             ) {
                 Text("Sikkerhetsnivå", Modifier.padding(top = 10.dp), color = Color.White)
                 Image(
@@ -229,27 +221,41 @@ fun InformationBox(
     }
 
     if (keyword == "long") {
-        LongInformationBox(viewModel, icon, info)
+        LongInformationBox(icon, info, jsonInfo)
     }
 }
 
 @Composable
-fun LongInformationBox(viewModel: ESViewModel, icon: Int, info: RequirementsResult) {
+fun LongInformationBox(
+    icon: Int,
+    info: RequirementsResult,
+    jsonInfo: LocationData.Location?
+) {
     Spacer(modifier = Modifier.height(15.dp))
     //Info om stedet
     Column(
         Modifier.padding(start = 20.dp)
     ) {
-        Text("Oslo fallskjermklubb",
-            Modifier.padding(bottom = 5.dp),
-            fontSize = 20.sp,
-            color = Color.White
-        )
+        if (jsonInfo != null) {
+            Text(jsonInfo.name,
+                Modifier.padding(bottom = 5.dp),
+                fontSize = 20.sp,
+                color = Color.White
+            )
+        }
         Column(Modifier.padding(bottom = 10.dp)) {
-            LocationInfo(R.drawable.marker, "Oslo gate 5, 0882, Oslo")
-            LocationInfo(R.drawable.clock_icon, "9-17")
-            LocationInfo(R.drawable.internett_icon, "fallskjerm.no")
-            LocationInfo(R.drawable.phone_icon, "876 54 321")
+            if (jsonInfo != null) {
+                LocationInfo(R.drawable.marker, jsonInfo.adress)
+            }
+            if (jsonInfo != null) {
+                LocationInfo(R.drawable.clock_icon, jsonInfo.openingtime)
+            }
+            if (jsonInfo != null) {
+                LocationInfo(R.drawable.internett_icon, jsonInfo.website)
+            }
+            if (jsonInfo != null) {
+                LocationInfo(R.drawable.phone_icon, jsonInfo.phoneNr)
+            }
         }
         Column(
             Modifier.fillMaxWidth()

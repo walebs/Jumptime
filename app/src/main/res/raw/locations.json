@@ -2,6 +2,7 @@
   "locations" : [
     {
       "name" : "Tromsø Fallskjermklubb",
+      "id" : 1,
       "latitude" : 69.67575403122241,
       "longitude" : 18.91752229668134,
       "website" : "https://www.tromsofallskjermklubb.no/",
@@ -12,6 +13,7 @@
     },
     {
       "name" : "Troms Fallskjermklubb",
+      "id" : 2,
       "latitude" : 69.05894016083985,
       "longitude" : 18.545495378529257,
       "website" : "https://www.trofsk.no/",
@@ -22,6 +24,7 @@
     },
     {
       "name" : "Bodø Fallskjermklubb",
+      "id" : 3,
       "latitude" : 67.27268575628638,
       "longitude" : 14.417943617795958,
       "website" : "https://www.bofsk.com/",
@@ -32,6 +35,7 @@
     },
     {
       "name" : "NTNU Fallskjermklubb",
+      "id" : 4,
       "latitude" : 63.899939144702124,
       "longitude" : 10.36208972335377,
       "website" : "https://skydiveoppdal.no/",
@@ -42,6 +46,7 @@
     },
     {
       "name" : "Skydive Oppdal",
+      "id" : 5,
       "latitude" : 62.65002657029233,
       "longitude" : 9.854083336909417,
       "website" : "https://skydiveoppdal.no/",
@@ -52,6 +57,7 @@
     },
     {
       "name" : "Føniks Fallskjermklubb",
+      "id" : 6,
       "latitude" : 62.74936743191671,
       "longitude" : 7.2634547414035895,
       "website" : "https://www.skydivemolde.com/",
@@ -62,6 +68,7 @@
     },
     {
       "name" : "Lesja FSK",
+      "id" : 7,
       "latitude" : 62.232888162015996,
       "longitude" : 8.250070541045401,
       "website" : "https://www.lesjafsk.no/",
@@ -71,7 +78,8 @@
       "openingtime" : ""
     },
     {
-      "name" : "Skydive Oslo - Oslo Fallskjermklubb",
+      "name" : "Skydive Oslo",
+      "id" : 8,
       "latitude" : 61.2566719313788,
       "longitude" : 11.670630668763275,
       "website" : "https://www.fallskjerm.no/nb/",
@@ -82,6 +90,7 @@
     },
     {
       "name" : "Hagl Fallskjermklubb",
+      "id" : 9,
       "latitude" : 60.817576003749814,
       "longitude" : 11.069973412526746,
       "website" : "https://www.skydivehamar.no/",
@@ -92,6 +101,7 @@
     },
     {
       "name" : "Voss Fallskjermklubb",
+      "id" : 10,
       "latitude" : 60.6398979623663,
       "longitude" : 6.501898947808088,
       "website" : "http://www.skydivevoss.no/",
@@ -102,6 +112,7 @@
     },
     {
       "name" : "Bergen Fallskjermklubb",
+      "id" : 11,
       "latitude" : 60.29383660444574,
       "longitude" : 5.2280328006769805,
       "website" : "https://www.bfsk.no/v3/",
@@ -112,6 +123,7 @@
     },
     {
       "name" : "Stavanger Fallskjermklubb",
+      "id" : 12,
       "latitude" : 58.893145717374864,
       "longitude" : 5.632000093340003,
       "website" : "https://www.sfsk.no/",
@@ -122,6 +134,7 @@
     },
     {
       "name" : "Kjevik Fallskjermklubb",
+      "id" : 13,
       "latitude" : 58.20514911843801,
       "longitude" : 8.071871186639857,
       "website" : "https://www.facebook.com/KjevikFSK/?locale=nb_NO",
@@ -132,6 +145,7 @@
     },
     {
       "name" : "Tønsberg Fallskjermklubb",
+      "id" : 14,
       "latitude" : 59.298895685302774,
       "longitude" : 10.366898224415465,
       "website" : "https://www.skydivetonsberg.no/",
@@ -142,6 +156,7 @@
     },
     {
       "name" : "Skydive Viken",
+      "id" : 15,
       "latitude" : 59.39895089927007,
       "longitude" : 11.343319641095478,
       "website" : "https://www.skydiveviken.no/",
