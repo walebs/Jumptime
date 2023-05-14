@@ -1,5 +1,6 @@
 package com.example.extremesport.view
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.extremesport.data.DataSource
@@ -14,14 +15,20 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
+import android.content.Context
+import com.example.extremesport.data.AppDataContainer
+import com.example.extremesport.data.JSONGet
+import com.example.extremesport.model.LocationData
 
-class ESViewModel: ViewModel() {
+//@SuppressLint("StaticFieldLeak")
+class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
     // es: ExtremeSport
     private val ds = DataSource()
     private var _esState = MutableStateFlow(ESUiState())
     val esState: StateFlow<ESUiState> = _esState.asStateFlow()
     //Kan hende dette burde være i esuistate.
     private var sports: HashMap<String, SportRequirements> = HashMap()
+    private val jsonData = appDataContainer?.let { ds.getLocationData(it) }
 
     init {
         val latitude = 59.933333
@@ -201,5 +208,9 @@ class ESViewModel: ViewModel() {
         val realTimeInt = (rightNow.get(Calendar.HOUR_OF_DAY).toString() + rightNow.get(Calendar.MINUTE).toString()).toInt()
         val sunriseAPIInt = (sunriseAPITime.substring(11,13) + sunriseAPITime.substring(14,16)).toInt()
         return sunriseAPIInt < realTimeInt
+    }
+
+    fun returnLocations(): LocationData? {
+        return jsonData
     }
 }

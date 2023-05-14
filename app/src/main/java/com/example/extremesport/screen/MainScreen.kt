@@ -1,6 +1,7 @@
 package com.example.extremesport.screen
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color.parseColor
 import android.media.ImageReader
 import androidx.compose.foundation.BorderStroke
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.extremesport.R
 import com.example.extremesport.Screens
+import com.example.extremesport.data.AppDataContainer
 import com.example.extremesport.view.ESViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng

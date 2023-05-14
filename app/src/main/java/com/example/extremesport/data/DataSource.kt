@@ -1,14 +1,17 @@
 package com.example.extremesport.data
 
-import com.example.extremesport.model.NowcastData
-import com.example.extremesport.model.LocationForecastData
-import com.example.extremesport.model.OpenAddressData
-import com.example.extremesport.model.SunriseData
+import android.app.Application
+import android.content.Context
+import android.content.res.Resources
+import com.example.extremesport.R
+import com.example.extremesport.model.*
+import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.gson.*
+import java.io.BufferedReader
 
 class DataSource {
     private val client = HttpClient {
@@ -55,10 +58,22 @@ class DataSource {
         return locationForecast
     }
 
-    suspend fun getOpenAddress(latitude: Double, longitude: Double, radius: Int): OpenAddressData {
+    suspend fun getOpenAddress(latitude: Double, longitude: Double, radius: Int): OpenAddressData? {
         //Radius er vel egentlig unødvendig å ha som parameter, men kan kanskje være nyttig uansett, idk.
         val apiLink = "https://ws.geonorge.no/adresser/v1/punktsok?lat=${latitude}&lon=${longitude}&radius=${radius}"
-        val openAddress: OpenAddressData = client.get(apiLink).body()
+        var openAddress: OpenAddressData? = null
+        try {
+            openAddress = client.get(apiLink).body()
+        } catch (_: Exception) {
+
+        }
         return openAddress
+    }
+
+    fun getLocationData(appDataContainer: AppDataContainer): LocationData {
+        val content = appDataContainer.JSON
+        val locationDataString = content.bufferedReader().use(BufferedReader::readText)
+        val gson = Gson()
+        return gson.fromJson(locationDataString, LocationData::class.java)
     }
 }
