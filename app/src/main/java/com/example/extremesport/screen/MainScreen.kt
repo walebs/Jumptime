@@ -163,7 +163,7 @@ fun ShowWeatherBox(
                 Icon(
                     painter = painterResource(id = picture[keyword]!!),
                     contentDescription = null,
-                    Modifier.size(36.dp),
+                    Modifier.size(36.dp).padding(bottom = 5.dp),
                     tint = Color.White
                 )
             }
