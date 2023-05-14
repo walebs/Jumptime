@@ -53,13 +53,15 @@ fun MainScreen (viewModel: ESViewModel, innerPadding: PaddingValues) {
     ) {
         Map(viewModel,
             onClick = { marker: Marker ->
-                boolShow = !boolShow //|| currentMarkerId != marker.id // some position variable in viewmodel needs to be updated here. That way the informationBox can display different information
+                if (!((boolShow && currentMarkerId == (clickedMarker?.id ?: String)))) {
+                    boolShow = !boolShow
+                }
+                // some position variable in viewmodel needs to be updated here. That way the informationBox can display different info
                 clickedMarker = marker
                 currentMarkerId = marker.id
                 if (boolShow) {
                     val sdf = SimpleDateFormat("yyyy-MM-dd")
                     val currentDate = sdf.format(Date())
-                    //TODO updatere når marker er trykket på?
                     val oldState = viewModel.esState.value
                     viewModel.update(marker.position.latitude, marker.position.longitude, 1, 1200, currentDate, "+01:00")
                     while (oldState == viewModel.esState.value) {
@@ -123,7 +125,7 @@ fun ShowWeatherBox(
 
     val height = mapOf(
         "short" to (screenHeight/4.5).dp,
-        "long" to (screenHeight-(screenHeight/4)).dp
+        "long" to (screenHeight-(screenHeight/4.5)).dp
     )
     val picture = mapOf(
         "long" to R.drawable.arrowup,
@@ -155,20 +157,13 @@ fun ShowWeatherBox(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = {
-                    keyword = if (keyword == "short") "long" else "short"
-                },
-                colors = ButtonDefaults.buttonColors("#1C6EAE".color),
-                modifier = Modifier
-                    .height(40.dp)
-                    .width(80.dp)
-                    .padding(bottom = 5.dp)
+            IconButton(
+                onClick = { keyword = if (keyword == "short") "long" else "short" }
             ) {
                 Icon(
                     painter = painterResource(id = picture[keyword]!!),
                     contentDescription = null,
-                    Modifier.fillMaxSize(),
+                    Modifier.size(36.dp),
                     tint = Color.White
                 )
             }
@@ -183,38 +178,52 @@ fun InformationBox(
     info: RequirementsResult,
     jsonInfo: LocationData.Location?,
 ) {
-    Column(
+    Row(
         Modifier
             .fillMaxWidth()
     ) {
-        Row(
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .weight(2f)
+        ) {
+            if (jsonInfo != null) {
+                Text(jsonInfo.name, color = Color.White)
+            }
+            Text(info.summaryCode1, color = Color.White)
+            Text("${info.currentTemp.toInt()}°", color = Color.White)
+            Text("${info.windStrength} m/s", color = Color.White)
+        }
+        Column(
+            Modifier
+                .padding(end = 10.dp, start = 10.dp)
+                .weight(1.2f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text("Sikkerhetsnivå", Modifier.padding(top = 10.dp), color = Color.White)
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(15.dp)
+                    .size(50.dp)
+            )
+        }
+        Box(
             Modifier
                 .fillMaxWidth()
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(start = 25.dp, top = 15.dp)
+                .weight(0.4f),
+            contentAlignment = Alignment.TopEnd
+        ){
+            IconButton(
+                onClick = { boolShow = !boolShow },
             ) {
-                if (jsonInfo != null) {
-                    Text(jsonInfo.name, color = Color.White)
-                }
-                Text(info.summaryCode1, color = Color.White)
-                Text("${info.currentTemp.toInt()}°", color = Color.White)
-                Text("${info.windStrength} m/s", color = Color.White)
-            }
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, end = 20.dp),
-                horizontalAlignment = Alignment.End
-            ) {
-                Text("Sikkerhetsnivå", Modifier.padding(top = 10.dp), color = Color.White)
-                Image(
-                    painter = painterResource(id = icon),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .size(50.dp)
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_close_24),
+                    contentDescription = "close",
+                    tint = Color.White,
+                    modifier = Modifier.size(18.dp)
                 )
             }
         }
@@ -269,12 +278,12 @@ fun LongInformationBox(
                 color = Color.White
             )
             Column(Modifier.fillMaxWidth()) {
-                val times = listOf("next 1h", "next 6h", "next 12h")
+                val times = listOf("Next 1h", "Next 6h", "Next 12h")
                 for (time in times) {
                     when (time) {
-                        "next 1h" -> WeatherForecast(time, info.summaryCode1, info.highTemp1.toInt(), info.lowTemp1.toInt(), info.windStrength, icon)
-                        "next 6h" -> WeatherForecast(time, info.summaryCode6, info.highTemp6.toInt(), info.lowTemp6.toInt(), info.windStrength, icon)
-                        "next 12h" -> WeatherForecast(time, info.summaryCode12, info.highTemp12.toInt(), info.lowTemp12.toInt(), info.windStrength, icon)
+                        "Next 1h" -> WeatherForecast(time, info.summaryCode1, info.highTemp1.toInt(), info.lowTemp1.toInt(), info.windStrength, icon)
+                        "Next 6h" -> WeatherForecast(time, info.summaryCode6, info.highTemp6.toInt(), info.lowTemp6.toInt(), info.windStrength, icon)
+                        "Next 12h" -> WeatherForecast(time, info.summaryCode12, info.highTemp12.toInt(), info.lowTemp12.toInt(), info.windStrength, icon)
                     }
                 }
             }
@@ -299,7 +308,7 @@ fun LocationInfo(icon: Int, str: String) {
 @Composable
 fun WeatherForecast(
     time: String,
-    weather: String = "regn",
+    weather: String,
     highTemp: Int,
     lowTemp: Int,
     wind: Double,
@@ -308,20 +317,25 @@ fun WeatherForecast(
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(bottom = 2.dp)
+            .padding(bottom = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "$time  $weather  H: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  $wind m/s",
-            textAlign = TextAlign.Center,
-            color = Color.White
+            text = "$time:\n$weather  $wind m/s\nH: ${highTemp}\u00B0  L: ${lowTemp}\u00B0",
+            color = Color.White,
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .weight(5f)
+                .padding(bottom = 5.dp, start = 20.dp)
         )
-        Spacer(modifier = Modifier.weight(4f))
         Image(
             painter = painterResource(id = icon),
             contentDescription = null,
             Modifier
                 .size(30.dp)
-                .padding(end = 10.dp)
+                .padding(end = 30.dp)
+                .weight(1f)
         )
     }
 }
