@@ -6,6 +6,7 @@ data class LocationData(
 ) {
     data class Location(
         val name: String,
+        val id: Int,
         val latitude: Double,
         val longitude: Double,
         val website: String,

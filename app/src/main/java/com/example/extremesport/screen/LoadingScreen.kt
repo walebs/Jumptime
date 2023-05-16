@@ -32,7 +32,6 @@ fun LoadingScreen(navController: NavController, loadingFunction: () -> Unit) {
 }
 
 fun loadAPIs(vm: ESViewModel) {
-
     while(vm.esState.value.nowcast == null
         || vm.esState.value.sunrise == null
         || vm.esState.value.locationForecast == null
