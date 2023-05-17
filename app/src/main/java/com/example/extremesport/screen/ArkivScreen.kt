@@ -140,7 +140,6 @@ fun ArkivScreen(viewModel: ESViewModel){
                 .fillMaxWidth()
         ) {
             LazyColumn {
-                //Dette må være antall stasjoner brukeren har hoppet
                 cards.forEach {
                     item {
                         it.DisplayCard()

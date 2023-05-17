@@ -80,6 +80,10 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
     }
 
     fun checkRequirements(sport: String): Double {
+        /**
+         * Returns a double, where the value either returns 0 meaning dangerous,
+         * or a number between 1 and 2. The higher the number the safer.
+         */
         var numbAverage = 0.0
 
         _esState.update { currentState ->

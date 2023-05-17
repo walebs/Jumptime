@@ -55,11 +55,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-/*
-    Holds the function for a screen, makes it easier to display screens.
-    The screen names still will have to be added to the enum class at the end,
-    and the both the screens list and the enum class needs to be in the same order.
-*/
+/**
+ *  Holds the function for a screen, makes it easier to display screens.
+ *  The screen names still have to be added to the enum class at the end,
+ *  and both the screens list and the enum class needs to be in the same order.
+ */
 data class Screen(
     val DisplayScreen: @Composable (PaddingValues?) -> Unit
 )
@@ -70,8 +70,7 @@ fun App(appDataContainer: AppDataContainer?) {
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
     val viewModel = ESViewModel(appDataContainer)
-    //TODO fjern
-    //Thread.sleep(5000)
+
     viewModel.returnLocations()
 
     val screenNames = Screens.values().map { it.name }
@@ -136,7 +135,12 @@ fun MainScaffold(
 
 
 @Composable
-fun BottomBar(navController: NavHostController, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope, selected: String){ //, newSelected: (String) -> Unit){
+fun BottomBar(
+    navController: NavHostController,
+    scaffoldState: ScaffoldState,
+    coroutineScope: CoroutineScope,
+    selected: String
+){
 
     val screens = listOf(
         Screens.MainScreen.name,
