@@ -18,15 +18,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.extremesport.R
-import com.example.extremesport.view.ESViewModel
 
 
 // This could be a setting in ArkivScreen, that toggles to only display favorited cards
 @Composable
-fun FavorittScreen(viewModel: ESViewModel){
+fun FavorittScreen(){
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
-    var cards = listOf(
+    val cards = listOf(
         Card(
             stationName = "StasjonNavn",
             rating = 3,

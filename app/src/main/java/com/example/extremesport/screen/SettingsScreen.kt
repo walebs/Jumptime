@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.extremesport.R
-import com.example.extremesport.view.ESViewModel
 
 
 data class Setting(
@@ -57,7 +56,7 @@ data class Setting(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SettingsScreen(viewModel: ESViewModel) {
+fun SettingsScreen() {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val settings = listOf(
         Setting(
