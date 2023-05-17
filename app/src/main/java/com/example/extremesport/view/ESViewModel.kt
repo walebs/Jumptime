@@ -18,6 +18,7 @@ import java.util.*
 import kotlin.collections.HashMap
 import com.example.extremesport.data.AppDataContainer
 import com.example.extremesport.model.LocationData
+import com.example.extremesport.model.LocationForecastData
 
 @SuppressLint("SimpleDateFormat")
 class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
@@ -130,9 +131,9 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                     0
                 }
 
-                val uvIndex: Int = if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max <= chosenSport.uv_index_ideal) {
+                val uvIndex: Int = if(locationForecastData.instant.details.ultraviolet_index_clear_sky <= chosenSport.uv_index_ideal) {
                     2
-                } else if(locationForecastData.next_1_hours.details.ultraviolet_index_clear_sky_max <= chosenSport.uv_index_moderate) {
+                } else if(locationForecastData.instant.details.ultraviolet_index_clear_sky <= chosenSport.uv_index_moderate) {
                     1
                 } else {
                     0
@@ -159,27 +160,26 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
     }
 
     fun getInfo(): RequirementsResult {
-        var summaryCode1 = "NaN"
-        var summaryCode6 = "NaN"
-        var summaryCode12 = "NaN"
-        var currentTemp = 0.0
-        var highTemp1 = 0.0
-        var lowTemp1 = 0.0
-        var highTemp6 = 0.0
-        var lowTemp6 = 0.0
-        var highTemp12 = 0.0
-        var lowTemp12 = 0.0
-        var windStrength = 0.0
-        var windDirection = 0.0
-        var openAddressName = "NaN"
+        val requirementsResult = RequirementsResult(null, null, null, null, null, "NaN")
 
         _esState.update { currentState ->
             try {
                 //val nowcastData = currentState.nowcast?.properties?.timeseries?.get(0)?.data!!
-                val locationForecastData = currentState.locationForecast?.properties?.timeseries?.get(0)?.data!!
+                val locationForecastDataToday = currentState.locationForecast?.properties?.timeseries?.get(0)!!
+                val locationForecastDataOneday = currentState.locationForecast.properties.timeseries[23]
+                val locationForecastDataTwoday = currentState.locationForecast.properties.timeseries[47]
+                val locationForecastDataThreeday = currentState.locationForecast.properties.timeseries[71]
+                val locationForecastDataFourday = currentState.locationForecast.properties.timeseries[95]
                 //val sunriseData = currentState.sunrise?.properties!!
                 val openAddressData = currentState.openAdress?.adresser?.get(0)!!
 
+                requirementsResult.today = locationForecastDataToday
+                requirementsResult.oneday = locationForecastDataOneday
+                requirementsResult.twodays = locationForecastDataTwoday
+                requirementsResult.threedays = locationForecastDataThreeday
+                requirementsResult.fourdays = locationForecastDataFourday
+                requirementsResult.openAddressName = openAddressData.adressenavn
+                /*
                 summaryCode1 = locationForecastData.next_1_hours.summary.symbol_code
                 summaryCode6 = locationForecastData.next_6_hours.summary.symbol_code
                 summaryCode12 = locationForecastData.next_12_hours.summary.symbol_code
@@ -193,12 +193,13 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                 windStrength = locationForecastData.instant.details.wind_speed
                 windDirection = locationForecastData.instant.details.wind_from_direction
                 openAddressName = openAddressData.adressenavn
+                 */
             } catch (_: Exception) {
 
             }
             currentState.copy()
         }
-        return RequirementsResult(summaryCode1, summaryCode6, summaryCode12, currentTemp, highTemp1, lowTemp1, highTemp6, lowTemp6, highTemp12, lowTemp12, windStrength, windDirection, openAddressName)
+        return requirementsResult
     }
 
     //Hjelpemetode for å sammenligne tidspunkter på dagen.
