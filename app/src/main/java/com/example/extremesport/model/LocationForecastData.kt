@@ -25,6 +25,8 @@ data class LocationForecastData(
         val air_temperature: String,
         val air_temperature_max: String,
         val air_temperature_min: String,
+        val air_temperature_percentile_10: String,
+        val air_temperature_percentile_90: String,
         val cloud_area_fraction: String,
         val cloud_area_fraction_high: String,
         val cloud_area_fraction_low: String,
@@ -37,10 +39,12 @@ data class LocationForecastData(
         val probability_of_precipitation: String,
         val probability_of_thunder: String,
         val relative_humidity: String,
-        val ultraviolet_index_clear_sky_max: String,
+        val ultraviolet_index_clear_sky: String,
         val wind_from_direction: String,
         val wind_speed: String,
         val wind_speed_of_gust: String,
+        val wind_speed_percentile_10: String,
+        val wind_speed_percentile_90: String
     )
 
     data class Dataholder(
@@ -61,6 +65,8 @@ data class LocationForecastData(
         data class Details(
             val air_pressure_at_sea_level: Double,
             val air_temperature: Double,
+            val air_temperature_percentile_10: Double,
+            val air_temperature_percentile_90: Double,
             val cloud_area_fraction: Double,
             val cloud_area_fraction_high: Double,
             val cloud_area_fraction_low: Double,
@@ -68,9 +74,12 @@ data class LocationForecastData(
             val dew_point_temperature: Double,
             val fog_area_fraction: Double,
             val relative_humidity: Double,
+            val ultraviolet_index_clear_sky: Double,
             val wind_from_direction: Double,
             val wind_speed: Double,
-            val wind_speed_of_gust: Double
+            val wind_speed_of_gust: Double,
+            val wind_speed_percentile_10: Double,
+            val wind_speed_percentile_90: Double
         )
     }
 
@@ -79,14 +88,12 @@ data class LocationForecastData(
         val summary: Summary
     ) {
         data class Details(
-            val air_temperature_max: Double,
-            val air_temperature_min: Double,
-            val precipitation_amount: Double,
-            val precipitation_amount_max: Double,
-            val precipitation_amount_min: Double,
-            val probability_of_precipitation: Double,
-            val probability_of_thunder: Double,
-            val ultraviolet_index_clear_sky_max: Double
+            val probability_of_precipitation: Double
+        )
+
+        data class Summary(
+            val symbol_code: String,
+            val symbol_confidence: String
         )
     }
 
@@ -95,14 +102,15 @@ data class LocationForecastData(
         val summary: Summary
     ) {
         data class Details(
-            val air_temperature_max: Double,
-            val air_temperature_min: Double,
             val precipitation_amount: Double,
             val precipitation_amount_max: Double,
             val precipitation_amount_min: Double,
             val probability_of_precipitation: Double,
-            val probability_of_thunder: Double,
-            val ultraviolet_index_clear_sky_max: Double
+            val probability_of_thunder: Double
+        )
+
+        data class Summary(
+            val symbol_code: String
         )
     }
 
@@ -116,13 +124,11 @@ data class LocationForecastData(
             val precipitation_amount: Double,
             val precipitation_amount_max: Double,
             val precipitation_amount_min: Double,
-            val probability_of_precipitation: Double,
-            val probability_of_thunder: Double,
-            val ultraviolet_index_clear_sky_max: Double
+            val probability_of_precipitation: Double
+        )
+
+        data class Summary(
+            val symbol_code: String
         )
     }
-
-    data class Summary(
-        val symbol_code: String
-    )
 }
