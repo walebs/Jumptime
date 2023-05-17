@@ -1,9 +1,5 @@
 package com.example.extremesport.data
 
-import android.app.Application
-import android.content.Context
-import android.content.res.Resources
-import com.example.extremesport.R
 import com.example.extremesport.model.*
 import com.google.gson.Gson
 import io.ktor.client.*

@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.extremesport.R
-import com.example.extremesport.view.ESViewModel
 
 
 data class Card(
@@ -89,9 +88,9 @@ data class Card(
 }
 
 @Composable
-fun ArkivScreen(viewModel: ESViewModel){
+fun ArkivScreen(){
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    var cards = listOf(
+    val cards = listOf(
         Card(
             stationName = "StasjonNavn",
             rating = 3,
