@@ -45,9 +45,6 @@ class DataSource {
         return nowcast
     }
 
-    /*
-    Er usikker på om altitude er over havet eller over bakken.
-     */
     suspend fun getLocationForecast(altitude: Int, latitude: Double, longitude: Double): LocationForecastData {
         val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/compact.json?altitude=${altitude}&lat=${latitude}&lon=${longitude}"
         val locationForecast: LocationForecastData = client.get(apiLink) {

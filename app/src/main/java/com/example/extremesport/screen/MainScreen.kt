@@ -239,6 +239,7 @@ fun LongInformationBox(
     icon: Int,
     info: RequirementsResult,
     jsonInfo: LocationData.Location?
+                //Kan være vi bør gjøre den mindre m tanke på at vi har få settings
 ) {
     Spacer(modifier = Modifier.height(15.dp))
     //Info om stedet
@@ -303,6 +304,7 @@ fun LocationInfo(icon: Int, str: String) {
         )
         Text(str, color = Color.White)
     }
+                //Kan være vi bør gjøre den mindre m tanke på at vi har få settings
 }
 
 @Composable
@@ -341,7 +343,11 @@ fun WeatherForecast(
 }
 
 @Composable
-fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope) {
+fun DrawerMenu(
+    navController: NavController,
+    scaffoldState: ScaffoldState,
+    coroutineScope: CoroutineScope
+) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Column {
         Column(
@@ -490,7 +496,7 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
                     }
                     TextButton(
                         onClick = { coroutineScope.launch { scaffoldState.drawerState.close()} }
-                        ) {
+                    ) {
                         Text(text = "Tilbake", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                     }
                 }

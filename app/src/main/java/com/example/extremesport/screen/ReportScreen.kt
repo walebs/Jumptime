@@ -40,7 +40,7 @@ fun ReportScreen(viewModel: ESViewModel) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Column( // This first column has repeated on different screens, Could be a function for a backdrop. Would also make it easier to change style later
+            Column( // This first column has repeated on different screens. Could be a function for a backdrop. Would also make it easier to change style later
                 modifier = Modifier
                     .background("#1C6EAE".color)
                     .fillMaxWidth()
