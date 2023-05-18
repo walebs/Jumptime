@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -195,7 +196,21 @@ fun InformationBox(
             }
             Text(info.today?.data?.next_1_hours?.summary?.symbol_code.toString(), color = Color.White)
             Text("${info.today?.data?.instant?.details?.air_temperature}°", color = Color.White)
-            Text("${info.today?.data?.instant?.details?.wind_speed} m/s", color = Color.White)
+            Row() {
+                Text("${info.today?.data?.instant?.details?.wind_speed} m/s", color = Color.White)
+                Spacer(Modifier.padding(start = 5.dp))
+                info.today?.data?.instant?.details?.wind_from_direction?.toFloat()?.let {
+                    Modifier
+                        .rotate(it)
+                }?.let {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_arrow_right_alt_24),
+                        contentDescription = "windDirArrow",
+                        modifier = it,
+                        tint = Color.White
+                    )
+                }
+            }
         }
         Column(
             Modifier
@@ -291,7 +306,8 @@ fun LongInformationBox(
                                         weather = info.oneday?.data?.next_6_hours?.summary?.symbol_code.toString(),
                                         highTemp = it,
                                         lowTemp = it1,
-                                        wind = it2
+                                        wind = it2,
+                                        windDir = info.oneday!!.data.instant.details.wind_from_direction
                                     )
                                 }
                             }
@@ -300,11 +316,12 @@ fun LongInformationBox(
                             info.twodays?.data?.next_6_hours?.details?.air_temperature_min?.toInt()?.let { it1 ->
                                 info.twodays?.data?.instant?.details?.wind_speed?.let { it2 ->
                                     WeatherForecast(
-                                        time = "Twodays",
+                                        time = "Two-day",
                                         weather = info.twodays?.data?.next_6_hours?.summary?.symbol_code.toString(),
                                         highTemp = it,
                                         lowTemp = it1,
-                                        wind = it2
+                                        wind = it2,
+                                        windDir = info.twodays!!.data.instant.details.wind_from_direction
                                     )
                                 }
                             }
@@ -313,11 +330,12 @@ fun LongInformationBox(
                             info.threedays?.data?.next_6_hours?.details?.air_temperature_min?.toInt()?.let { it1 ->
                                 info.threedays?.data?.instant?.details?.wind_speed?.let { it2 ->
                                     WeatherForecast(
-                                        time = "Threedays",
+                                        time = "Three-day",
                                         weather = info.threedays?.data?.next_6_hours?.summary?.symbol_code.toString(),
                                         highTemp = it,
                                         lowTemp = it1,
-                                        wind = it2
+                                        wind = it2,
+                                        windDir = info.threedays!!.data.instant.details.wind_from_direction
                                     )
                                 }
                             }
@@ -350,6 +368,7 @@ fun WeatherForecast(
     highTemp: Int,
     lowTemp: Int,
     wind: Double,
+    windDir: Double,
     icon: Int = R.drawable.green_icon
 ) {
     Row(
@@ -357,15 +376,21 @@ fun WeatherForecast(
             .fillMaxWidth()
             .padding(bottom = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Start
     ) {
         Text(
             text = "$time:  $weather\nH: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  $wind m/s",
             color = Color.White,
             textAlign = TextAlign.Start,
             modifier = Modifier
-                .weight(5f)
+                .weight(4.5f)
                 .padding(bottom = 5.dp, start = 20.dp)
+        )
+        Icon(
+            painter = painterResource(id = R.drawable.baseline_arrow_right_alt_24),
+            contentDescription = "windDirArrow",
+            modifier = Modifier.rotate(windDir.toFloat()).weight(1.5f),
+            tint = Color.White
         )
         Image(
             painter = painterResource(id = icon),
