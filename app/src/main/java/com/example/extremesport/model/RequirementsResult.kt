@@ -5,6 +5,5 @@ data class RequirementsResult(
     var oneday: LocationForecastData.Dataholder?,
     var twodays: LocationForecastData.Dataholder?,
     var threedays: LocationForecastData.Dataholder?,
-    var fourdays: LocationForecastData.Dataholder?,
     var openAddressName: String?
 )

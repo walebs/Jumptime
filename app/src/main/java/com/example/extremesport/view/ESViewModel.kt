@@ -160,7 +160,7 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
     }
 
     fun getInfo(): RequirementsResult {
-        val requirementsResult = RequirementsResult(null, null, null, null, null, "NaN")
+        val requirementsResult = RequirementsResult(null, null, null, null, "NaN")
 
         _esState.update { currentState ->
             try {
@@ -169,7 +169,6 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                 val locationForecastDataOneday = currentState.locationForecast.properties.timeseries[23]
                 val locationForecastDataTwoday = currentState.locationForecast.properties.timeseries[47]
                 val locationForecastDataThreeday = currentState.locationForecast.properties.timeseries[71]
-                val locationForecastDataFourday = currentState.locationForecast.properties.timeseries[95]
                 //val sunriseData = currentState.sunrise?.properties!!
                 val openAddressData = currentState.openAdress?.adresser?.get(0)!!
 
@@ -177,7 +176,6 @@ class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
                 requirementsResult.oneday = locationForecastDataOneday
                 requirementsResult.twodays = locationForecastDataTwoday
                 requirementsResult.threedays = locationForecastDataThreeday
-                requirementsResult.fourdays = locationForecastDataFourday
                 requirementsResult.openAddressName = openAddressData.adressenavn
                 /*
                 summaryCode1 = locationForecastData.next_1_hours.summary.symbol_code

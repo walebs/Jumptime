@@ -163,7 +163,9 @@ fun ShowWeatherBox(
                 Icon(
                     painter = painterResource(id = picture[keyword]!!),
                     contentDescription = null,
-                    Modifier.size(36.dp).padding(bottom = 5.dp),
+                    Modifier
+                        .size(36.dp)
+                        .padding(bottom = 5.dp),
                     tint = Color.White
                 )
             }
@@ -191,9 +193,9 @@ fun InformationBox(
             if (jsonInfo != null) {
                 Text(jsonInfo.name, color = Color.White)
             }
-            Text(info.summaryCode1, color = Color.White)
-            Text("${info.currentTemp.toInt()}°", color = Color.White)
-            Text("${info.windStrength} m/s", color = Color.White)
+            Text(info.today?.data?.next_1_hours?.summary?.symbol_code.toString(), color = Color.White)
+            Text("${info.today?.data?.instant?.details?.air_temperature}°", color = Color.White)
+            Text("${info.today?.data?.instant?.details?.wind_speed} m/s", color = Color.White)
         }
         Column(
             Modifier
@@ -278,12 +280,48 @@ fun LongInformationBox(
                 color = Color.White
             )
             Column(Modifier.fillMaxWidth()) {
-                val times = listOf("Next 1h", "Next 6h", "Next 12h")
+                val times = listOf("tomorrow", "twoday", "threeday")
                 for (time in times) {
                     when (time) {
-                        "Next 1h" -> WeatherForecast(time, info.summaryCode1, info.highTemp1.toInt(), info.lowTemp1.toInt(), info.windStrength, icon)
-                        "Next 6h" -> WeatherForecast(time, info.summaryCode6, info.highTemp6.toInt(), info.lowTemp6.toInt(), info.windStrength, icon)
-                        "Next 12h" -> WeatherForecast(time, info.summaryCode12, info.highTemp12.toInt(), info.lowTemp12.toInt(), info.windStrength, icon)
+                        "tomorrow" -> info.oneday?.data?.next_6_hours?.details?.air_temperature_max?.toInt()?.let {
+                            info.oneday?.data?.next_6_hours?.details?.air_temperature_min?.toInt()?.let { it1 ->
+                                info.oneday?.data?.instant?.details?.wind_speed?.let { it2 ->
+                                    WeatherForecast(
+                                        time = "Tomorrow",
+                                        weather = info.oneday?.data?.next_6_hours?.summary?.symbol_code.toString(),
+                                        highTemp = it,
+                                        lowTemp = it1,
+                                        wind = it2
+                                    )
+                                }
+                            }
+                        }
+                        "twoday" -> info.twodays?.data?.next_6_hours?.details?.air_temperature_max?.toInt()?.let {
+                            info.twodays?.data?.next_6_hours?.details?.air_temperature_min?.toInt()?.let { it1 ->
+                                info.twodays?.data?.instant?.details?.wind_speed?.let { it2 ->
+                                    WeatherForecast(
+                                        time = "Twodays",
+                                        weather = info.twodays?.data?.next_6_hours?.summary?.symbol_code.toString(),
+                                        highTemp = it,
+                                        lowTemp = it1,
+                                        wind = it2
+                                    )
+                                }
+                            }
+                        }
+                        "threeday" -> info.threedays?.data?.next_6_hours?.details?.air_temperature_max?.toInt()?.let {
+                            info.threedays?.data?.next_6_hours?.details?.air_temperature_min?.toInt()?.let { it1 ->
+                                info.threedays?.data?.instant?.details?.wind_speed?.let { it2 ->
+                                    WeatherForecast(
+                                        time = "Threedays",
+                                        weather = info.threedays?.data?.next_6_hours?.summary?.symbol_code.toString(),
+                                        highTemp = it,
+                                        lowTemp = it1,
+                                        wind = it2
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -322,7 +360,7 @@ fun WeatherForecast(
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "$time:\n$weather  $wind m/s\nH: ${highTemp}\u00B0  L: ${lowTemp}\u00B0",
+            text = "$time:  $weather\nH: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  $wind m/s",
             color = Color.White,
             textAlign = TextAlign.Start,
             modifier = Modifier
