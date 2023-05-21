@@ -294,12 +294,12 @@ fun LongInformationBox(
                 color = Color.White
             )
             Column(Modifier.fillMaxWidth()) {
-                val times = listOf("tomorrow", "twoday", "threeday")
-                for (time in times) {
-                    when (time) {
+                val times = listOf("tomorrow", "daytwo", "daythree")
+                for (day in times) {
+                    when (day) {
                         "tomorrow" -> info.oneday?.data?.next_6_hours?.details?.air_temperature_max?.let {
                             WeatherForecast(
-                                time = "Tomorrow",
+                                str = "Tomorrow",
                                 weather = info.oneday?.data?.next_6_hours?.summary?.symbol_code.toString(),
                                 highTemp = it.toInt(),
                                 lowTemp = info.oneday!!.data.next_6_hours.details.air_temperature_min.toInt(),
@@ -307,9 +307,9 @@ fun LongInformationBox(
                                 windDir = info.oneday!!.data.instant.details.wind_from_direction
                             )
                         }
-                        "twoday" -> info.twodays?.data?.next_6_hours?.details?.air_temperature_max?.let {
+                        "daytwo" -> info.twodays?.data?.next_6_hours?.details?.air_temperature_max?.let {
                             WeatherForecast(
-                                time = "Day after tomorrow",
+                                str = "Day after tomorrow",
                                 weather = info.twodays?.data?.next_6_hours?.summary?.symbol_code.toString(),
                                 highTemp = it.toInt(),
                                 lowTemp = info.twodays!!.data.next_6_hours.details.air_temperature_min.toInt(),
@@ -317,10 +317,9 @@ fun LongInformationBox(
                                 windDir = info.twodays!!.data.instant.details.wind_from_direction
                             )
                         }
-
-                        "threeday" -> info.threedays?.data?.next_6_hours?.details?.air_temperature_max?.let {
+                        "daythree" -> info.threedays?.data?.next_6_hours?.details?.air_temperature_max?.let {
                             WeatherForecast(
-                                time = "Two days after tomorrow",
+                                str = "Two days after tomorrow",
                                 weather = info.threedays?.data?.next_6_hours?.summary?.symbol_code.toString(),
                                 highTemp = it.toInt(),
                                 lowTemp = info.threedays!!.data.next_6_hours.details.air_temperature_min.toInt(),
@@ -351,13 +350,12 @@ fun LocationInfo(icon: Int, str: String) {
 
 @Composable
 fun WeatherForecast(
-    time: String,
+    str: String,
     weather: String,
     highTemp: Int,
     lowTemp: Int,
     wind: Double,
     windDir: Double
-    //icon: Int = R.drawable.green_icon
 ) {
     Row(
         Modifier
@@ -367,7 +365,7 @@ fun WeatherForecast(
         horizontalArrangement = Arrangement.Start
     ) {
         Text(
-            text = "$time:  $weather\nH: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  $wind m/s",
+            text = "$str:  $weather\nH: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  $wind m/s",
             color = Color.White,
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -377,17 +375,11 @@ fun WeatherForecast(
         Icon(
             painter = painterResource(id = R.drawable.baseline_arrow_right_alt_24),
             contentDescription = "windDirArrow",
-            modifier = Modifier.rotate(windDir.toFloat()).weight(1.5f),
+            modifier = Modifier
+                .rotate(windDir.toFloat())
+                .weight(1.5f),
             tint = Color.White
         )
-        /*Image(
-            painter = painterResource(id = icon),
-            contentDescription = null,
-            Modifier
-                .size(30.dp)
-                .padding(end = 30.dp)
-                .weight(1f)
-        )*/
     }
 }
 
@@ -455,7 +447,6 @@ fun DrawerMenu(navController: NavController, scaffoldState: ScaffoldState, corou
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            //TODO komprimere lik kode
             TextButton(
                 onClick = {
                     coroutineScope.launch { scaffoldState.drawerState.close()}
