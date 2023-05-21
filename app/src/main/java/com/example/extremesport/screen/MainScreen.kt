@@ -196,7 +196,7 @@ fun InformationBox(
             }
             Text(info.today?.data?.next_1_hours?.summary?.symbol_code.toString(), color = Color.White)
             Text("${info.today?.data?.instant?.details?.air_temperature}°", color = Color.White)
-            Row() {
+            Row {
                 Text("${info.today?.data?.instant?.details?.wind_speed} m/s", color = Color.White)
                 Spacer(Modifier.padding(start = 5.dp))
                 info.today?.data?.instant?.details?.wind_from_direction?.toFloat()?.let {
@@ -247,13 +247,12 @@ fun InformationBox(
     }
 
     if (keyword == "long") {
-        LongInformationBox(icon, info, jsonInfo)
+        LongInformationBox(info, jsonInfo)
     }
 }
 
 @Composable
 fun LongInformationBox(
-    icon: Int,
     info: RequirementsResult,
     jsonInfo: LocationData.Location?
 ) {
@@ -298,47 +297,36 @@ fun LongInformationBox(
                 val times = listOf("tomorrow", "twoday", "threeday")
                 for (time in times) {
                     when (time) {
-                        "tomorrow" -> info.oneday?.data?.next_6_hours?.details?.air_temperature_max?.toInt()?.let {
-                            info.oneday?.data?.next_6_hours?.details?.air_temperature_min?.toInt()?.let { it1 ->
-                                info.oneday?.data?.instant?.details?.wind_speed?.let { it2 ->
-                                    WeatherForecast(
-                                        time = "Tomorrow",
-                                        weather = info.oneday?.data?.next_6_hours?.summary?.symbol_code.toString(),
-                                        highTemp = it,
-                                        lowTemp = it1,
-                                        wind = it2,
-                                        windDir = info.oneday!!.data.instant.details.wind_from_direction
-                                    )
-                                }
-                            }
+                        "tomorrow" -> info.oneday?.data?.next_6_hours?.details?.air_temperature_max?.let {
+                            WeatherForecast(
+                                time = "Tomorrow",
+                                weather = info.oneday?.data?.next_6_hours?.summary?.symbol_code.toString(),
+                                highTemp = it.toInt(),
+                                lowTemp = info.oneday!!.data.next_6_hours.details.air_temperature_min.toInt(),
+                                wind = info.oneday!!.data.instant.details.wind_speed,
+                                windDir = info.oneday!!.data.instant.details.wind_from_direction
+                            )
                         }
-                        "twoday" -> info.twodays?.data?.next_6_hours?.details?.air_temperature_max?.toInt()?.let {
-                            info.twodays?.data?.next_6_hours?.details?.air_temperature_min?.toInt()?.let { it1 ->
-                                info.twodays?.data?.instant?.details?.wind_speed?.let { it2 ->
-                                    WeatherForecast(
-                                        time = "Two-day",
-                                        weather = info.twodays?.data?.next_6_hours?.summary?.symbol_code.toString(),
-                                        highTemp = it,
-                                        lowTemp = it1,
-                                        wind = it2,
-                                        windDir = info.twodays!!.data.instant.details.wind_from_direction
-                                    )
-                                }
-                            }
+                        "twoday" -> info.twodays?.data?.next_6_hours?.details?.air_temperature_max?.let {
+                            WeatherForecast(
+                                time = "Day after tomorrow",
+                                weather = info.twodays?.data?.next_6_hours?.summary?.symbol_code.toString(),
+                                highTemp = it.toInt(),
+                                lowTemp = info.twodays!!.data.next_6_hours.details.air_temperature_min.toInt(),
+                                wind = info.twodays!!.data.instant.details.wind_speed,
+                                windDir = info.twodays!!.data.instant.details.wind_from_direction
+                            )
                         }
-                        "threeday" -> info.threedays?.data?.next_6_hours?.details?.air_temperature_max?.toInt()?.let {
-                            info.threedays?.data?.next_6_hours?.details?.air_temperature_min?.toInt()?.let { it1 ->
-                                info.threedays?.data?.instant?.details?.wind_speed?.let { it2 ->
-                                    WeatherForecast(
-                                        time = "Three-day",
-                                        weather = info.threedays?.data?.next_6_hours?.summary?.symbol_code.toString(),
-                                        highTemp = it,
-                                        lowTemp = it1,
-                                        wind = it2,
-                                        windDir = info.threedays!!.data.instant.details.wind_from_direction
-                                    )
-                                }
-                            }
+
+                        "threeday" -> info.threedays?.data?.next_6_hours?.details?.air_temperature_max?.let {
+                            WeatherForecast(
+                                time = "Two days after tomorrow",
+                                weather = info.threedays?.data?.next_6_hours?.summary?.symbol_code.toString(),
+                                highTemp = it.toInt(),
+                                lowTemp = info.threedays!!.data.next_6_hours.details.air_temperature_min.toInt(),
+                                wind = info.threedays!!.data.instant.details.wind_speed,
+                                windDir = info.threedays!!.data.instant.details.wind_from_direction
+                            )
                         }
                     }
                 }
@@ -368,8 +356,8 @@ fun WeatherForecast(
     highTemp: Int,
     lowTemp: Int,
     wind: Double,
-    windDir: Double,
-    icon: Int = R.drawable.green_icon
+    windDir: Double
+    //icon: Int = R.drawable.green_icon
 ) {
     Row(
         Modifier
@@ -392,14 +380,14 @@ fun WeatherForecast(
             modifier = Modifier.rotate(windDir.toFloat()).weight(1.5f),
             tint = Color.White
         )
-        Image(
+        /*Image(
             painter = painterResource(id = icon),
             contentDescription = null,
             Modifier
                 .size(30.dp)
                 .padding(end = 30.dp)
                 .weight(1f)
-        )
+        )*/
     }
 }
 
