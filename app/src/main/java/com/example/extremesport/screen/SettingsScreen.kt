@@ -64,13 +64,6 @@ fun SettingsScreen() {
             contentDescription = "Logo for night mode",
             buttonText = "Test",
             onClick = {}
-        ),
-        Setting(
-            description = "Ny setting",
-            //icon = "new image here",
-            contentDescription = "Ny setting",
-            buttonText = "Test",
-            onClick = {}
         )
     )
 
@@ -95,7 +88,7 @@ fun SettingsScreen() {
                     .offset(x = (-17).dp),
             )
             Text(
-                text = "Settings",
+                text = "Innstillinger",
                 fontSize = 30.sp,
                 color = Color.White,
                 modifier = Modifier

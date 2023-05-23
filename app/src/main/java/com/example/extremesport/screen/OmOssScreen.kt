@@ -77,7 +77,7 @@ fun OmOssScreen() {
                     )
                     Spacer(modifier = Modifier.padding(15.dp))
                    Text(
-                       text = "Vi er utviklerene av applikasjonen JumpTime, og kommer fra en bakgrunn innen informatikk fra UiO. [LEGG TIL MER]"
+                       text = "Vi er utviklerene av applikasjonen JumpTime, og kommer fra en bakgrunn innen informatikk fra UiO. Denne applikasjonen er vårt IN2000 prosjekt."
                    )
                 }
             }

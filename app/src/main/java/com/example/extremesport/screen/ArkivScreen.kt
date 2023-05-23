@@ -94,7 +94,7 @@ fun ArkivScreen(){
         Card(
             stationName = "StasjonNavn",
             rating = 3,
-            stationInfo = "mer informasjon"
+            stationInfo = "Info om stasjonen"
         )
     )
     Box(

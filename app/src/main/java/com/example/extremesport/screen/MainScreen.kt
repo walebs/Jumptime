@@ -129,8 +129,8 @@ fun ShowWeatherBox(
         "long" to (screenHeight-(screenHeight/4.5)).dp
     )
     val picture = mapOf(
-        "long" to R.drawable.arrowup,
-        "short" to R.drawable.arrowdown
+        "long" to R.drawable.baseline_keyboard_arrow_up_24,
+        "short" to R.drawable.baseline_keyboard_arrow_down_24
     )
     var keyword by remember { mutableStateOf("short") }
 
@@ -192,7 +192,7 @@ fun InformationBox(
                 .weight(2f)
         ) {
             if (jsonInfo != null) {
-                Text(jsonInfo.name, color = Color.White)
+                Text(jsonInfo.name, color = Color.White, fontWeight = FontWeight.Bold)
             }
             Text(info.today?.data?.next_1_hours?.summary?.symbol_code.toString(), color = Color.White)
             Text("${info.today?.data?.instant?.details?.air_temperature}°", color = Color.White)
@@ -433,13 +433,13 @@ fun DrawerMenu(
                     contentDescription = "Logonavn",
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
-                        .size(150.dp)
+                        .size(100.dp)
                         .weight(1f)
-                        .offset(x = (-24).dp)
+                        .offset(x = (-40).dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = "Poeng:<X>  ",
+                    text = "    ",
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     color = Color.White,
@@ -457,7 +457,8 @@ fun DrawerMenu(
                 onClick = {
                     coroutineScope.launch { scaffoldState.drawerState.close()}
                     navController.navigate(Screens.FavorittScreen.name) {popUpTo(Screens.MainScreen.name)}
-                          },
+                    boolShow = false
+                },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_save_24),
@@ -472,7 +473,8 @@ fun DrawerMenu(
                 onClick = {
                     coroutineScope.launch { scaffoldState.drawerState.close()}
                     navController.navigate(Screens.ArkivScreen.name) {popUpTo(Screens.MainScreen.name)}
-                          },
+                    boolShow = false
+                },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_archive_24),
@@ -487,7 +489,8 @@ fun DrawerMenu(
                 onClick = {
                     coroutineScope.launch { scaffoldState.drawerState.close()}
                     navController.navigate(Screens.SettingsScreen.name) {popUpTo(Screens.MainScreen.name)}
-                          },
+                    boolShow = false
+                },
             ) {
                 Image(
                     painterResource(id = R.drawable.baseline_settings_24),
@@ -506,7 +509,8 @@ fun DrawerMenu(
                     onClick = {
                         coroutineScope.launch { scaffoldState.drawerState.close()}
                         navController.navigate(Screens.OmOssScreen.name) {popUpTo(Screens.MainScreen.name)}
-                              },
+                        boolShow = false
+                    },
                 ) {
                     Image(
                         painterResource(id = R.drawable.baseline_groups_24),
@@ -525,7 +529,8 @@ fun DrawerMenu(
                         onClick = {
                             coroutineScope.launch { scaffoldState.drawerState.close()}
                             navController.navigate(Screens.ReportScreen.name) {popUpTo(Screens.MainScreen.name)}
-                                  },
+                            boolShow = false
+                        },
                     ) {
                         Image(
                             painterResource(id = R.drawable.baseline_report_problem_24),
