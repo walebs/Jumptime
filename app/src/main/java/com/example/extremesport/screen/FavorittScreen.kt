@@ -57,7 +57,7 @@ fun FavorittScreen(){
                 text = "Favoritter - <3!",
                 fontSize = 30.sp,
                 color = Color.White,
-                modifier = Modifier.offset(y = -55.dp)
+                modifier = Modifier.offset(y = (-55).dp)
             )
         }
         Column(

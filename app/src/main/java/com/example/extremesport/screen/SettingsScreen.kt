@@ -84,7 +84,7 @@ fun SettingsScreen() {
                 .fillMaxWidth()
                 .height(200.dp)
                 .padding(16.dp)
-                .offset(y = -50.dp)
+                .offset(y = (-50).dp)
         ) {
             Image(
                 painterResource(id = R.drawable.jumptime_tekst_whiteontransparent),

@@ -18,7 +18,6 @@ import java.util.*
 import kotlin.collections.HashMap
 import com.example.extremesport.data.AppDataContainer
 import com.example.extremesport.model.LocationData
-import com.example.extremesport.model.LocationForecastData
 
 @SuppressLint("SimpleDateFormat")
 class ESViewModel(appDataContainer: AppDataContainer?): ViewModel() {
