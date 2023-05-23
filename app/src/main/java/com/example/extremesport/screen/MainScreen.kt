@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -163,7 +164,9 @@ fun ShowWeatherBox(
                 Icon(
                     painter = painterResource(id = picture[keyword]!!),
                     contentDescription = null,
-                    Modifier.size(36.dp).padding(bottom = 5.dp),
+                    Modifier
+                        .size(36.dp)
+                        .padding(bottom = 5.dp),
                     tint = Color.White
                 )
             }
@@ -191,9 +194,23 @@ fun InformationBox(
             if (jsonInfo != null) {
                 Text(jsonInfo.name, color = Color.White)
             }
-            Text(info.summaryCode1, color = Color.White)
-            Text("${info.currentTemp.toInt()}°", color = Color.White)
-            Text("${info.windStrength} m/s", color = Color.White)
+            Text(info.today?.data?.next_1_hours?.summary?.symbol_code.toString(), color = Color.White)
+            Text("${info.today?.data?.instant?.details?.air_temperature}°", color = Color.White)
+            Row {
+                Text("${info.today?.data?.instant?.details?.wind_speed} m/s", color = Color.White)
+                Spacer(Modifier.padding(start = 5.dp))
+                info.today?.data?.instant?.details?.wind_from_direction?.toFloat()?.let {
+                    Modifier
+                        .rotate(it)
+                }?.let {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_arrow_right_alt_24),
+                        contentDescription = "windDirArrow",
+                        modifier = it,
+                        tint = Color.White
+                    )
+                }
+            }
         }
         Column(
             Modifier
@@ -230,13 +247,12 @@ fun InformationBox(
     }
 
     if (keyword == "long") {
-        LongInformationBox(icon, info, jsonInfo)
+        LongInformationBox(info, jsonInfo)
     }
 }
 
 @Composable
 fun LongInformationBox(
-    icon: Int,
     info: RequirementsResult,
     jsonInfo: LocationData.Location?
                 //Kan være vi bør gjøre den mindre m tanke på at vi har få settings
@@ -279,12 +295,39 @@ fun LongInformationBox(
                 color = Color.White
             )
             Column(Modifier.fillMaxWidth()) {
-                val times = listOf("Next 1h", "Next 6h", "Next 12h")
-                for (time in times) {
-                    when (time) {
-                        "Next 1h" -> WeatherForecast(time, info.summaryCode1, info.highTemp1.toInt(), info.lowTemp1.toInt(), info.windStrength, icon)
-                        "Next 6h" -> WeatherForecast(time, info.summaryCode6, info.highTemp6.toInt(), info.lowTemp6.toInt(), info.windStrength, icon)
-                        "Next 12h" -> WeatherForecast(time, info.summaryCode12, info.highTemp12.toInt(), info.lowTemp12.toInt(), info.windStrength, icon)
+                val times = listOf("tomorrow", "daytwo", "daythree")
+                for (day in times) {
+                    when (day) {
+                        "tomorrow" -> info.oneday?.data?.next_6_hours?.details?.air_temperature_max?.let {
+                            WeatherForecast(
+                                str = "Tomorrow",
+                                weather = info.oneday?.data?.next_6_hours?.summary?.symbol_code.toString(),
+                                highTemp = it.toInt(),
+                                lowTemp = info.oneday!!.data.next_6_hours.details.air_temperature_min.toInt(),
+                                wind = info.oneday!!.data.instant.details.wind_speed,
+                                windDir = info.oneday!!.data.instant.details.wind_from_direction
+                            )
+                        }
+                        "daytwo" -> info.twodays?.data?.next_6_hours?.details?.air_temperature_max?.let {
+                            WeatherForecast(
+                                str = "Day after tomorrow",
+                                weather = info.twodays?.data?.next_6_hours?.summary?.symbol_code.toString(),
+                                highTemp = it.toInt(),
+                                lowTemp = info.twodays!!.data.next_6_hours.details.air_temperature_min.toInt(),
+                                wind = info.twodays!!.data.instant.details.wind_speed,
+                                windDir = info.twodays!!.data.instant.details.wind_from_direction
+                            )
+                        }
+                        "daythree" -> info.threedays?.data?.next_6_hours?.details?.air_temperature_max?.let {
+                            WeatherForecast(
+                                str = "Two days after tomorrow",
+                                weather = info.threedays?.data?.next_6_hours?.summary?.symbol_code.toString(),
+                                highTemp = it.toInt(),
+                                lowTemp = info.threedays!!.data.next_6_hours.details.air_temperature_min.toInt(),
+                                wind = info.threedays!!.data.instant.details.wind_speed,
+                                windDir = info.threedays!!.data.instant.details.wind_from_direction
+                            )
+                        }
                     }
                 }
             }
@@ -309,35 +352,35 @@ fun LocationInfo(icon: Int, str: String) {
 
 @Composable
 fun WeatherForecast(
-    time: String,
+    str: String,
     weather: String,
     highTemp: Int,
     lowTemp: Int,
     wind: Double,
-    icon: Int = R.drawable.green_icon
+    windDir: Double
 ) {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(bottom = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Start
     ) {
         Text(
-            text = "$time:\n$weather  $wind m/s\nH: ${highTemp}\u00B0  L: ${lowTemp}\u00B0",
+            text = "$str:  $weather\nH: ${highTemp}\u00B0  L: ${lowTemp}\u00B0  $wind m/s",
             color = Color.White,
             textAlign = TextAlign.Start,
             modifier = Modifier
-                .weight(5f)
+                .weight(4.5f)
                 .padding(bottom = 5.dp, start = 20.dp)
         )
-        Image(
-            painter = painterResource(id = icon),
-            contentDescription = null,
-            Modifier
-                .size(30.dp)
-                .padding(end = 30.dp)
-                .weight(1f)
+        Icon(
+            painter = painterResource(id = R.drawable.baseline_arrow_right_alt_24),
+            contentDescription = "windDirArrow",
+            modifier = Modifier
+                .rotate(windDir.toFloat())
+                .weight(1.5f),
+            tint = Color.White
         )
     }
 }
@@ -410,7 +453,6 @@ fun DrawerMenu(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            //TODO komprimere lik kode
             TextButton(
                 onClick = {
                     coroutineScope.launch { scaffoldState.drawerState.close()}

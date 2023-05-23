@@ -42,7 +42,7 @@ class DataSource {
     }
 
     suspend fun getLocationForecast(altitude: Int, latitude: Double, longitude: Double): LocationForecastData {
-        val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/compact.json?altitude=${altitude}&lat=${latitude}&lon=${longitude}"
+        val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/complete?altitude=${altitude}&lat=${latitude}&lon=${longitude}"
         val locationForecast: LocationForecastData = client.get(apiLink) {
             headers {
                 append("X-Gravitee-API-Key","b0285355-9b7b-44ea-a2f0-2fadb945792d")
