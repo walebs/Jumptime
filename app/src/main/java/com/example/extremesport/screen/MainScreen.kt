@@ -271,16 +271,16 @@ fun LongInformationBox(
         }
         Column(Modifier.padding(bottom = 10.dp)) {
             if (jsonInfo != null) {
-                LocationInfo(R.drawable.marker, jsonInfo.adress)
+                LocationInfo(R.drawable.baseline_place_24, jsonInfo.adress)
             }
             if (jsonInfo != null) {
-                LocationInfo(R.drawable.clock_icon, jsonInfo.openingtime)
+                LocationInfo(R.drawable.baseline_access_time_24, jsonInfo.openingtime)
             }
             if (jsonInfo != null) {
                 LocationInfo(R.drawable.internett_icon, jsonInfo.website)
             }
             if (jsonInfo != null) {
-                LocationInfo(R.drawable.phone_icon, jsonInfo.phoneNr)
+                LocationInfo(R.drawable.baseline_phone_24, jsonInfo.phoneNr)
             }
         }
         Column(
@@ -341,13 +341,13 @@ fun LocationInfo(icon: Int, str: String) {
         Icon(
             painter = painterResource(id = icon),
             contentDescription = null,
-            Modifier
+            tint = Color.Black,
+            modifier = Modifier
                 .size(30.dp)
                 .padding(end = 5.dp)
         )
         Text(str, color = Color.White)
     }
-                //Kan være vi bør gjøre den mindre m tanke på at vi har få settings
 }
 
 @Composable
