@@ -22,14 +22,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.extremesport.R
-import com.example.extremesport.view.ESViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ReportScreen(viewModel: ESViewModel) {
+fun ReportScreen() {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState()}
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
@@ -40,7 +39,7 @@ fun ReportScreen(viewModel: ESViewModel) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Column( // This first column has repeated on different screens, Could be a function for a backdrop. Would also make it easier to change style later
+            Column( // This first column has repeated on different screens. Could be a function for a backdrop. Would also make it easier to change style later
                 modifier = Modifier
                     .background("#1C6EAE".color)
                     .fillMaxWidth()

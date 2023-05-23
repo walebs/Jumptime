@@ -1,9 +1,5 @@
 package com.example.extremesport.data
 
-import android.app.Application
-import android.content.Context
-import android.content.res.Resources
-import com.example.extremesport.R
 import com.example.extremesport.model.*
 import com.google.gson.Gson
 import io.ktor.client.*
@@ -45,9 +41,6 @@ class DataSource {
         return nowcast
     }
 
-    /*
-    Er usikker på om altitude er over havet eller over bakken.
-     */
     suspend fun getLocationForecast(altitude: Int, latitude: Double, longitude: Double): LocationForecastData {
         val apiLink = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/complete?altitude=${altitude}&lat=${latitude}&lon=${longitude}"
         val locationForecast: LocationForecastData = client.get(apiLink) {
