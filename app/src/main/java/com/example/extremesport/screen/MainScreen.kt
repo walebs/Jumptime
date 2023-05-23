@@ -277,7 +277,7 @@ fun LongInformationBox(
                 LocationInfo(R.drawable.baseline_access_time_24, jsonInfo.openingtime)
             }
             if (jsonInfo != null) {
-                LocationInfo(R.drawable.internett_icon, jsonInfo.website)
+                LocationInfo(R.drawable.internet, jsonInfo.website)
             }
             if (jsonInfo != null) {
                 LocationInfo(R.drawable.baseline_phone_24, jsonInfo.phoneNr)
@@ -343,7 +343,7 @@ fun LocationInfo(icon: Int, str: String) {
             contentDescription = null,
             tint = Color.Black,
             modifier = Modifier
-                .size(30.dp)
+                .size(35.dp)
                 .padding(end = 5.dp)
         )
         Text(str, color = Color.White)
