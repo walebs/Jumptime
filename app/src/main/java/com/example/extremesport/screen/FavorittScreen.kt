@@ -29,7 +29,7 @@ fun FavorittScreen(){
         Card(
             stationName = "StasjonNavn",
             rating = 3,
-            stationInfo = "mer informasjon",
+            stationInfo = "Info om stasjon",
             isFavorite = true
         )
     )
